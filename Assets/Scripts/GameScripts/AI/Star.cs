@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 
 namespace AITest
 {
@@ -18,6 +18,7 @@ namespace AITest
 			_capacity = star.Capacity;
 			_location = star.Location;
 			_troops = star.Troops;
+            
 		}
 		public Star(e_State state,int def,int vigour,int capacity,
 			Tuple<int, int> location, Tuple<double, double> troops,double schedule)
