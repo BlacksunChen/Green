@@ -900,7 +900,7 @@ namespace Green
                 //tag neighbors if any of the following 3 group behaviors are switched on
                 if (On(behavior_type.separation) || On(behavior_type.allignment) || On(behavior_type.cohesion))
                 {
-                    _movingEntity.World()->TagVehiclesWithinViewRange(_movingEntity, _ViewDistance);
+                    _movingEntity.World.TagVehiclesWithinViewRange(_movingEntity, _ViewDistance);
                 }
             }
             else
@@ -909,7 +909,7 @@ namespace Green
                 //behaviors are switched on
                 if (On(behavior_type.separation) || On(behavior_type.allignment) || On(behavior_type.cohesion))
                 {
-                    _movingEntity.World()->CellSpace()->CalculateNeighbors(_movingEntity.Position, _ViewDistance);
+                    _movingEntity.World.CellSpace()->CalculateNeighbors(_movingEntity.Position, _ViewDistance);
                 }
             }
 

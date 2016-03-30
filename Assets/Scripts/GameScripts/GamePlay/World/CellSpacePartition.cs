@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Generic.Extensions;
+using System;
+
 namespace Green
 {
-    public class CellSpacePartition<Entity> : MonoBehaviour
+    public class CellSpacePartition<Entity> : MonoBehaviour, IEnumerator<Entity>
         where Entity : Base2DEntity
     {
         /// <summary>
@@ -22,8 +24,8 @@ namespace Green
         /// this iterator will be used by the methods next and begin to traverse
         /// through the above vector of neighbors
         /// </summary>
+        int _curNeighborIdx;
         Entity _curNeighbor;
-
         /// <summary>
         /// the width and height of the world space the entities inhabit
         /// </summary>
@@ -38,6 +40,22 @@ namespace Green
 
         float _cellSizeX;
         float _cellSizeY;
+
+        public Entity Current
+        {
+            get
+            {
+                return _curNeighbor;
+            }
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                return Current;
+            }
+        }
 
         /// <summary>
         /// given a position in the game space this method determines the           
@@ -129,13 +147,24 @@ namespace Green
             }//next cell
         }
         
+        public void EmptyCells()
+        {
+            foreach(var item in _cells)
+            {
+                item.Members.Clear();
+            }
+        }
         /// <summary>
         /// adds entities to the class by allocating them to the appropriate cell
         /// </summary>
         /// <param name="ent"></param>
         public void AddEntity(Entity ent)
         {
-            Debug.Assert(ent != null);
+            if(ent != null)
+            {
+                Debug.LogError("Add Entity null");
+            }
+
             int sz = _cells.Count;
             int idx = PositionToIndex(ent.Position);
 
@@ -164,6 +193,29 @@ namespace Green
         void Update()
         {
 
+        }
+
+        public bool MoveNext()
+        {
+            if(++_curNeighborIdx >= _neightbors.Count)
+            {
+                return false;
+            }
+            else
+            {
+                _curNeighbor = _neightbors[_curNeighborIdx];
+            }
+            return true;
+        }
+
+        public void Reset()
+        {
+            _curNeighborIdx = -1;
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

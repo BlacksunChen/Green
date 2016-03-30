@@ -41,7 +41,7 @@ namespace Green
         //the maximum rate (radians per second)this vehicle can rotate         
         float _maxTurnRate;
 
-        
+        GameWorld _world;
 
         // Vector2 _position;
 
@@ -68,7 +68,17 @@ namespace Green
         }
 
         //accessors
-
+        public GameWorld World
+        {
+            get
+            {
+                return _world;
+            }
+            set
+            {
+                _world = value;
+            }
+        }
         public Vector2 Velocity
         {
             get
@@ -156,7 +166,11 @@ namespace Green
             //-----------------------------------------------------------------------------
             set
             {
-                Debug.Assert(value.SqrMagnitude() < float.Epsilon);
+                if(!(value.SqrMagnitude() < float.Epsilon))
+                {
+                    Debug.LogErrorFormat("heading is a vector of zero length");
+                }
+                
 
                 _heading = value;
                 //the side vector must always be perpendicular to the heading
