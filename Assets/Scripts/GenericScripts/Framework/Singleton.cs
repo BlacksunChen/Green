@@ -51,7 +51,7 @@ namespace Generic.Framework
                 // Previously, it was `instance = gameObject.GetComponent<T>();` but this should be more efficient
                 instance = this as T;
 
-                if (isPersistent)
+                if (IsPersistent)
                     DontDestroyOnLoad(gameObject);
             }
         }

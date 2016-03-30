@@ -127,9 +127,6 @@ namespace Green
                     }
                 }
             }//next cell
-
-            //mark the end of the list with a zero.
-            *curNbor = 0;
         }
         
         /// <summary>
