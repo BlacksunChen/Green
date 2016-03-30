@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Generic.Utilities;
+using Generic.Extensions;
 
-    namespace Green
+namespace Green
 {
     class SteeringBehaviors
     {
@@ -52,7 +52,7 @@ using Generic.Utilities;
         Vector2 _target;
 
         //length of the 'detection box' utilized in obstacle avoidance
-        float _boxLength;
+        float _detectionBoxLength;
 
 
         //a vertex buffer to contain the feelers rqd for wall avoidance  
@@ -122,13 +122,13 @@ using Generic.Utilities;
         };
 
         //default
-        Deceleration _Deceleration;
+        Deceleration _deceleration;
 
         //is cell space partitioning to be used or not?
         bool _cellSpaceOn;
 
         //what type of method is used to sum any active behavior
-        summing_method m_SummingMethod;
+        summing_method _summingMethod;
 
 
         //this function tests if a specific bit of m_iFlags is set
@@ -375,16 +375,17 @@ using Generic.Utilities;
         /// </summary>
         /// <param name="obstacles"></param>
         /// <returns></returns>
-        public float 
-        Vector2 ObstacleAvoidance(List<MovingEntity> obstacles)
+        SteeringParams _params = SteeringParams.Instance;
+        Vector2 ObstacleAvoidance(List<Base2DEntity> obstacles)
         {
+            /*
             //the detection box length is proportional to the agent's velocity
-            _dBoxLength = Prm.MinDetectionBoxLength +
+            _boxLength = _params.MinDetectionBoxLength +
                             (_movingEntity.Speed / _movingEntity.MaxSpeed) *
-                            Prm.MinDetectionBoxLength;
+                            _params.MinDetectionBoxLength;
 
             //tag all obstacles within range of the box for processing
-            _movingEntity.World().TagObstaclesWithinViewRange(_movingEntity, _dBoxLength);
+            _movingEntity.World().TagObstaclesWithinViewRange(_movingEntity, _boxLength);
 
             //this will keep track of the closest intersecting obstacle (CIB)
             BaseGameEntity* ClosestIntersectingObstacle = NULL;
@@ -482,165 +483,579 @@ using Generic.Utilities;
             return VectorToWorldSpace(SteeringForce,
                                       _movingEntity.Heading(),
                                       _movingEntity.Side());
+                                */
+            return new Vector2();
         }
 
-  //this returns a steering force which will keep the agent away from any
-  //walls it may encounter
-  Vector2 WallAvoidance(const std::vector<Wall2D> &walls);
+        /// <summary>
+        /// this returns a steering force which will keep the agent away from any
+        /// walls it may encounter
+        /// </summary>
+        /// <param name="walls"></param>
+        /// <returns></returns>
+        //Vector2 WallAvoidance(List<Wall2D> walls)
+        //{
 
-  
-  //given a series of Vector2Ds, this method produces a force that will
-  //move the agent along the waypoints in order
-  Vector2 FollowPath();
-
-        //this results in a steering force that attempts to steer the MovingEntity
-        //to the center of the vector connecting two moving agents.
-        Vector2 Interpose(const MovingEntity* VehicleA, const MovingEntity* VehicleB);
-
-        //given another agent position to hide from and a list of BaseGameEntitys this
-        //method attempts to put an obstacle between itself and its opponent
-        Vector2 Hide(const MovingEntity* hunter, const std::vector<BaseGameEntity*>& obstacles);
+        //}
 
 
-  // -- Group Behaviors -- //
-
-  Vector2 Cohesion(const std::vector<MovingEntity*> &agents);
-  
-  Vector2 Separation(const std::vector<MovingEntity*> &agents);
-
-  Vector2 Alignment(const std::vector<MovingEntity*> &agents);
-
-  //the following three are the same as above but they use cell-space
-  //partitioning to find the neighbors
-  Vector2 CohesionPlus(const std::vector<MovingEntity*> &agents);
-  Vector2 SeparationPlus(const std::vector<MovingEntity*> &agents);
-  Vector2 AlignmentPlus(const std::vector<MovingEntity*> &agents);
-
-    /* .......................................................
-
-                       END BEHAVIOR DECLARATIONS
-
-      .......................................................*/
-
-  //calculates and sums the steering forces from any active behaviors
-  Vector2 CalculateWeightedSum();
-        Vector2 CalculatePrioritized();
-        Vector2 CalculateDithered();
-
-        //helper method for Hide. Returns a position located on the other
-        //side of an obstacle to the pursuer
-        Vector2 GetHidingPosition(const Vector2& posOb,
-                              const float radiusOb,
-                              const Vector2& posHunter);
+        /// <summary>
+        /// given a series of Vector2Ds, this method produces a force that will
+        /// move the agent along the waypoints in order
+        /// </summary>
+        /// <returns></returns>
+        Vector2 FollowPath()
+        {
+            return new Vector2();
+        }
 
 
+        /// <summary>
+        /// this results in a steering force that attempts to steer the MovingEntity
+        ///to the center of the vector connecting two moving agents.
+        /// </summary>
+        /// <param name="AgentA"></param>
+        /// <param name="AgentB"></param>
+        /// <returns></returns>
+        Vector2 Interpose(MovingEntity AgentA,
+                          MovingEntity AgentB)
+        {
+            //first we need to figure out where the two agents are going to be at 
+            //time T in the future. This is approximated by determining the time
+            //taken to reach the mid way point at the current time at at max speed.
+            Vector2 MidPoint = (AgentA.Position + AgentB.Position) / 2.0f;
 
-  
-  
-public:
+            float TimeToReachMidPoint = Vector2.Distance(_movingEntity.Position, MidPoint) /
+                                         _movingEntity.MaxSpeed;
 
-  SteeringBehavior(MovingEntity* agent);
+            //now we have T, we assume that agent A and agent B will continue on a
+            //straight trajectory and extrapolate to get their future positions
+            Vector2 APos = AgentA.Position + AgentA.Velocity * TimeToReachMidPoint;
+            Vector2 BPos = AgentB.Position + AgentB.Velocity * TimeToReachMidPoint;
 
-        virtual ~SteeringBehavior();
+            //calculate the mid point of these predicted positions
+            MidPoint = (APos + BPos) / 2.0f;
+
+            //then steer to Arrive at it
+            return Arrive(MidPoint, Deceleration.fast);
+        }
+
+        /// <summary>
+        /// given another agent position to hide from and a list of BaseGameEntitys this
+        /// method attempts to put an obstacle between itself and its opponent
+        /// </summary>
+        /// <param name="hunter"></param>
+        /// <param name="obstacles"></param>
+        /// <returns></returns>
+
+        Vector2 Hide(MovingEntity hunter, List<Base2DEntity> obstacles)
+        {
+            float DistToClosest = float.MaxValue;
+            Vector2 BestHidingSpot = new Vector2();
+
+            // List<GameObject> curOb = obstacles.begin();
+            //std::vector<BaseGameEntity*>::const_iterator closest;
+
+            Base2DEntity closest;
+            foreach (var curOb in obstacles)
+            {
+                //calculate the position of the hiding spot for this obstacle
+                Vector2 HidingSpot = GetHidingPosition(curOb.Position,
+                                                       curOb.BoundingRadius,
+                                                       hunter.Position);
+
+                //work in distance-squared space to find the closest hiding
+                //spot to the agent
+                float dist = HidingSpot.SqrDistance(_movingEntity.Position);
+
+                if (dist < DistToClosest)
+                {
+                    DistToClosest = dist;
+
+                    BestHidingSpot = HidingSpot;
+
+                    closest = curOb;
+                }
+            }//end while
+
+            //if no suitable obstacles found then Evade the hunter
+            if (DistToClosest == float.MaxValue)
+            {
+                return Evade(hunter);
+            }
+
+            //else use Arrive on the hiding spot
+            return Arrive(BestHidingSpot, Deceleration.fast);
+        }
+
+        /// <summary>
+        /// Given the position of a hunter, and the position and radius of
+        /// an obstacle, this method calculates a position DistanceFromBoundary 
+        /// away from its bounding radius and directly opposite the hunter
+        /// </summary>
+        /// <returns></returns>
+        Vector2 GetHidingPosition(Vector2 posOb,
+                                  float radiusOb,
+                                  Vector2 posHunter)
+        {
+            //calculate how far away the agent is to be from the chosen obstacle's
+            //bounding radius
+            const float DistanceFromBoundary = 30.0f;
+            float DistAway = radiusOb + DistanceFromBoundary;
+
+            //calculate the heading toward the object from the hunter
+            Vector2 ToOb = (posOb - posHunter).normalized;
+
+            //scale it to size and add to the obstacles position to get
+            //the hiding spot.
+            return (ToOb * DistAway) + posOb;
+        }
+
+        // -- Group Behaviors -- //
+
+        Vector2 Cohesion(List<MovingEntity> neighbors)
+        {
+            //first find the center of mass of all the agents
+            Vector2 CenterOfMass = new Vector2();
+            Vector2 SteeringForce = new Vector2();
+
+            int NeighborCount = 0;
+
+            //iterate through the neighbors and sum up all the position vectors
+            for (int a = 0; a < neighbors.Count; ++a)
+            {
+                //make sure *this* agent isn't included in the calculations and that
+                //the agent being examined is close enough ***also make sure it doesn't
+                //include the evade target ***
+                if ((neighbors[a] != _movingEntity) && neighbors[a].IsTagged() &&
+                  (neighbors[a] != _targetAgent1))
+                {
+                    CenterOfMass += neighbors[a].Position;
+
+                    ++NeighborCount;
+                }
+            }
+
+            if (NeighborCount > 0)
+            {
+                //the center of mass is the average of the sum of positions
+                CenterOfMass /= (float)NeighborCount;
+
+                //now seek towards that position
+                SteeringForce = Seek(CenterOfMass);
+            }
+
+            //the magnitude of cohesion is usually much larger than separation or
+            //allignment so it usually helps to normalize it.
+            return SteeringForce.normalized;
+        }
+
+        Vector2 Separation(List<MovingEntity> neighbors)
+        {
+            Vector2 SteeringForce = new Vector2();
+
+            for (int a = 0; a < neighbors.Count; ++a)
+            {
+                //make sure this agent isn't included in the calculations and that
+                //the agent being examined is close enough. ***also make sure it doesn't
+                //include the evade target ***
+                if ((neighbors[a] != _movingEntity) && neighbors[a].IsTagged() &&
+                  (neighbors[a] != _targetAgent1))
+                {
+                    Vector2 ToAgent = _movingEntity.Position - neighbors[a].Position;
+
+                    //scale the force inversely proportional to the agents distance  
+                    //from its neighbor.
+                    SteeringForce += ToAgent.normalized / ToAgent.magnitude;
+                }
+            }
+
+            return SteeringForce;
+        }
+        /*
+  Vector2 Alignment(List<MovingEntity> agents)
+        {
+            //This will record the average heading of the neighbors
+            Vector2 AverageHeading;
+
+            //This count the number of vehicles in the neighborhood
+            float NeighborCount = 0.0;
+
+            //iterate through the neighbors and sum up all the position vectors
+            for (MovingEntity pV = _movingEntity->World()->CellSpace()->begin();
+                                   !_movingEntity->World()->CellSpace()->end();
+                               pV = _movingEntity->World()->CellSpace()->next())
+            {
+                //make sure *this* agent isn't included in the calculations and that
+                //the agent being examined  is close enough
+                if (pV != m_pVehicle)
+                {
+                    AverageHeading += pV->Heading();
+
+                    ++NeighborCount;
+                }
+
+            }
+
+            //if the neighborhood contained one or more vehicles, average their
+            //heading vectors.
+            if (NeighborCount > 0.0)
+            {
+                AverageHeading /= NeighborCount;
+
+                AverageHeading -= m_pVehicle->Heading();
+            }
+
+            return AverageHeading;
+        }
+        */
+        //the following three are the same as above but they use cell-space
+        //partitioning to find the neighbors
+        /*
+        Vector2 CohesionPlus(const std::vector<MovingEntity*> &agents);
+        Vector2 SeparationPlus(const std::vector<MovingEntity*> &agents);
+        Vector2 AlignmentPlus(const std::vector<MovingEntity*> &agents);
+        */
+        /*
+          //calculates and sums the steering forces from any active behaviors
+          Vector2 CalculateWeightedSum()
+          {
+              if (On(behavior_type.wall_avoidance))
+              {
+                  _steeringForce += WallAvoidance(m_pVehicle->World()->Walls()) *
+                                       _WeightWallAvoidance;
+              }
+
+              if (On(behavior_type.behavior_type.obstacle_avoidance))
+              {
+                  m_vSteeringForce += ObstacleAvoidance(m_pVehicle->World()->Obstacles()) *
+                          _WeightObstacleAvoidance;
+              }
+
+              if (On(behavior_type.evade))
+              {
+                  assert(m_pTargetAgent1 && "Evade target not assigned");
+
+                  m_vSteeringForce += Evade(m_pTargetAgent1) * _WeightEvade;
+              }
+
+
+              //these next three can be combined for flocking behavior (wander is
+              //also a good behavior to add into this mix)
+              if (!isSpacePartitioningOn())
+              {
+                  if (On(behavior_type.separation))
+                  {
+                      m_vSteeringForce += SeparatiOn(behavior_type.m_pVehicle->World()->Agents()) * _WeightSeparation;
+                  }
+
+                  if (On(behavior_type.allignment))
+                  {
+                      m_vSteeringForce += Alignment(m_pVehicle->World()->Agents()) * _WeightAlignment;
+                  }
+
+                  if (On(behavior_type.cohesion))
+                  {
+                      m_vSteeringForce += CohesiOn(behavior_type.m_pVehicle->World()->Agents()) * _WeightCohesion;
+                  }
+              }
+              else
+              {
+                  if (On(behavior_type.separation))
+                  {
+                      m_vSteeringForce += SeparationPlus(m_pVehicle->World()->Agents()) * _WeightSeparation;
+                  }
+
+                  if (On(behavior_type.allignment))
+                  {
+                      m_vSteeringForce += AlignmentPlus(m_pVehicle->World()->Agents()) * _WeightAlignment;
+                  }
+
+                  if (On(behavior_type.cohesion))
+                  {
+                      m_vSteeringForce += CohesionPlus(m_pVehicle->World()->Agents()) * _WeightCohesion;
+                  }
+              }
+
+
+              if (On(behavior_type.wander))
+              {
+                  m_vSteeringForce += Wander() * _WeightWander;
+              }
+
+              if (On(behavior_type.seek))
+              {
+                  m_vSteeringForce += Seek(m_pVehicle->World()->Crosshair()) * _WeightSeek;
+              }
+
+              if (On(behavior_type.flee))
+              {
+                  m_vSteeringForce += Flee(m_pVehicle->World()->Crosshair()) * _WeightFlee;
+              }
+
+              if (On(behavior_type.arrive))
+              {
+                  m_vSteeringForce += Arrive(m_pVehicle->World()->Crosshair(), _eceleration) * _WeightArrive;
+              }
+
+              if (On(behavior_type.pursuit))
+              {
+                  assert(m_pTargetAgent1 && "pursuit target not assigned");
+
+                  m_vSteeringForce += Pursuit(m_pTargetAgent1) * _WeightPursuit;
+              }
+
+              if (On(behavior_type.offset_pursuit))
+              {
+                  assert(m_pTargetAgent1 && "pursuit target not assigned");
+                  assert(!m_vOffset.isZero() && "No offset assigned");
+
+                  m_vSteeringForce += OffsetPursuit(m_pTargetAgent1, m_vOffset) * _WeightOffsetPursuit;
+              }
+
+              if (On(behavior_type.interpose))
+              {
+                  assert(m_pTargetAgent1 && m_pTargetAgent2 && "Interpose agents not assigned");
+
+                  m_vSteeringForce += Interpose(m_pTargetAgent1, m_pTargetAgent2) * _WeightInterpose;
+              }
+
+              if (On(behavior_type.hide))
+              {
+                  assert(m_pTargetAgent1 && "Hide target not assigned");
+
+                  m_vSteeringForce += Hide(m_pTargetAgent1, m_pVehicle->World()->Obstacles()) * _WeightHide;
+              }
+
+              if (On(behavior_type.follow_path))
+              {
+                  m_vSteeringForce += FollowPath() * _WeightFollowPath;
+              }
+
+              m_vSteeringForce.Truncate(m_pVehicle->MaxForce());
+
+              return m_vSteeringForce;
+          }
+          Vector2 CalculatePrioritized();
+          Vector2 CalculateDithered();
+          */
+
+
+
+
+
+        public const float WanderRad = 1.2f;
+        //distance the wander circle is projected in front of the agent
+        public const float WanderDist = 2.0f;
+        //the maximum amount of displacement along the circle each frame
+        public const float WanderJitterPerSec = 80.0f;
+
+        //used in path following
+        public const float WaypointSeekDist = 20;
+
+        public void Init(MovingEntity agent)
+        {
+            _movingEntity = agent;
+            _flags = 0;
+            _detectionBoxLength = SteeringParams.Instance.MinDetectionBoxLength;
+            _weightCohesion = SteeringParams.Instance.CohesionWeight;
+            _weightAlignment = SteeringParams.Instance.AlignmentWeight;
+            _weightSeparation = SteeringParams.Instance.SeparationWeight;
+            _weightObstacleAvoidance = SteeringParams.Instance.ObstacleAvoidanceWeight;
+            _weightWander = SteeringParams.Instance.WanderWeight;
+            _weightWallAvoidance = SteeringParams.Instance.WallAvoidanceWeight;
+            _viewDistance = SteeringParams.Instance.ViewDistance;
+            _wallDetectionFeelerLength = SteeringParams.Instance.WallDetectionFeelerLength;
+            _feelers = new List<Vector2>(3);
+            _deceleration = Deceleration.normal;
+            _targetAgent1 = null;
+            _targetAgent2 = null;
+            _wanderDistance = WanderDist;
+            _wanderJitter = WanderJitterPerSec;
+            _wanderRadius = WanderRad;
+            _waypointSeekDistSq = WaypointSeekDist * WaypointSeekDist;
+            _weightSeek = SteeringParams.Instance.SeekWeight;
+            _weightFlee = SteeringParams.Instance.FleeWeight;
+            _weightArrive = SteeringParams.Instance.ArriveWeight;
+            _weightPursuit = SteeringParams.Instance.PursuitWeight;
+            _weightOffsetPursuit = SteeringParams.Instance.OffsetPursuitWeight;
+            _weightInterpose = SteeringParams.Instance.InterposeWeight;
+            _weightHide = SteeringParams.Instance.HideWeight;
+            _weightEvade = SteeringParams.Instance.EvadeWeight;
+            _weightFollowPath = SteeringParams.Instance.FollowPathWeight;
+            _cellSpaceOn = false;
+            _summingMethod = summing_method.prioritized;
+        }
 
         //calculates and sums the steering forces from any active behaviors
-        Vector2 Calculate();
+        public Vector2 Calculate()
+        {
+            //reset the steering force
+            _steeringForce.Set(0f, 0f);
 
-        //calculates the component of the steering force that is parallel
+            //use space partitioning to calculate the neighbours of this vehicle
+            //if switched on. If not, use the standard tagging system
+            if (!isSpacePartitioningOn())
+            {
+                //tag neighbors if any of the following 3 group behaviors are switched on
+                if (On(behavior_type.separation) || On(behavior_type.allignment) || On(behavior_type.cohesion))
+                {
+                    _movingEntity.World()->TagVehiclesWithinViewRange(_movingEntity, _ViewDistance);
+                }
+            }
+            else
+            {
+                //calculate neighbours in cell-space if any of the following 3 group
+                //behaviors are switched on
+                if (On(behavior_type.separation) || On(behavior_type.allignment) || On(behavior_type.cohesion))
+                {
+                    _movingEntity.World()->CellSpace()->CalculateNeighbors(_movingEntity.Position, _ViewDistance);
+                }
+            }
+
+            switch (_summingMethod)
+            {
+                case summing_method.weighted_average:
+
+                    _steeringForce = CalculateWeightedSum(); break;
+
+                case summing_method.prioritized:
+
+                    _steeringForce = CalculatePrioritized(); break;
+
+                case summing_method.dithered:
+
+                    _steeringForce = CalculateDithered(); break;
+
+                default:
+                    _steeringForce = new Vector2(0, 0);
+                    break;
+
+            }//end switch
+
+            return _steeringForce;
+        }
+
+        /// <summary>
+        /// calculates the component of the steering force that is parallel
         //with the MovingEntity heading
-        float ForwardComponent();
+        /// </summary>
+        /// <returns></returns>
+        public float ForwardComponent()
+        {
+            return Vector2.Dot(_movingEntity.Heading, _steeringForce);
+        }
 
-        //calculates the component of the steering force that is perpendicuar
-        //with the MovingEntity heading
-        float SideComponent();
+        /// <summary>
+        /// calculates the component of the steering force that is perpendicuar
+        /// with the MovingEntity heading
+        /// </summary>
+        /// <returns></returns>
 
-
-
-        //renders visual aids and info for seeing how each behavior is
-        //calculated
-        void RenderAids();
-
-        void SetTarget(const Vector2 t){m_vTarget = t;}
-
-    void SetTargetAgent1(MovingEntity* Agent) { m_pTargetAgent1 = Agent; }
-    void SetTargetAgent2(MovingEntity* Agent) { m_pTargetAgent2 = Agent; }
-
-    void SetOffset(const Vector2 offset) { m_vOffset = offset; }
-    Vector2 GetOffset()const{return m_vOffset;}
-
-void SetPath(std::list<Vector2> new_path) { m_pPath.Set(new_path); }
-void CreateRandomPath(int num_waypoints, int mx, int my, int cx, int cy)const
-            {m_pPath.CreateRandomPath(num_waypoints, mx, my, cx, cy);}
-
-  Vector2 Force()const{return m_vSteeringForce;}
-
-  void ToggleSpacePartitioningOnOff() { m_bCellSpaceOn = !m_bCellSpaceOn; }
-bool isSpacePartitioningOn()const{return m_bCellSpaceOn;}
-
-  void SetSummingMethod(summing_method sm) { m_SummingMethod = sm; }
+        public float SideComponent()
+        {
+            return Vector2.Dot(_movingEntity.Side, _steeringForce);
+        }
 
 
-void FleeOn() { m_iFlags |= flee; }
-void SeekOn() { m_iFlags |= seek; }
-void ArriveOn() { m_iFlags |= arrive; }
-void WanderOn() { m_iFlags |= wander; }
-void PursuitOn(MovingEntity* v) { m_iFlags |= pursuit; m_pTargetAgent1 = v; }
-void EvadeOn(MovingEntity* v) { m_iFlags |= evade; m_pTargetAgent1 = v; }
-void CohesionOn() { m_iFlags |= cohesion; }
-void SeparationOn() { m_iFlags |= separation; }
-void AlignmentOn() { m_iFlags |= allignment; }
-void ObstacleAvoidanceOn() { m_iFlags |= obstacle_avoidance; }
-void WallAvoidanceOn() { m_iFlags |= wall_avoidance; }
-void FollowPathOn() { m_iFlags |= follow_path; }
-void InterposeOn(MovingEntity* v1, MovingEntity* v2) { m_iFlags |= interpose; m_pTargetAgent1 = v1; m_pTargetAgent2 = v2; }
-void HideOn(MovingEntity* v) { m_iFlags |= hide; m_pTargetAgent1 = v; }
-void OffsetPursuitOn(MovingEntity* v1, const Vector2 offset) { m_iFlags |= offset_pursuit; m_vOffset = offset; m_pTargetAgent1 = v1; }
-void FlockingOn() { CohesionOn(); AlignmentOn(); SeparationOn(); WanderOn(); }
+        /// <summary>
+        /// renders visual aids and info for seeing how each behavior is
+        /// calculated
+        /// </summary>
 
-void FleeOff() { if (On(flee)) m_iFlags ^= flee; }
-void SeekOff() { if (On(seek)) m_iFlags ^= seek; }
-void ArriveOff() { if (On(arrive)) m_iFlags ^= arrive; }
-void WanderOff() { if (On(wander)) m_iFlags ^= wander; }
-void PursuitOff() { if (On(pursuit)) m_iFlags ^= pursuit; }
-void EvadeOff() { if (On(evade)) m_iFlags ^= evade; }
-void CohesionOff() { if (On(cohesion)) m_iFlags ^= cohesion; }
-void SeparationOff() { if (On(separation)) m_iFlags ^= separation; }
-void AlignmentOff() { if (On(allignment)) m_iFlags ^= allignment; }
-void ObstacleAvoidanceOff() { if (On(obstacle_avoidance)) m_iFlags ^= obstacle_avoidance; }
-void WallAvoidanceOff() { if (On(wall_avoidance)) m_iFlags ^= wall_avoidance; }
-void FollowPathOff() { if (On(follow_path)) m_iFlags ^= follow_path; }
-void InterposeOff() { if (On(interpose)) m_iFlags ^= interpose; }
-void HideOff() { if (On(hide)) m_iFlags ^= hide; }
-void OffsetPursuitOff() { if (On(offset_pursuit)) m_iFlags ^= offset_pursuit; }
-void FlockingOff() { CohesionOff(); AlignmentOff(); SeparationOff(); WanderOff(); }
+        public void RenderAids()
+        {
 
-bool isFleeOn() { return On(flee); }
-bool isSeekOn() { return On(seek); }
-bool isArriveOn() { return On(arrive); }
-bool isWanderOn() { return On(wander); }
-bool isPursuitOn() { return On(pursuit); }
-bool isEvadeOn() { return On(evade); }
-bool isCohesionOn() { return On(cohesion); }
-bool isSeparationOn() { return On(separation); }
-bool isAlignmentOn() { return On(allignment); }
-bool isObstacleAvoidanceOn() { return On(obstacle_avoidance); }
-bool isWallAvoidanceOn() { return On(wall_avoidance); }
-bool isFollowPathOn() { return On(follow_path); }
-bool isInterposeOn() { return On(interpose); }
-bool isHideOn() { return On(hide); }
-bool isOffsetPursuitOn() { return On(offset_pursuit); }
+        }
 
-float DBoxLength()const{return _dBoxLength;}
-  const std::vector<Vector2>& GetFeelers()const{return m_Feelers;}
-  
-  float WanderJitter()const{return _wanderJitter;}
-  float WanderDistance()const{return _wanderDistance;}
-  float WanderRadius()const{return _wanderRadius;}
+        public void SetTarget(Vector2 t) { _target = t; }
 
-  float SeparationWeight()const{return _weightSeparation;}
-  float AlignmentWeight()const{return _weightAlignment;}
-  float CohesionWeight()const{return _weightCohesion;}
+        public void SetTargetAgent1(MovingEntity Agent) { _targetAgent1 = Agent; }
+        public void SetTargetAgent2(MovingEntity Agent) { _targetAgent1 = Agent; }
 
-};
+        public void SetOffset(Vector2 offset) { _offset = offset; }
+        public Vector2 GetOffset() { return _offset; }
+
+        public void SetPath(LinkedList<Vector2> new_path)
+        {
+            _path.Set(new_path);
+        }
+        public void CreateRandomPath(int num_waypoints, int mx, int my, int cx, int cy)
+        {
+            _path.CreateRandomPath(num_waypoints, mx, my, cx, cy);
+        }
+
+
+        public Vector2 Force() { return _steeringForce; }
+
+        public void ToggleSpacePartitioningOnOff() { _cellSpaceOn = !_cellSpaceOn; }
+        public bool isSpacePartitioningOn() { return _cellSpaceOn; }
+
+        public void SetSummingMethod(summing_method sm) { _summingMethod = sm; }
+
+
+        public void FleeOn() { _flags |= behavior_type.flee; }
+        public void SeekOn() { _flags |= behavior_type.seek; }
+        public void ArriveOn() { _flags |= behavior_type.arrive; }
+        public void WanderOn() { _flags |= behavior_type.wander; }
+        public void PursuitOn(MovingEntity v) { _flags |= behavior_type.pursuit; _targetAgent1 = v; }
+        public void EvadeOn(MovingEntity v) { _flags |= behavior_type.evade; _targetAgent1 = v; }
+        public void CohesionOn() { _flags |= behavior_type.cohesion; }
+        public void SeparationOn() { _flags |= behavior_type.separation; }
+        public void AlignmentOn() { _flags |= behavior_type.allignment; }
+        public void ObstacleAvoidanceOn() { _flags |= behavior_type.obstacle_avoidance; }
+        public void WallAvoidanceOn() { _flags |= behavior_type.wall_avoidance; }
+        public void FollowPathOn() { _flags |= behavior_type.follow_path; }
+        public void InterposeOn(MovingEntity v1, MovingEntity v2) { _flags |= behavior_type.interpose; _targetAgent1 = v1; _targetAgent2 = v2; }
+        public void HideOn(MovingEntity v) { _flags |= behavior_type.hide; _targetAgent1 = v; }
+        public void OffsetPursuitOn(MovingEntity v1, Vector2 offset) { _flags |= behavior_type.offset_pursuit; _offset = offset; _targetAgent1 = v1; }
+        public void FlockingOn() { CohesionOn(); AlignmentOn(); SeparationOn(); WanderOn(); }
+
+        public void FleeOff() { if (On(behavior_type.flee)) _flags ^= behavior_type.flee; }
+        public void SeekOff() { if (On(behavior_type.seek)) _flags ^= behavior_type.seek; }
+        public void ArriveOff() { if (On(behavior_type.arrive)) _flags ^= behavior_type.arrive; }
+        public void WanderOff() { if (On(behavior_type.wander)) _flags ^= behavior_type.wander; }
+        public void PursuitOff() { if (On(behavior_type.pursuit)) _flags ^= behavior_type.pursuit; }
+        public void EvadeOff() { if (On(behavior_type.evade)) _flags ^= behavior_type.evade; }
+        public void CohesionOff() { if (On(behavior_type.cohesion)) _flags ^= behavior_type.cohesion; }
+        public void SeparationOff() { if (On(behavior_type.separation)) _flags ^= behavior_type.separation; }
+        public void AlignmentOff() { if (On(behavior_type.allignment)) _flags ^= behavior_type.allignment; }
+        public void ObstacleAvoidanceOff() { if (On(behavior_type.obstacle_avoidance)) _flags ^= behavior_type.obstacle_avoidance; }
+        public void WallAvoidanceOff() { if (On(behavior_type.wall_avoidance)) _flags ^= behavior_type.wall_avoidance; }
+        public void FollowPathOff() { if (On(behavior_type.follow_path)) _flags ^= behavior_type.follow_path; }
+        public void InterposeOff() { if (On(behavior_type.interpose)) _flags ^= behavior_type.interpose; }
+        public void HideOff() { if (On(behavior_type.hide)) _flags ^= behavior_type.hide; }
+        public void OffsetPursuitOff() { if (On(behavior_type.offset_pursuit)) _flags ^= behavior_type.offset_pursuit; }
+        public void FlockingOff() { CohesionOff(); AlignmentOff(); SeparationOff(); WanderOff(); }
+
+        public bool isFleeOn() { return On(behavior_type.flee); }
+        public bool isSeekOn() { return On(behavior_type.seek); }
+        public bool isArriveOn() { return On(behavior_type.arrive); }
+        public bool isWanderOn() { return On(behavior_type.wander); }
+        public bool isPursuitOn() { return On(behavior_type.pursuit); }
+        public bool isEvadeOn() { return On(behavior_type.evade); }
+        public bool isCohesionOn() { return On(behavior_type.cohesion); }
+        public bool isSeparationOn() { return On(behavior_type.separation); }
+        public bool isAlignmentOn() { return On(behavior_type.allignment); }
+        public bool isObstacleAvoidanceOn() { return On(behavior_type.obstacle_avoidance); }
+        public bool isWallAvoidanceOn() { return On(behavior_type.wall_avoidance); }
+        public bool isFollowPathOn() { return On(behavior_type.follow_path); }
+        public bool isInterposeOn() { return On(behavior_type.interpose); }
+        public bool isHideOn() { return On(behavior_type.hide); }
+        public bool isOffsetPursuitOn() { return On(behavior_type.offset_pursuit); }
+
+
+        public float BoxLength { get { return _detectionBoxLength } }
+        List<Vector2> GetFeelers() { return _feelers; }
+
+
+        float WanderJitter() { return _wanderJitter; }
+        float WanderDistance() { return _wanderDistance; }
+        float WanderRadius() { return _wanderRadius; }
+
+        float SeparationWeight() { return _weightSeparation; }
+        float AlignmentWeight() { return _weightAlignment; }
+        float CohesionWeight() { return _weightCohesion; }
+
     }
 }

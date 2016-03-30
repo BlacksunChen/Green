@@ -7,7 +7,7 @@
 using UnityEngine;
 
 
-namespace Generic.Utilities
+namespace Generic.Extensions
 {
 
     public static class VectorExtensions
@@ -85,12 +85,20 @@ namespace Generic.Utilities
             return transMatrix * point;
         }
 
-    /// <summary>
-    /// Return a perpendicular vector (90 degrees rotation)
-    /// </summary>
-    /// <param name="v"></param>
-    /// <returns></returns>
-    public static Vector2 Perpendicular(this Vector2 v)
+        public static float SqrDistance(this Vector2 v1, Vector2 v2)
+        {
+
+            float ySeparation = v2.y - v1.y;
+            float xSeparation = v2.x - v1.x;
+
+            return ySeparation * ySeparation + xSeparation * xSeparation;
+        }
+        /// <summary>
+        /// Return a perpendicular vector (90 degrees rotation)
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static Vector2 Perpendicular(this Vector2 v)
         {
             return new Vector2(-v.y, v.x);
         }

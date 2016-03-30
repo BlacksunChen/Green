@@ -1,8 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Generic.Framework;
 
-public class SteeringParams : MonoBehaviour
+public class SteeringParams : Singleton<SteeringParams>
 {
+    /// <summary>
+    /// read param.ini
+    /// </summary>
+    void Start()
+    {
+
+    }
+
     public int NumAgents;
     public int NumObstacles;
     public float MinObstacleRadius;
@@ -68,12 +77,6 @@ public class SteeringParams : MonoBehaviour
     public float prHide;
     public float prArrive;
 
-    /// <summary>
-    /// read param.ini
-    /// </summary>
-    void Start()
-    {
-
-    }
+    
 
 }

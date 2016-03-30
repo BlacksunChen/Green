@@ -13,14 +13,15 @@
 
 using UnityEngine;
 
-namespace Unitilities
+namespace Generic.Framework
 {
 
     /// <summary>
     /// Remember to call base.Awake() in each new Singleton
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+    public class Singleton<T> : MonoBehaviour 
+        where T : MonoBehaviour
     {
         protected static T instance;
 
@@ -31,7 +32,7 @@ namespace Unitilities
         /// </summary>
         [Tooltip("If true, the singleton won't be destroyed when the scene changes")]
         [SerializeField]
-        bool isPersistent = true;
+        public bool IsPersistent = false;
 
         #region Unity
 

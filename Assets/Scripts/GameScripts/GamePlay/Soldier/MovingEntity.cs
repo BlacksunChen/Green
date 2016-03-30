@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Generic.Utilities;
+using Generic.Extensions;
+using Generic.Framework;
 
 //------------------------------------------------------------------------
 //
@@ -16,7 +17,7 @@ using Generic.Utilities;
 
 namespace Green
 {
-    class MovingEntity : MonoBehaviour
+    class MovingEntity : Base2DEntity
     {
 
         Vector2 _velocity;
@@ -27,7 +28,7 @@ namespace Green
         //a vector perpendicular to the heading vector
         Vector2 _side;
 
-        Vector2 _scale;
+        
         float _mass;
 
         //the maximum speed this entity may travel at.
@@ -40,7 +41,7 @@ namespace Green
         //the maximum rate (radians per second)this vehicle can rotate         
         float _maxTurnRate;
 
-        float _boundingRadius;
+        
 
         // Vector2 _position;
 
@@ -55,8 +56,8 @@ namespace Green
                         float max_force)
         {
             Position = position;
-            _boundingRadius = radius;
             _scale = scale;
+            _boundingRadius = radius;    
             _heading = heading;
             _velocity = velocity;
             _side = heading.Perpendicular();
@@ -67,18 +68,7 @@ namespace Green
         }
 
         //accessors
-        public Vector2 Position
-        {
-            get
-            {
-                return this.transform.position;
-            }
-            set
-            {
-                float z = transform.position.z;
-                this.transform.position = new Vector3(value.x, value.y, z);
-            }
-        }
+
         public Vector2 Velocity
         {
             get
