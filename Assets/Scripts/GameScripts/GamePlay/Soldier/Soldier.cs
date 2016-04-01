@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Green
 {
-    public class Soldier : MonoBehaviour
+    public class Soldier : MovingEntity
     {
 
         // Use this for initialization

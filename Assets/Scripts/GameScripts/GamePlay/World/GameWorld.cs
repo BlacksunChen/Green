@@ -9,7 +9,7 @@ namespace Green
     {
         List<MovingEntity> _movingEntities;
 
-        List<Base2DEntity> _obstacles;
+       // List<Base2DEntity> _obstacles;
 
         List<Wall2D> _walls;
 
@@ -20,7 +20,7 @@ namespace Green
         /// <summary>
         /// set true to pause the motion
         /// </summary>
-        bool _paused;
+        bool _paused = false;
 
         /// <summary>
         /// local copy of client window dimensions
@@ -36,42 +36,29 @@ namespace Green
         /// <summary>
         /// keeps track of the average FPS
         /// </summary>
-        float _avFrameTime;
+        float _avFrameTime = 0f;
 
         /// <summary>
         /// //flags to turn aids and obstacles etc on/off
         /// </summary>
-        bool _showWalls;
-        bool _showObstacles;
-        bool _showPath;
-        bool _showDetectionBox;
-        bool _showWanderCircle;
-        bool _showFeelers;
-        bool _showSteeringForce;
-        bool _showFPS;
-        bool _renderNeighbors;
-        bool _viewKeys;
-        bool _showCellSpaceInfo;
+        bool _showWalls = false;
+        bool _showObstacles = false;
+        bool _showPath = false;
+        bool _showDetectionBox = false;
+        bool _showWanderCircle = false;
+        bool _showFeelers = false;
+        bool _showSteeringForce = false;
+        //bool _showFPS = true;
+        bool _renderNeighbors = false;
+        //bool _viewKeys = false;
+        bool _showCellSpaceInfo = false;
 
         void Init(int cx, int cy)
         {
             _cxClient =cx;
             _cyClient =cy;
-            _paused =false;
             _crosshair =new Vector2(_cxClient / 2.0f, _cxClient / 2.0f);
-            _showWalls =false;
-            _showObstacles =false;
-            _showPath =false;
-            _showWanderCircle =false;
-            _showSteeringForce =false;
-            _showFeelers =false;
-            _showDetectionBox =false;
-            _showFPS =true;
-            _avFrameTime =0;
             //_path =NULL;
-            _renderNeighbors =false;
-            _viewKeys =false;
-            _showCellSpaceInfo = false;
 
             //setup the spatial subdivision class
             _cellSpace = new CellSpacePartition<MovingEntity>((float)cx, (float)cy, SteeringParams.Instance.NumCellsX, SteeringParams.Instance.NumCellsY, SteeringParams.Instance.NumAgents);
@@ -91,7 +78,7 @@ namespace Green
             EntityUtils.TagNeighbors(entity, _movingEntities, range);
         }
 
-        public List<Wall2D> Wall
+        public List<Wall2D> Walls
         {
             get
             {
@@ -99,6 +86,17 @@ namespace Green
             }
         }
 
+        public Vector2 Crosshair
+        {
+            get
+            {
+                return _crosshair;
+            }
+            set
+            {
+                _crosshair = value;
+            }
+        }
         public CellSpacePartition<MovingEntity> CellSpace
         {
             get
@@ -107,7 +105,7 @@ namespace Green
             }
         }
 
-        public List<MovingEntity> Agent
+        public List<MovingEntity> Agents
         {
             get
             {

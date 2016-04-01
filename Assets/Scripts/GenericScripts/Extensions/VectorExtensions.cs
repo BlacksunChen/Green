@@ -103,6 +103,32 @@ namespace Generic.Extensions
             return new Vector2(-v.y, v.x);
         }
 
+        public static bool IsZero(this Vector2 v)
+        {
+            return v.x * v.x + v.y * v.y < float.Epsilon;
+        }
+
+        public static void Zero(this Vector2 v)
+        {
+            v.x = 0f;
+            v.y = 0f;
+        }
+
+        /// <summary>
+        /// truncates a vector so that its length does not exceed max
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="max"></param>
+        public static void Truncate(this Vector2 v, float max)
+        {
+            if (v.magnitude > max)
+            {
+                v.Normalize();
+
+                v *= max;
+            }
+        }
+
         /// <summary>
         /// Return a perpendicular vector (-90 degrees rotation)
         /// </summary>

@@ -176,7 +176,7 @@ namespace Green
         /// Checks to see if an entity has moved cells. If so the data structure
         /// is updated accordingly
         /// </summary>
-        void UpdateEntity(Entity ent, Vector2 oldPos)
+        public void UpdateEntity(Entity ent, Vector2 oldPos)
         {
             //if the index for the old pos and the new pos are not equal then
             //the entity has moved to another cell.

@@ -19,55 +19,55 @@ namespace Green
 {
     public class MovingEntity : Base2DEntity
     {
+        #region private field
+        //the steering behavior class
+        [SerializeField, SetProperty("Steering")]
+        SteeringBehaviors _steering;
 
+        [SerializeField, SetProperty("Velocity")]
         Vector2 _velocity;
 
         //a normalized vector pointing in the direction the entity is heading. 
+        [SerializeField, SetProperty("Heading")]
         Vector2 _heading;
 
         //a vector perpendicular to the heading vector
+        [SerializeField, SetProperty("Side")]
         Vector2 _side;
 
-        
+        [SerializeField, SetProperty("Mass")]
         float _mass;
 
         //the maximum speed this entity may travel at.
+        [SerializeField, SetProperty("MaxSpeed")]
         float _maxSpeed;
 
         //the maximum force this entity can produce to power itself 
         //(think rockets and thrust)
+        [SerializeField, SetProperty("MaxForce")]
         float _maxForce;
 
         //the maximum rate (radians per second)this vehicle can rotate         
+        [SerializeField, SetProperty("MaxTurnRate")]
         float _maxTurnRate;
 
+        [SerializeField, SetProperty("World")]
         GameWorld _world;
 
+        #endregion
         // Vector2 _position;
-
-        public void Init(Vector2 position,
-                        float radius,
-                        Vector2 velocity,
-                        float max_speed,
-                        Vector2 heading,
-                        float mass,
-                        Vector2 scale,
-                        float turn_rate,
-                        float max_force)
+        #region Property
+        public SteeringBehaviors Steering
         {
-            Position = position;
-            _scale = scale;
-            _boundingRadius = radius;    
-            _heading = heading;
-            _velocity = velocity;
-            _side = heading.Perpendicular();
-            _mass = mass;
-            _maxSpeed = max_speed;
-            _maxTurnRate = turn_rate;
-            _maxForce = max_force;
+            get
+            {
+                return _steering;
+            }
+            set
+            {
+                _steering = value;
+            }
         }
-
-        //accessors
         public GameWorld World
         {
             get
@@ -166,17 +166,54 @@ namespace Green
             //-----------------------------------------------------------------------------
             set
             {
-                if(!(value.SqrMagnitude() < float.Epsilon))
+                if (!(value.SqrMagnitude() < float.Epsilon))
                 {
                     Debug.LogErrorFormat("heading is a vector of zero length");
                 }
-                
+
 
                 _heading = value;
                 //the side vector must always be perpendicular to the heading
                 _side = _heading.Perpendicular();
             }
         }
+
+        public float MaxTurnRate
+        {
+            get
+            {
+                return _maxTurnRate;
+            }
+            set
+            {
+                _maxTurnRate = value;
+            }
+        }
+
+        #endregion
+        public void Init(Vector2 position,
+                        float radius,
+                        Vector2 velocity,
+                        float max_speed,
+                        Vector2 heading,
+                        float mass,
+                        Vector2 scale,
+                        float turn_rate,
+                        float max_force)
+        {
+            Position = position;
+            _scale = scale;
+            _boundingRadius = radius;    
+            _heading = heading;
+            _velocity = velocity;
+            _side = heading.Perpendicular();
+            _mass = mass;
+            _maxSpeed = max_speed;
+            _maxTurnRate = turn_rate;
+            _maxForce = max_force;
+        }
+
+        
 
 
         public bool RotateHeadingToFacePosition(Vector2 target)
@@ -204,17 +241,60 @@ namespace Green
 
             return false;
         }
-
-        public float MaxTurnRate
+        
+        
+        void Update()
         {
-            get
+            //keep a record of its old position so we can update its cell later
+            //in this method
+            Vector2 OldPos = Position;
+
+
+            Vector2 SteeringForce = new Vector2();
+
+            //calculate the combined force from each steering behavior in the 
+            //vehicle's list
+            SteeringForce = _steering.Calculate();
+
+            //Acceleration = Force/Mass
+            Vector2 acceleration = SteeringForce / _mass;
+
+            //update velocity
+            _velocity += acceleration * Time.deltaTime;
+
+            //make sure vehicle does not exceed maximum velocity
+            _velocity.Truncate(_maxSpeed);
+
+            //update the position
+            Position += _velocity * Time.deltaTime;
+
+            //update the heading if the vehicle has a non zero velocity
+            if (_velocity.sqrMagnitude > float.Epsilon)
             {
-                return _maxTurnRate;
+                _heading = _velocity.normalized;
+
+                _side = _heading.Perpendicular();
             }
-            set
+
+            //EnforceNonPenetrationConstraint(this, World()->Agents());
+
+            /*
+            //treat the screen as a toroid
+            WrapAround(m_vPos, m_pWorld->cxClient(), m_pWorld->cyClient());
+            */
+
+            //update the vehicle's current cell if space partitioning is turned on
+            if (Steering.IsSpacePartitioningOn())
             {
-                _maxTurnRate = value;
+                World.CellSpace.UpdateEntity(this, OldPos);
+            }
+
+            if (IsSmoothingOn())
+            {
+                m_vSmoothedHeading = m_pHeadingSmoother->Update(Heading());
             }
         }
     }
+
+
 }
