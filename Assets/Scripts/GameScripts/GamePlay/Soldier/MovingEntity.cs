@@ -17,7 +17,7 @@ using Generic.Framework;
 
 namespace Green
 {
-    class MovingEntity : Base2DEntity
+    public class MovingEntity : Base2DEntity
     {
 
         Vector2 _velocity;

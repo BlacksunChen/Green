@@ -7,7 +7,7 @@ namespace Green
 {
     public class GameWorld : Singleton<GameWorld>
     {
-        List<MovingEntity> _movingEntity;
+        List<MovingEntity> _movingEntities;
 
         List<Base2DEntity> _obstacles;
 
@@ -75,10 +75,46 @@ namespace Green
 
             //setup the spatial subdivision class
             _cellSpace = new CellSpacePartition<MovingEntity>((float)cx, (float)cy, SteeringParams.Instance.NumCellsX, SteeringParams.Instance.NumCellsY, SteeringParams.Instance.NumAgents);
-            float border = 30;
-
-
         }
+        public void NonPenetrationContraint(MovingEntity v)
+        {
+            EntityUtils.EnforceNonPenetrationConstraint(v, _movingEntities);
+        }
+
+        public void TagVehiclesWithinViewRange(Base2DEntity entity, float range)
+        {
+            EntityUtils.TagNeighbors(entity, _movingEntities, range);
+        }
+
+        public void TagObstaclesWithinViewRange(Base2DEntity entity, float range)
+        {
+            EntityUtils.TagNeighbors(entity, _movingEntities, range);
+        }
+
+        public List<Wall2D> Wall
+        {
+            get
+            {
+                return _walls;
+            }
+        }
+
+        public CellSpacePartition<MovingEntity> CellSpace
+        {
+            get
+            {
+                return _cellSpace;
+            }
+        }
+
+        public List<MovingEntity> Agent
+        {
+            get
+            {
+                return _movingEntities;
+            }
+        }
+
         // Use this for initialization
         void Start()
         {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Generic.Extensions;
-
+using Generic.Util;
 namespace Green
 {
     class SteeringBehaviors
@@ -493,10 +493,64 @@ namespace Green
         /// </summary>
         /// <param name="walls"></param>
         /// <returns></returns>
-        //Vector2 WallAvoidance(List<Wall2D> walls)
-        //{
+        Vector2 WallAvoidance(List<Wall2D> walls)
+        {
+            //the feelers are contained in a std::vector, m_Feelers
+            CreateFeelers();
 
-        //}
+            float DistToThisIP = 0.0f;
+            float DistToClosestIP = float.MaxValue;
+
+            //this will hold an index into the vector of walls
+            int ClosestWall = -1;
+
+            Vector2 SteeringForce = new Vector2(),
+                      point = new Vector2(),         //used for storing temporary info
+                      ClosestPoint = new Vector2();  //holds the closest intersection point
+
+            //examine each feeler in turn
+            foreach(var flr in _feelers)
+            {
+                //run through each wall checking for any intersection points
+                        foreach(var w in walls)
+                {
+                    if (Geometry.LineIntersection2D(_movingEntity.Position,
+                                           flr,
+                                           w.From(),
+                                           w.To(),
+                                           DistToThisIP,
+                                           point))
+                    {
+                        //is this the closest found so far? If so keep a record
+                        if (DistToThisIP < DistToClosestIP)
+                        {
+                            DistToClosestIP = DistToThisIP;
+
+                            ClosestWall = w;
+
+                            ClosestPoint = point;
+                        }
+                    }
+                }//next wall
+
+
+                //if an intersection point has been detected, calculate a force  
+                //that will direct the agent away
+                if (ClosestWall >= 0)
+                {
+                    //calculate by what distance the projected position of the agent
+                    //will overshoot the wall
+                    Vector2D OverShoot = m_Feelers[flr] - ClosestPoint;
+
+                    //create a force in the direction of the wall normal, with a 
+                    //magnitude of the overshoot
+                    SteeringForce = walls[ClosestWall].Normal() * OverShoot.Length();
+                }
+
+            }//next feeler
+
+            return SteeringForce;
+        }
 
 
         /// <summary>
@@ -672,25 +726,23 @@ namespace Green
 
             return SteeringForce;
         }
-        /*
-  Vector2 Alignment(List<MovingEntity> agents)
+
+        Vector2 Alignment(List<MovingEntity> agents)
         {
             //This will record the average heading of the neighbors
-            Vector2 AverageHeading;
+            Vector2 AverageHeading = new Vector2();
 
             //This count the number of vehicles in the neighborhood
-            float NeighborCount = 0.0;
+            float NeighborCount = 0.0f;
 
             //iterate through the neighbors and sum up all the position vectors
-            for (MovingEntity pV = _movingEntity->World()->CellSpace()->begin();
-                                   !_movingEntity->World()->CellSpace()->end();
-                               pV = _movingEntity->World()->CellSpace()->next())
+            foreach (var pV in _movingEntity.World.CellSpace)
             {
                 //make sure *this* agent isn't included in the calculations and that
                 //the agent being examined  is close enough
-                if (pV != m_pVehicle)
+                if (pV != _movingEntity)
                 {
-                    AverageHeading += pV->Heading();
+                    AverageHeading += pV.Heading;
 
                     ++NeighborCount;
                 }
@@ -703,22 +755,122 @@ namespace Green
             {
                 AverageHeading /= NeighborCount;
 
-                AverageHeading -= m_pVehicle->Heading();
+                AverageHeading -= _movingEntity.Heading;
             }
 
             return AverageHeading;
         }
-        */
+
         //the following three are the same as above but they use cell-space
         //partitioning to find the neighbors
-        /*
-        Vector2 CohesionPlus(const std::vector<MovingEntity*> &agents);
-        Vector2 SeparationPlus(const std::vector<MovingEntity*> &agents);
-        Vector2 AlignmentPlus(const std::vector<MovingEntity*> &agents);
-        */
-        /*
-          //calculates and sums the steering forces from any active behaviors
-          Vector2 CalculateWeightedSum()
+
+        /// <summary>
+        /// returns a steering force that attempts to move the agent towards the
+        /// center of mass of the agents in its immediate area
+        /// USES SPACIAL PARTITIONING
+        /// </summary>
+        /// <param name="agents"></param>
+        /// <returns></returns>
+        Vector2 CohesionPlus(List<MovingEntity> agents)
+        {
+            //first find the center of mass of all the agents
+            Vector2 CenterOfMass = new Vector2(),
+                   SteeringForce = new Vector2();
+
+            int NeighborCount = 0;
+
+            //iterate through the neighbors and sum up all the position vectors
+            foreach (var pV in _movingEntity.World.CellSpace)
+            {
+                //make sure *this* agent isn't included in the calculations and that
+                //the agent being examined is close enough
+                if (pV != _movingEntity)
+                {
+                    CenterOfMass += pV.Position;
+
+                    ++NeighborCount;
+                }
+            }
+
+            if (NeighborCount > 0)
+            {
+                //the center of mass is the average of the sum of positions
+                CenterOfMass /= (float)NeighborCount;
+
+                //now seek towards that position
+                SteeringForce = Seek(CenterOfMass);
+            }
+
+            //the magnitude of cohesion is usually much larger than separation or
+            //allignment so it usually helps to normalize it.
+            return (SteeringForce).normalized;
+        }
+
+        Vector2 SeparationPlus(List<MovingEntity> agents)
+        {
+            Vector2 SteeringForce = new Vector2();
+
+            //iterate through the neighbors and sum up all the position vectors
+            foreach (var pV in _movingEntity.World.CellSpace)
+            {
+                //make sure this agent isn't included in the calculations and that
+                //the agent being examined is close enough
+                if (pV != _movingEntity)
+                {
+                    Vector2 ToAgent = _movingEntity.Position - pV.Position;
+
+                    //scale the force inversely proportional to the agents distance  
+                    //from its neighbor.
+                    SteeringForce += ToAgent.normalized / ToAgent.magnitude;
+                }
+            }
+            return SteeringForce;
+        }
+
+        /// <summary>
+        /// returns a force that attempts to align this agents heading with that
+        /// of its neighbors
+        /// USES SPACIAL PARTITIONING
+        /// </summary>
+        /// <param name="agents"></param>
+        /// <returns></returns>
+        Vector2 AlignmentPlus(List<MovingEntity> agents)
+        {
+            //This will record the average heading of the neighbors
+            Vector2 AverageHeading = new Vector2();
+
+            //This count the number of vehicles in the neighborhood
+            float NeighborCount = 0.0f;
+
+            //iterate through the neighbors and sum up all the position vectors
+            foreach (var pV in _movingEntity.World.CellSpace)
+            {
+                //make sure *this* agent isn't included in the calculations and that
+                //the agent being examined  is close enough
+                if (pV != _movingEntity)
+                {
+                    AverageHeading += pV.Heading;
+
+                    ++NeighborCount;
+                }
+            }
+            //if the neighborhood contained one or more vehicles, average their
+            //heading vectors.
+            if (NeighborCount > 0.0)
+            {
+                AverageHeading /= NeighborCount;
+
+                AverageHeading -= _movingEntity.Heading;
+            }
+
+            return AverageHeading;
+        }
+
+        /// <summary>
+        /// calculates and sums the steering forces from any active behaviors
+        /// </summary>
+        /// <returns></returns>
+        Vector2 CalculateWeightedSum()
           {
               if (On(behavior_type.wall_avoidance))
               {
@@ -838,7 +990,7 @@ namespace Green
           }
           Vector2 CalculatePrioritized();
           Vector2 CalculateDithered();
-          */
+          
 
 
 

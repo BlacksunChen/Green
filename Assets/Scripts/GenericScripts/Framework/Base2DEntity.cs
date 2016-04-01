@@ -10,6 +10,20 @@ public class Base2DEntity : MonoBehaviour
 
     protected Vector2 _scale;
 
+    //used by the constructor to give each entity a unique ID
+    //each entity has a unique ID
+    private int _id;
+    private static int NextID = 0;
+    private int NextValidID() { return NextID++; }
+
+    public int ID
+    {
+        get { return _id; }
+    }
+    public Base2DEntity() : base()
+    {
+        _id = NextValidID();
+    }
     public float BoundingRadius
     {
         get
@@ -60,12 +74,12 @@ public class Base2DEntity : MonoBehaviour
         }
     }
 
-    public bool IsTagged()  { return m_bTag;  }
-    public void Tag()       { m_bTag = true;  }
-    public void UnTag()     { m_bTag = false; }
+    public bool IsTagged() { return m_bTag; }
+    public void Tag() { m_bTag = true; }
+    public void UnTag() { m_bTag = false; }
 
-// Use this for initialization
-void Start()
+    // Use this for initialization
+    void Start()
     {
 
     }

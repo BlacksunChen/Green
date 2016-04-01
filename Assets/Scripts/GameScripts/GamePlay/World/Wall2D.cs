@@ -5,7 +5,7 @@ namespace Green
 {
     public class Wall2D : MonoBehaviour
     {
-
+        
         // Use this for initialization
         void Start()
         {

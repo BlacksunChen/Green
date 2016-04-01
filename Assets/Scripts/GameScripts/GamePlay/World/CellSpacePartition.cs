@@ -6,7 +6,7 @@ using System;
 
 namespace Green
 {
-    public class CellSpacePartition<Entity> : MonoBehaviour, IEnumerator<Entity>
+    public class CellSpacePartition<Entity> : MonoBehaviour, IEnumerable<Entity>// IEnumerator<Entity>, IEnumerable
         where Entity : Base2DEntity
     {
         /// <summary>
@@ -24,8 +24,8 @@ namespace Green
         /// this iterator will be used by the methods next and begin to traverse
         /// through the above vector of neighbors
         /// </summary>
-        int _curNeighborIdx;
-        Entity _curNeighbor;
+        //int _curNeighborIdx;
+        //Entity _curNeighbor;
         /// <summary>
         /// the width and height of the world space the entities inhabit
         /// </summary>
@@ -41,6 +41,7 @@ namespace Green
         float _cellSizeX;
         float _cellSizeY;
 
+        /*
         public Entity Current
         {
             get
@@ -56,7 +57,7 @@ namespace Green
                 return Current;
             }
         }
-
+        */
         /// <summary>
         /// given a position in the game space this method determines the           
         /// relevant cell's index
@@ -195,27 +196,39 @@ namespace Green
 
         }
 
-        public bool MoveNext()
+        public IEnumerator<Entity> GetEnumerator()
         {
-            if(++_curNeighborIdx >= _neightbors.Count)
-            {
-                return false;
-            }
-            else
-            {
-                _curNeighbor = _neightbors[_curNeighborIdx];
-            }
-            return true;
+            return ((IEnumerable<Entity>)_neightbors).GetEnumerator();
         }
 
-        public void Reset()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            _curNeighborIdx = -1;
+            return ((IEnumerable<Entity>)_neightbors).GetEnumerator();
         }
 
-        public void Dispose()
-        {
-            
-        }
+        /*
+public bool MoveNext()
+{
+   if(++_curNeighborIdx >= _neightbors.Count)
+   {
+       return false;
+   }
+   else
+   {
+       _curNeighbor = _neightbors[_curNeighborIdx];
+   }
+   return true;
+}
+
+public void Reset()
+{
+   _curNeighborIdx = -1;
+}
+
+public void Dispose()
+{
+
+}
+*/
     }
 }
