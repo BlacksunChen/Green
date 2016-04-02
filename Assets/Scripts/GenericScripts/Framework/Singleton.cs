@@ -13,7 +13,7 @@
 
 using UnityEngine;
 
-namespace Generic.Framework
+namespace Generic
 {
 
     /// <summary>

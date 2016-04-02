@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Generic.Framework;
+using Generic;
 
 public class SteeringParams : Singleton<SteeringParams>
 {
@@ -23,7 +23,7 @@ public class SteeringParams : Singleton<SteeringParams>
     public int NumCellsY;
 
     //how many samples the smoother will use to average a value
-    public int NumSamplesForSmoothing;
+    public int NumSamplesForSmoothing = 2;
 
     //used to tweak the combined steering force (simply altering the MaxSteeringForce
     //will NOT work!This tweaker affects all the steering force multipliers

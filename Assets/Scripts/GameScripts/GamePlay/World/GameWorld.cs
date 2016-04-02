@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Generic.Framework;
+using Generic;
 
 namespace Green
 {

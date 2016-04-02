@@ -7,7 +7,7 @@
 using UnityEngine;
 
 
-namespace Generic.Extensions
+namespace Generic
 {
 
     public static class VectorExtensions
@@ -85,6 +85,23 @@ namespace Generic.Extensions
             return transMatrix * point;
         }
 
+        public static Vector2 PointToLocalSpace(this Vector2 point,
+                                                Vector2 AgentHeading,
+                                                Vector2 AgentSide,
+                                                Vector2 AgentPosition)
+        {
+            //make a copy of the point
+            Vector2 TransPoint = point;
+
+            //C2DMatrix matTransform;
+            //Matrix4x4 matTransform = Matrix4x4.
+            
+            Quaternion rotate = Quaternion.LookRotation(AgentHeading, Vector3.Cross(AgentHeading, AgentSide));
+            Matrix4x4 transMatrix = Matrix4x4.TRS(AgentPosition, rotate, Vector3.one);
+
+            return transMatrix * point;
+        }
+
         public static float SqrDistance(this Vector2 v1, Vector2 v2)
         {
 
@@ -93,8 +110,9 @@ namespace Generic.Extensions
 
             return ySeparation * ySeparation + xSeparation * xSeparation;
         }
+
         /// <summary>
-        /// Return a perpendicular vector (90 degrees rotation)
+        /// Return a perpendicular vector (90 degrees rotation) 逆时针
         /// </summary>
         /// <param name="v"></param>
         /// <returns></returns>

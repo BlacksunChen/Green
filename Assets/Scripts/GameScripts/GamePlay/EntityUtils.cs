@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using Generic.Util;
-using Generic.Extensions;
+using Generic;
 
 namespace Green
 {

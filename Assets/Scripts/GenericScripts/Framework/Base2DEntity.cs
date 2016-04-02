@@ -1,92 +1,94 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class Base2DEntity : MonoBehaviour
+namespace Generic
 {
-    //this is a generic flag. 
-    bool m_bTag;
-
-    protected float _boundingRadius;
-
-    protected Vector2 _scale;
-
-    //used by the constructor to give each entity a unique ID
-    //each entity has a unique ID
-    private int _id;
-    private static int NextID = 0;
-    private int NextValidID() { return NextID++; }
-
-    public int ID
+    public class Base2DEntity : MonoBehaviour
     {
-        get { return _id; }
-    }
-    public Base2DEntity() : base()
-    {
-        _id = NextValidID();
-    }
-    public float BoundingRadius
-    {
-        get
+        //this is a generic flag. 
+        bool m_bTag;
+
+        protected float _boundingRadius;
+
+        protected Vector2 _scale;
+
+        //used by the constructor to give each entity a unique ID
+        //each entity has a unique ID
+        private int _id;
+        private static int NextID = 0;
+        private int NextValidID() { return NextID++; }
+
+        public int ID
         {
-            return _boundingRadius;
+            get { return _id; }
         }
-        set
+        public Base2DEntity() : base()
         {
-            _boundingRadius = value;
+            _id = NextValidID();
         }
-    }
-
-    public Vector2 Scale
-    {
-        get
+        public float BoundingRadius
         {
-            return this.transform.localScale;
+            get
+            {
+                return _boundingRadius;
+            }
+            set
+            {
+                _boundingRadius = value;
+            }
         }
-        set
+
+        public Vector2 Scale
         {
-            float z = transform.localScale.z;
-            this.transform.localScale = new Vector3(value.x, value.y, z);
+            get
+            {
+                return this.transform.localScale;
+            }
+            set
+            {
+                float z = transform.localScale.z;
+                this.transform.localScale = new Vector3(value.x, value.y, z);
+            }
         }
-    }
 
-    public void SetScale(Vector2 val)
-    {
-        _boundingRadius *= Mathf.Max(val.x, val.y) / Mathf.Max(Scale.x, Scale.y);
-        Scale = val;
-    }
-
-    public void SetScale(float val)
-    {
-        _boundingRadius *= (val / Mathf.Max(_scale.x, _scale.y));
-        _scale = new Vector2(val, val);
-    }
-
-    public Vector2 Position
-    {
-        get
+        public void SetScale(Vector2 val)
         {
-            return this.transform.position;
+            _boundingRadius *= Mathf.Max(val.x, val.y) / Mathf.Max(Scale.x, Scale.y);
+            Scale = val;
         }
-        set
+
+        public void SetScale(float val)
         {
-            float z = transform.position.z;
-            this.transform.position = new Vector3(value.x, value.y, z);
+            _boundingRadius *= (val / Mathf.Max(_scale.x, _scale.y));
+            _scale = new Vector2(val, val);
         }
-    }
 
-    public bool IsTagged() { return m_bTag; }
-    public void Tag() { m_bTag = true; }
-    public void UnTag() { m_bTag = false; }
+        public Vector2 Position
+        {
+            get
+            {
+                return this.transform.position;
+            }
+            set
+            {
+                float z = transform.position.z;
+                this.transform.position = new Vector3(value.x, value.y, z);
+            }
+        }
 
-    // Use this for initialization
-    void Start()
-    {
+        public bool IsTagged() { return m_bTag; }
+        public void Tag() { m_bTag = true; }
+        public void UnTag() { m_bTag = false; }
 
-    }
+        // Use this for initialization
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
+        }
 
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Generic.Extensions;
-using Generic.Util;
+using Generic;
 namespace Green
 {
     public class SteeringBehaviors
@@ -493,7 +492,7 @@ namespace Green
         /// </summary>
         /// <param name="walls"></param>
         /// <returns></returns>
-        Vector2 WallAvoidance(List<Wall2D> walls)
+        Vector2 WallAvoidance(List<Planet> planets)
         {
             //the feelers are contained in a std::vector, m_Feelers
             CreateFeelers();
@@ -513,9 +512,9 @@ namespace Green
             {
                 //run through each wall checking for any intersection points
                 //foreach(var w in walls)
-                for(int i = 0; i < walls.Count; ++i)
+                for(int i = 0; i < planets.Count; ++i)
                 {
-                    if (walls[i].IsIntersection(_movingEntity.Position,
+                    if (planets[i].IsIntersection(_movingEntity.Position,
                                          flr,
                                      out DistToThisIP,
                                      out point))
@@ -898,7 +897,7 @@ namespace Green
 
             //these next three can be combined for flocking behavior (wander is
             //also a good behavior to add into this mix)
-            if (!isSpacePartitioningOn())
+            if (!IsSpacePartitioningOn())
             {
                 if (On(behavior_type.separation))
                 {
@@ -1062,7 +1061,7 @@ namespace Green
 
             //these next three can be combined for flocking behavior (wander is
             //also a good behavior to add into this mix)
-            if (!isSpacePartitioningOn())
+            if (!IsSpacePartitioningOn())
             {
                 if (On(behavior_type.separation))
                 {
@@ -1224,7 +1223,7 @@ namespace Green
                 }
             }
             */
-            if (!isSpacePartitioningOn())
+            if (!IsSpacePartitioningOn())
             {
                 if (On(behavior_type.separation) && RandFloat() < SteeringParams.Instance.prSeparation)
                 {
@@ -1287,7 +1286,7 @@ namespace Green
             }
 
 
-            if (!isSpacePartitioningOn())
+            if (!IsSpacePartitioningOn())
             {
                 if (On(behavior_type.allignment) && RandFloat() < SteeringParams.Instance.prAlignment)
                 {
@@ -1440,7 +1439,7 @@ namespace Green
 
             //use space partitioning to calculate the neighbours of this vehicle
             //if switched on. If not, use the standard tagging system
-            if (!isSpacePartitioningOn())
+            if (!IsSpacePartitioningOn())
             {
                 //tag neighbors if any of the following 3 group behaviors are switched on
                 if (On(behavior_type.separation) || On(behavior_type.allignment) || On(behavior_type.cohesion))

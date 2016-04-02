@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Generic.Extensions;
-using Generic.Framework;
-
+using Generic;
 //------------------------------------------------------------------------
 //
 //  Name:   MovingEntity.h
@@ -54,9 +52,29 @@ namespace Green
         [SerializeField, SetProperty("World")]
         GameWorld _world;
 
+        //some steering behaviors give jerky looking movement. The
+        //following members are used to smooth the vehicle's heading
+        SmootherVector _headingSmoother;
+
+        //this vector represents the average of the vehicle's heading
+        //vector smoothed over the last few frames
+        Vector2 _smoothedHeading;
+
+        //when true, smoothing is active
+        bool _smoothingOn = true;
+
         #endregion
         // Vector2 _position;
         #region Property
+
+        public Vector2 SmoothedHeading
+        {
+            get
+            {
+                return _smoothedHeading;
+            }
+        }
+
         public SteeringBehaviors Steering
         {
             get
@@ -191,29 +209,34 @@ namespace Green
         }
 
         #endregion
-        public void Init(Vector2 position,
-                        float radius,
-                        Vector2 velocity,
-                        float max_speed,
-                        Vector2 heading,
-                        float mass,
-                        Vector2 scale,
-                        float turn_rate,
-                        float max_force)
+        public void Init(GameWorld world,
+               
+               Vector2 position,
+               float rotation,
+               Vector2 velocity,
+               float mass,
+               float max_force,
+               float max_speed,
+               float max_turn_rate,
+               float scale)
         {
-            Position = position;
-            _scale = scale;
-            _boundingRadius = radius;    
-            _heading = heading;
-            _velocity = velocity;
-            _side = heading.Perpendicular();
-            _mass = mass;
-            _maxSpeed = max_speed;
-            _maxTurnRate = turn_rate;
-            _maxForce = max_force;
+
+        }
+        public void Start()
+        {
+            Position = transform.position;
+            _scale = new Vector2(1f, 1f);
+            _boundingRadius = GetComponent<CircleCollider2D>().radius;
+            _heading = new Vector2(Mathf.Sin(Mathf.PI/2), -Mathf.Cos(Mathf.PI/2));
+
+            _side = _heading.Perpendicular();
+            _mass = SteeringParams.Instance.VehicleMass;
+            _maxSpeed = SteeringParams.Instance.MaxSpeed;
+            _maxTurnRate = SteeringParams.Instance.MaxTurnRatePerSecond;
+            _maxForce = SteeringParams.Instance.MaxSteeringForce;
         }
 
-        
+
 
 
         public bool RotateHeadingToFacePosition(Vector2 target)
@@ -241,9 +264,14 @@ namespace Green
 
             return false;
         }
-        
-        
-        void Update()
+
+        public bool IsSmoothingOn() { return _smoothingOn; }
+        public void SmoothingOn() { _smoothingOn = true; }
+        public void SmoothingOff() { _smoothingOn = false; }
+        public void ToggleSmoothing() { _smoothingOn = !_smoothingOn; }
+
+
+        public void Update()
         {
             //keep a record of its old position so we can update its cell later
             //in this method
@@ -291,7 +319,7 @@ namespace Green
 
             if (IsSmoothingOn())
             {
-                m_vSmoothedHeading = m_pHeadingSmoother->Update(Heading());
+                _smoothedHeading = _headingSmoother.Update(Heading);
             }
         }
     }
