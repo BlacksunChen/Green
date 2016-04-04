@@ -11,7 +11,7 @@ namespace Green
 
        // List<Base2DEntity> _obstacles;
 
-        List<Wall2D> _walls;
+        List<Planet> _planets;
 
         CellSpacePartition<MovingEntity> _cellSpace;
 
@@ -68,21 +68,21 @@ namespace Green
             EntityUtils.EnforceNonPenetrationConstraint(v, _movingEntities);
         }
 
-        public void TagVehiclesWithinViewRange(Base2DEntity entity, float range)
+        public void TagVehiclesWithinViewRange(MovingEntity entity, float range)
         {
             EntityUtils.TagNeighbors(entity, _movingEntities, range);
         }
 
-        public void TagObstaclesWithinViewRange(Base2DEntity entity, float range)
+        public void TagObstaclesWithinViewRange(MovingEntity entity, float range)
         {
             EntityUtils.TagNeighbors(entity, _movingEntities, range);
         }
 
-        public List<Wall2D> Walls
+        public List<Planet> Planets
         {
             get
             {
-                return _walls;
+                return _planets;
             }
         }
 

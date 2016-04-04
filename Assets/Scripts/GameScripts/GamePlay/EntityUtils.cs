@@ -16,16 +16,14 @@ namespace Green
         //------------------------------------------------------------------------
 
         bool Overlapped<T, conT>(T ob, conT conOb, float MinDistBetweenObstacles = 40.0f)
-                    where T : Base2DEntity
+                    where T : MovingEntity
                    where conT : IEnumerable<T>
         {
 
             foreach (var it in conOb)
             {
-                if (Geometry.TwoCirclesOverlapped(ob.Position,
-                                             ob.BoundingRadius + MinDistBetweenObstacles,
-                                             it.Position,
-                                             it.BoundingRadius))
+                if (ob == it) continue;
+                if(ob.BoundingCollider.bounds.Intersects(it.BoundingCollider.bounds))
                 {
                     return true;
                 }
@@ -44,7 +42,7 @@ namespace Green
         /// <param name="containerOfEntities"></param>
         /// <param name="radius"></param>
         public static void TagNeighbors<T, conT>(T entity, conT containerOfEntities, float radius)
-            where    T : Base2DEntity
+            where    T : MovingEntity
             where conT : IEnumerable<MovingEntity>
         {
             //iterate through all entities checking for range
@@ -57,7 +55,7 @@ namespace Green
 
                 //the bounding radius of the other is taken into account by adding it 
                 //to the range
-                float range = radius + curEntity.BoundingRadius;
+                float range = radius + Mathf.Max(curEntity.BoundingCollider.size.x, curEntity.BoundingCollider.size.y);
 
                 //if entity within range, tag for further consideration. (working in
                 //distance-squared space to avoid sqrts)
@@ -82,7 +80,7 @@ namespace Green
         /// <param name="entity"></param>
         /// <param name="containerOfEntities"></param>
         public static void EnforceNonPenetrationConstraint<T, conT>(T entity, conT containerOfEntities)
-            where T : Base2DEntity
+            where T : MovingEntity
             where conT : IEnumerable<T>
         {
             //iterate through all entities checking for any overlap of bounding radii
@@ -98,9 +96,14 @@ namespace Green
 
                 //if this distance is smaller than the sum of their radii then this
                 //entity must be moved away in the direction parallel to the
-                //ToEntity vector   
-                float AmountOfOverLap = curEntity.BoundingRadius + entity.BoundingRadius -
-                                 DistFromEachOther;
+                //ToEntity vector    
+                Vector2 intersectPoint1;
+                Vector2 intersectPoint2;
+                bool isIntersect = Geometry.RectIntersection2D(new Rect(entity.BoundingCollider.bounds.center, entity.BoundingCollider.size),
+                                    new Rect(curEntity.BoundingCollider.bounds.center, curEntity.BoundingSize),
+                                    out intersectPoint1, out intersectPoint2);
+                if (!isIntersect) continue;
+                float AmountOfOverLap = Vector2.Distance(intersectPoint1, intersectPoint2);
 
                 if (AmountOfOverLap >= 0)
                 {
@@ -132,7 +135,7 @@ namespace Green
                                                        Vector2 A,
                                                        Vector2 B,
                                                        float range = float.MaxValue)
-                    where T : Base2DEntity
+                    where T : MovingEntity
                     where conT : IEnumerable<T>
         {
             List<T> hits = new List<T>();
@@ -150,7 +153,8 @@ namespace Green
 
                 //if the distance to AB is less than the entities bounding radius then
                 //there is an intersection so add it to hits
-                if (Geometry.DistToLineSegment(A, B, it.Position) < it.BoundingRadius)
+                var p = new Vector2();
+                if(Geometry.LineRectIntersection2D(A, B, new Rect(it.BoundingCollider.bounds.center,it.BoundingSize), ref p))
                 {
                     hits.Add(it);
                 }
@@ -182,7 +186,7 @@ namespace Green
                                                   Vector2 A,
                                                   Vector2 B,
                                                   float range = float.MaxValue)
-                    where    T : Base2DEntity
+                    where    T : MovingEntity
                     where conT : IEnumerable<T>
         {
             T ClosestEntity = null;
@@ -203,7 +207,8 @@ namespace Green
 
                 //if the distance to AB is less than the entities bounding radius then
                 //there is an intersection so add it to hits
-                if (Geometry.DistToLineSegment(A, B, it.Position) < it.BoundingRadius)
+                var p = new Vector2();
+                if (Geometry.LineRectIntersection2D(A, B, new Rect(it.BoundingCollider.bounds.center, it.BoundingSize), ref p))
                 {
                     if (distSq < ClosestDist)
                     {

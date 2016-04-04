@@ -542,7 +542,7 @@ namespace Green
 
                     //create a force in the direction of the wall normal, with a 
                     //magnitude of the overshoot
-                    SteeringForce = walls[ClosestWall].GetTangentNormal(ClosestPoint) * OverShoot.magnitude;
+                    SteeringForce = planets[ClosestWall].GetTangentNormal(ClosestPoint) * OverShoot.magnitude;
                 }
 
             }//next feeler
@@ -600,7 +600,7 @@ namespace Green
         /// <param name="obstacles"></param>
         /// <returns></returns>
 
-        Vector2 Hide(MovingEntity hunter, List<Base2DEntity> obstacles)
+        Vector2 Hide(MovingEntity hunter, List<MovingEntity> obstacles)
         {
             float DistToClosest = float.MaxValue;
             Vector2 BestHidingSpot = new Vector2();
@@ -613,7 +613,7 @@ namespace Green
             {
                 //calculate the position of the hiding spot for this obstacle
                 Vector2 HidingSpot = GetHidingPosition(curOb.Position,
-                                                       curOb.BoundingRadius,
+                                                       Mathf.Max(curOb.BoundingSize.x,curOb.BoundingSize.y),
                                                        hunter.Position);
 
                 //work in distance-squared space to find the closest hiding
@@ -872,7 +872,7 @@ namespace Green
         {
             if (On(behavior_type.wall_avoidance))
             {
-                _steeringForce += WallAvoidance(_movingEntity.World.Walls) *
+                _steeringForce += WallAvoidance(_movingEntity.World.Planets) *
                                      _weightWallAvoidance;
             }
 
@@ -1023,7 +1023,7 @@ namespace Green
 
             if (On(behavior_type.wall_avoidance))
             {
-                force = WallAvoidance(_movingEntity.World.Walls) *
+                force = WallAvoidance(_movingEntity.World.Planets) *
                         _weightWallAvoidance;
 
                 if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
@@ -1047,6 +1047,7 @@ namespace Green
                 force = Evade(_targetAgent1) * _weightEvade;
 
                 if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+
             }
 
 
@@ -1198,7 +1199,7 @@ namespace Green
 
             if (On(behavior_type.wall_avoidance) && RandFloat() < SteeringParams.Instance.prWallAvoidance)
             {
-                _steeringForce = WallAvoidance(_movingEntity.World.Walls) *
+                _steeringForce = WallAvoidance(_movingEntity.World.Planets) *
                                      _weightWallAvoidance / SteeringParams.Instance.prWallAvoidance;
 
                 if (!_steeringForce.IsZero())
@@ -1397,7 +1398,7 @@ namespace Green
         //used in path following
         public const float WaypointSeekDist = 20;
 
-        public void Init(MovingEntity agent)
+        public SteeringBehaviors(MovingEntity agent)
         {
             _movingEntity = agent;
             _flags = 0;

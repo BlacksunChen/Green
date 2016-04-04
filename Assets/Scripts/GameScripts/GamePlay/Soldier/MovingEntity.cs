@@ -208,6 +208,34 @@ namespace Green
             }
         }
 
+        public BoxCollider2D _boundingCollider = null;
+        public BoxCollider2D BoundingCollider
+        {
+            get
+            {
+                if (_boundingCollider != null) return _boundingCollider;
+                var b = GetComponent<BoxCollider2D>();
+                if (b == null)
+                {
+                    Debug.LogError("Need BoxCollider!");
+                    return null;
+                }
+            
+                return b;
+            }
+        }
+
+        public Vector2 BoundingSize
+        {
+            get
+            {
+                return BoundingCollider.size;
+            }
+            set
+            {
+                BoundingCollider.size = value;
+            }
+        }
         #endregion
         public void Init(GameWorld world,
                
@@ -222,11 +250,10 @@ namespace Green
         {
 
         }
-        public void Start()
+        protected virtual void Start()
         {
             Position = transform.position;
             _scale = new Vector2(1f, 1f);
-            _boundingRadius = GetComponent<CircleCollider2D>().radius;
             _heading = new Vector2(Mathf.Sin(Mathf.PI/2), -Mathf.Cos(Mathf.PI/2));
 
             _side = _heading.Perpendicular();
@@ -270,8 +297,12 @@ namespace Green
         public void SmoothingOff() { _smoothingOn = false; }
         public void ToggleSmoothing() { _smoothingOn = !_smoothingOn; }
 
-
-        public void Update()
+        void Awake()
+        {
+            _steering = new SteeringBehaviors(this);
+            _headingSmoother = new SmootherVector(SteeringParams.Instance.NumSamplesForSmoothing, new Vector2(0.0f, 0.0f));
+        }
+        protected virtual void Update()
         {
             //keep a record of its old position so we can update its cell later
             //in this method

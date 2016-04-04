@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace Generic
@@ -76,7 +77,6 @@ namespace Generic
                                           ref float dist,
                                           ref Vector2 point)
         {
-
             float rTop = (A.y - C.y) * (D.x - C.x) - (A.x - C.x) * (D.y - C.y);
             float rBot = (B.x - A.x) * (D.y - C.y) - (B.y - A.y) * (D.x - C.x);
 
@@ -133,7 +133,63 @@ namespace Generic
             }
 
         }
+        public static bool RectIntersection2D(Rect A,
+                                              Rect B,
+                                          out Vector2 IntersectPoint1,
+                                          out Vector2 IntersectPoint2)
+        {
+            List<Vector2> tmpList = new List<Vector2>();
+            Vector2 tmp = new Vector2();
+            
+            Vector2 leftbuttom = A.min;
+            Vector2 leftTop = new Vector2(A.xMin, A.yMax);
+            Vector2 rightButtom = new Vector2(A.xMax, A.yMin);
+            Vector2 rightTop = A.max;
 
+            int count = 0;
+            if(LineRectIntersection2D(leftbuttom, leftTop, B, ref tmp)) tmpList.Add(new Vector2(tmp.x, tmp.y));
+            if(LineRectIntersection2D(leftbuttom, leftTop, B, ref tmp)) tmpList.Add(new Vector2(tmp.x, tmp.y));
+            if(LineRectIntersection2D(leftbuttom, leftTop, B, ref tmp)) tmpList.Add(new Vector2(tmp.x, tmp.y));
+            if(LineRectIntersection2D(leftbuttom, leftTop, B, ref tmp)) tmpList.Add(new Vector2(tmp.x, tmp.y));
+            if(count == 2)
+            {
+                IntersectPoint1 = tmpList[0];
+                IntersectPoint2 = tmpList[1];
+                return true;
+            }
+            IntersectPoint1 = new Vector2();
+            IntersectPoint2 = new Vector2();
+            return false;
+
+        }
+        public static bool LineRectIntersection2D(Vector2 A, Vector2 B,
+                                                  Rect rect,
+                                              ref Vector2 point)
+        {
+            Vector2 leftbuttom = rect.min;
+            Vector2 leftTop = new Vector2(rect.xMin, rect.yMax);
+            Vector2 rightButtom = new Vector2(rect.xMax, rect.yMin);
+            Vector2 rightTop = rect.max;
+            float dist = 0f;
+            
+            if(LineIntersection2D(A, B, leftbuttom, leftTop, ref dist, ref point))
+            {
+                return true;
+            }
+            else if(LineIntersection2D(A, B, leftbuttom, rightButtom, ref dist, ref point))
+            {
+                return true;
+            }
+            else if(LineIntersection2D(A, B, rightButtom, rightTop, ref dist, ref point))
+            {
+                return true;
+            }
+            else if(LineIntersection2D(A, B, leftTop, rightTop, ref dist, ref point))
+            {
+                return true;
+            }
+            return false;
+        }
         public static float DistToLineSegmentSq(Vector2 A,
                                                 Vector2 B,
                                                 Vector2 P)
