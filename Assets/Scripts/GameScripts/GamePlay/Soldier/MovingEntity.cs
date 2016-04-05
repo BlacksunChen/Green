@@ -201,7 +201,6 @@ namespace Green
                     Debug.LogErrorFormat("heading is a vector of zero length");
                 }
 
-
                 _heading = value;
                 //the side vector must always be perpendicular to the heading
                 _side = _heading.Perpendicular();
@@ -252,30 +251,28 @@ namespace Green
 
         void Awake()
         {
-            _steering = new SteeringBehaviors(this);
             _headingSmoother = new SmootherVector(SteeringParams.Instance.NumSamplesForSmoothing, new Vector2(0.0f, 0.0f));
+            _smoothingOn = true;
         }
 
         protected virtual void Start()
         {
+            _steering = GetComponent<SteeringBehaviors>();
+            _steering.SetMovingEntity(this);
             Position = transform.position;
             _scale = new Vector2(1f, 1f);
-            _heading = new Vector2(Mathf.Sin(Mathf.PI/2), -Mathf.Cos(Mathf.PI/2));
+            _heading = new Vector2(1f, 0f);
 
             _side = _heading.Perpendicular();
             _mass = SteeringParams.Instance.VehicleMass;
             _maxSpeed = SteeringParams.Instance.MaxSpeed;
             _maxTurnRate = SteeringParams.Instance.MaxTurnRatePerSecond;
             _maxForce = SteeringParams.Instance.MaxSteeringForce;
-            _steering.WallAvoidanceOn();
-            _steering.WanderOn();
+            //_steering.WallAvoidanceOn();
+            //_steering.WanderOn();
+
             _world = GameManager.Instance.World;
-            
-            
         }
-
-
-
 
         public bool RotateHeadingToFacePosition(Vector2 target)
         {
@@ -359,7 +356,16 @@ namespace Green
             {
                 _smoothedHeading = _headingSmoother.Update(Heading);
             }
+            transform.rotation = GetRotation();
         }
+        Quaternion GetRotation()
+        {
+            Vector3 to = new Vector3(_smoothedHeading.x, _smoothedHeading.y, 0);
+            Vector3 from = new Vector3(1, 0, 0);
+            return Quaternion.FromToRotation(from, to);
+        }
+
+
     }
 
 

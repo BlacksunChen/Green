@@ -4,7 +4,7 @@ using UnityEngine;
 using Generic;
 namespace Green
 {
-    public class SteeringBehaviors
+    public class SteeringBehaviors:MonoBehaviour
     {
         public enum summing_method
         {
@@ -35,9 +35,32 @@ namespace Green
             offset_pursuit = 1 << 16,
         }
 
+        public bool ToggleSeek = false;
+        public bool ToggleFlee = false;
+        public bool ToggleArrive = false;
+        public bool ToggleWander = false;
+        public bool ToggleCohesion = false;
+        public bool ToggleSeparation = false;
+        public bool ToggleAllignment = false;
+        public bool ToggleObstacle_avoidance = false;
+        public bool ToggleWall_avoidance = false;
+        public bool ToggleFollow_path = false;
+        public bool ToggleFlock = false;
 
+        void BehaviorsOn()
+        {
+            if (ToggleSeek) SeekOn();
+            if (ToggleFlee) FleeOn();
+            if (ToggleArrive) ArriveOn();
+            if (ToggleWander) WanderOn();
+            if (ToggleCohesion) CohesionOn();
+            if (ToggleSeparation) SeparationOn();
+            if (ToggleAllignment) AlignmentOn();
+            if (ToggleObstacle_avoidance) ObstacleAvoidanceOn();
+            if (ToggleWall_avoidance) WallAvoidanceOn();
+        }
         //a pointer to the owner of this instance
-        MovingEntity _movingEntity;
+        public MovingEntity _movingEntity;
 
         //the steering force created by the combined effect of all
         //the selected behaviors
@@ -58,18 +81,26 @@ namespace Green
         List<Vector2> _feelers;
 
         //the length of the 'feeler/s' used in wall detection
+        [SerializeField, SetProperty("WallDetectionFeelerLength")]
         float _wallDetectionFeelerLength;
-
-
-
+        
+        public float WallDetectionFeelerLength
+        {
+            get { return _wallDetectionFeelerLength;  }
+            set { _wallDetectionFeelerLength = value; }
+        }
+        
         //the current position on the wander circle the agent is
         //attempting to steer towards
         Vector2 _wanderTarget = new Vector2();
 
         //explained above
-        float _wanderJitter;
-        float _wanderRadius;
-        float _wanderDistance;
+        [SerializeField, SetProperty("WanderJitterPerSec")]
+        float _wanderJitter = 80f;
+        [SerializeField, SetProperty("WanderRad")]
+        float _wanderRadius = 1.2f;
+        [SerializeField, SetProperty("WanderDist")]
+        float _wanderDistance = 2.0f;
 
 
         //multipliers. These can be adjusted to effect strength of the  
@@ -133,7 +164,7 @@ namespace Green
         //this function tests if a specific bit of m_iFlags is set
         bool On(behavior_type bt) { return (_flags & bt) == bt; }
 
-        bool AccumulateForce(Vector2 runningTot, Vector2 forceToAdd)
+        bool AccumulateForce(ref Vector2 runningTot, Vector2 forceToAdd)
         {
             //calculate how much steering force the MovingEntity has used so far
             float MagnitudeSoFar = runningTot.magnitude;
@@ -177,13 +208,80 @@ namespace Green
             temp.RotateAroundOrigin(Mathf.PI / 2 * 3.5f);
             _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp);
 
+            /*
             //feeler to right
-            temp = _movingEntity.Heading;
-            temp.RotateAroundOrigin(Mathf.PI / 2 * 0.5f);
-            _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp);
+            Vector2 temp1 = _movingEntity.Heading;
+            temp1.RotateAroundOrigin(Mathf.PI / 2 * 0.5f);
+            _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp1);
+            */
         }
+        
+        void OnGizmosDrawCircle(Vector3 center, float Radius)
+        {
+            if (transform == null) return;
 
+            // 设置矩阵
+            Matrix4x4 defaultMatrix = Gizmos.matrix;
+            //Gizmos.matrix = transform.localToWorldMatrix;
 
+            // 设置颜色
+            Color defaultColor = Gizmos.color;
+            Gizmos.color = Color.red;
+
+            // 绘制圆环
+            Vector3 beginPoint = Vector3.zero;
+            Vector3 firstPoint = Vector3.zero;
+            for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
+            {
+                float x = Radius * Mathf.Cos(theta) + center.x;
+                float y = Radius * Mathf.Sin(theta) + center.y;
+                Vector3 endPoint = new Vector3(x, y, transform.position.z);
+                if (theta == 0)
+                {
+                    firstPoint = endPoint;
+                }
+                else
+                {
+                    Gizmos.DrawLine(beginPoint, endPoint);
+                }
+                beginPoint = endPoint;
+            }
+
+            // 绘制最后一条线段
+            Gizmos.DrawLine(firstPoint, beginPoint);
+
+            // 恢复默认颜色
+            Gizmos.color = defaultColor;
+
+            // 恢复默认矩阵
+            //Gizmos.matrix = defaultMatrix;
+        }
+        void OnDrawGizmos()
+        {
+            if (transform == null) return;
+
+            // 设置矩阵
+            Matrix4x4 defaultMatrix = Gizmos.matrix;
+            //Gizmos.matrix = transform.localToWorldMatrix;
+
+            // 设置颜色
+            Color defaultColor = Gizmos.color;
+            Gizmos.color = Color.red;
+
+            var xy = _wallDetectionFeelerLength * _movingEntity.Heading.normalized;
+            Vector3 length = new Vector3(xy.x, xy.y, 0);
+
+            Vector3 to1 = _movingEntity.transform.position + length;
+
+            Gizmos.DrawLine(_movingEntity.transform.position, to1);
+
+            // 恢复默认颜色
+            Gizmos.color = defaultColor;
+
+            // 恢复默认矩阵
+            Gizmos.matrix = defaultMatrix;
+            OnGizmosDrawWander();
+        }
 
         /* .......................................................
 
@@ -364,9 +462,20 @@ namespace Green
             //project the target into world space
             Vector2 Target = target.ToWorldSpace(_movingEntity.Heading,
                                                  _movingEntity.Position);
-
+            WanderTargetToDraw = Target;
             //and steer towards it
             return Target - _movingEntity.Position;
+        }
+        public Vector2 WanderTargetToDraw;
+        void OnGizmosDrawWander()
+        {
+            var xy = _wanderDistance * _movingEntity.Heading.normalized;
+            Vector3 length = new Vector3(xy.x, xy.y, 0);
+
+            Vector3 center = _movingEntity.transform.position + length;
+
+            OnGizmosDrawCircle(center, _wanderRadius);
+            OnGizmosDrawCircle(WanderTargetToDraw, 0.2f);
         }
 
         /// <summary>
@@ -487,6 +596,7 @@ namespace Green
             return new Vector2();
         }
 
+        public float AvoidanceForceScale = 4f;
         /// <summary>
         /// this returns a steering force which will keep the agent away from any
         /// walls it may encounter
@@ -502,7 +612,7 @@ namespace Green
             float DistToClosestIP = float.MaxValue;
 
             //this will hold an index into the vector of walls
-            int ClosestWall = -1;
+            //Circle ClosestWall = -1;
 
             Vector2 SteeringForce = new Vector2(),
                       point = new Vector2(),         //used for storing temporary info
@@ -511,40 +621,69 @@ namespace Green
             //examine each feeler in turn
             foreach(var flr in _feelers)
             {
+                Planet inPlanet = GetComponent<Soldier>().InPlanet;
+                if (inPlanet == null) Debug.LogError("Need Script Soldier!");
                 //run through each wall checking for any intersection points
                 //foreach(var w in walls)
-                for(int i = 0; i < planets.Count; ++i)
+
+                //for(int i = 0; i < planets.Count; ++i)
+                //{
+                CircleBorder2D.Area closestWallType;
+                if (inPlanet.IsIntersection(_movingEntity.Position,
+                                     flr,
+                                 out DistToThisIP,
+                                 out point,
+                                 out closestWallType))
                 {
-                    if (planets[i].IsIntersection(_movingEntity.Position,
-                                         flr,
-                                     out DistToThisIP,
-                                     out point))
+                    //is this the closest found so far? If so keep a record
+                    if (DistToThisIP < DistToClosestIP)
                     {
-                        //is this the closest found so far? If so keep a record
-                        if (DistToThisIP < DistToClosestIP)
-                        {
-                            DistToClosestIP = DistToThisIP;
+                        DistToClosestIP = DistToThisIP;
 
-                            ClosestWall = i;
-
-                            ClosestPoint = point;
-                        }
+                        ClosestPoint = point;
                     }
-                }//next wall
-
-
-                //if an intersection point has been detected, calculate a force  
-                //that will direct the agent away
-                if (ClosestWall >= 0)
-                {
                     //calculate by what distance the projected position of the agent
                     //will overshoot the wall
+                    if (closestWallType == CircleBorder2D.Area.InCircle)
+                    {
+                        if (Geometry.PointInCircle(flr, inPlanet.InCircle.CenterInWorldSpace, inPlanet.InCircle.Radius))
+                            return new Vector2(0, 0);
+                    }
+                    else if(closestWallType == CircleBorder2D.Area.OutCircle)
+                    {
+                        if(!Geometry.PointInCircle(flr, inPlanet.OutCircle.CenterInWorldSpace, inPlanet.OutCircle.Radius))
+                        {
+                            return new Vector2(0, 0);
+                        }
+                    }
+
                     Vector2 OverShoot = flr - ClosestPoint;
 
                     //create a force in the direction of the wall normal, with a 
                     //magnitude of the overshoot
-                    SteeringForce = planets[ClosestWall].GetTangentNormal(ClosestPoint) * OverShoot.magnitude;
+                    SteeringForce = inPlanet.GetTangentNormal(ClosestPoint) * OverShoot.magnitude * AvoidanceForceScale;
+                }  
+                else //有可能在很里面或者很外面，回来
+                {
+                    //内圈 向外走
+                    if(Geometry.PointInCircle(flr, inPlanet.InCircle.CenterInWorldSpace, inPlanet.InCircle.Radius))
+                    {
+                        var length = inPlanet.InCircleRad - Vector2.Distance(inPlanet.InCircle.transform.position, _movingEntity.Position);
+                        SteeringForce = _movingEntity.Side.normalized * length * AvoidanceForceScale;
+                    }
+                    else if(!Geometry.PointInCircle(flr, inPlanet.OutCircle.CenterInWorldSpace, inPlanet.OutCircle.Radius))
+                    {
+                        var length = Vector2.Distance(inPlanet.InCircle.transform.position, _movingEntity.Position) - inPlanet.InCircleRad;
+                        SteeringForce = _movingEntity.Side.normalized * length * AvoidanceForceScale;
+                    }
                 }
+               // }//next wall
+
+
+                //if an intersection point has been detected, calculate a force  
+                //that will direct the agent away
+                //内圈 
+                
 
             }//next feeler
 
@@ -1027,7 +1166,7 @@ namespace Green
                 force = WallAvoidance(_movingEntity.World.Planets) *
                         _weightWallAvoidance;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
             /*
@@ -1047,7 +1186,7 @@ namespace Green
                 }
                 force = Evade(_targetAgent1) * _weightEvade;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
 
             }
 
@@ -1056,7 +1195,7 @@ namespace Green
             {
                 force = Flee(_movingEntity.World.Crosshair) * _weightFlee;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
 
@@ -1069,21 +1208,21 @@ namespace Green
                 {
                     force = Separation(_movingEntity.World.Agents) * _weightSeparation;
 
-                    if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                    if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
                 }
 
                 if (On(behavior_type.allignment))
                 {
                     force = Alignment(_movingEntity.World.Agents) * _weightAlignment;
 
-                    if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                    if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
                 }
 
                 if (On(behavior_type.cohesion))
                 {
                     force = Cohesion(_movingEntity.World.Agents) * _weightCohesion;
 
-                    if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                    if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
                 }
             }
 
@@ -1094,21 +1233,21 @@ namespace Green
                 {
                     force = SeparationPlus(_movingEntity.World.Agents) * _weightSeparation;
 
-                    if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                    if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
                 }
 
                 if (On(behavior_type.allignment))
                 {
                     force = AlignmentPlus(_movingEntity.World.Agents) * _weightAlignment;
 
-                    if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                    if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
                 }
 
                 if (On(behavior_type.cohesion))
                 {
                     force = CohesionPlus(_movingEntity.World.Agents) * _weightCohesion;
 
-                    if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                    if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
                 }
             }
 
@@ -1116,7 +1255,7 @@ namespace Green
             {
                 force = Seek(_movingEntity.World.Crosshair) * _weightSeek;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
 
@@ -1124,14 +1263,14 @@ namespace Green
             {
                 force = Arrive(_movingEntity.World.Crosshair, _deceleration) * _weightArrive;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
             if (On(behavior_type.wander))
             {
                 force = Wander() * _weightWander;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
             if (On(behavior_type.pursuit))
@@ -1142,7 +1281,7 @@ namespace Green
                 }
                 force = Pursuit(_targetAgent1) * _weightPursuit;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
             if (On(behavior_type.offset_pursuit))
@@ -1158,7 +1297,7 @@ namespace Green
 
                 force = OffsetPursuit(_targetAgent1, _offset);
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
             if (On(behavior_type.interpose))
@@ -1170,7 +1309,7 @@ namespace Green
 
                 force = Interpose(_targetAgent1, _targetAgent2) * _weightInterpose;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
             /*
@@ -1188,7 +1327,7 @@ namespace Green
             {
                 force = FollowPath() * _weightFollowPath;
 
-                if (!AccumulateForce(_steeringForce, force)) return _steeringForce;
+                if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
 
             return _steeringForce;
@@ -1384,25 +1523,58 @@ namespace Green
 
             return _steeringForce;
         }
-          
 
+        [SerializeField]
+        public float WanderRad// = 1.2f;
+        {
+            get
+            {
+                return _wanderRadius;
+            }
+            set
+            {
+                _wanderRadius = value;
+            }
+        }
 
-
-
-
-        public const float WanderRad = 1.2f;
         //distance the wander circle is projected in front of the agent
-        public const float WanderDist = 2.0f;
+        [SerializeField]
+        public float WanderDist// = 2.0f;
+        {
+            get
+            {
+                return _wanderDistance;
+            }
+            set
+            {
+                _wanderDistance = value;
+            }
+        }
+
         //the maximum amount of displacement along the circle each frame
-        public const float WanderJitterPerSec = 80.0f;
+        [SerializeField]
+        public float WanderJitterPerSec //= 80.0f;
+        {
+            get
+            {
+                return _wanderJitter;
+            }
+            set
+            {
+                _wanderJitter = value;
+            }
+        }
 
         //used in path following
-        public const float WaypointSeekDist = 20;
+        [SerializeField]
+        public float WaypointSeekDist = 20f;
 
-        public SteeringBehaviors(MovingEntity agent)
+        public void SetMovingEntity(MovingEntity me)
         {
-            _movingEntity = agent;
-            _flags = 0;
+            _movingEntity = me;
+        }
+        void Awake()
+        {
             _detectionBoxLength = SteeringParams.Instance.MinDetectionBoxLength;
             _weightCohesion = SteeringParams.Instance.CohesionWeight;
             _weightAlignment = SteeringParams.Instance.AlignmentWeight;
@@ -1411,14 +1583,11 @@ namespace Green
             _weightWander = SteeringParams.Instance.WanderWeight;
             _weightWallAvoidance = SteeringParams.Instance.WallAvoidanceWeight;
             _viewDistance = SteeringParams.Instance.ViewDistance;
-            _wallDetectionFeelerLength = SteeringParams.Instance.WallDetectionFeelerLength;
+            //_wallDetectionFeelerLength = SteeringParams.Instance.WallDetectionFeelerLength;
             _feelers = new List<Vector2>(3);
             _deceleration = Deceleration.normal;
             _targetAgent1 = null;
             _targetAgent2 = null;
-            _wanderDistance = WanderDist;
-            _wanderJitter = WanderJitterPerSec;
-            _wanderRadius = WanderRad;
             _waypointSeekDistSq = WaypointSeekDist * WaypointSeekDist;
             _weightSeek = SteeringParams.Instance.SeekWeight;
             _weightFlee = SteeringParams.Instance.FleeWeight;
@@ -1429,8 +1598,9 @@ namespace Green
             _weightHide = SteeringParams.Instance.HideWeight;
             _weightEvade = SteeringParams.Instance.EvadeWeight;
             _weightFollowPath = SteeringParams.Instance.FollowPathWeight;
-            _cellSpaceOn = false;
+            _cellSpaceOn = true;
             _summingMethod = summing_method.prioritized;
+            BehaviorsOn();
         }
 
         //calculates and sums the steering forces from any active behaviors

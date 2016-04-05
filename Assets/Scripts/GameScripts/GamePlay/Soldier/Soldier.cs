@@ -4,19 +4,20 @@ using System.Collections;
 
 namespace Green
 {
-    public class Soldier : MovingEntity
+    public class Soldier : MonoBehaviour
     {
-
+        //在那个星球上
+        public Planet InPlanet;
         // Use this for initialization
-        protected override void Start()
+        void Start()
         {
-            base.Start();
+
         }
 
         // Update is called once per frame
-        protected override void Update()
+        void Update()
         {
-            base.Update();
+
         }
     }
 }

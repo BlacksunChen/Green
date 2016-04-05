@@ -23,6 +23,14 @@ namespace Generic
             return false;
         }
 
+        public static bool PointInCircle(Vector2 point,
+                                         Vector2 center,
+                                         float radius)
+        {
+            return (point.x - center.x) * (point.x - center.x)
+                 + (point.y - center.y) * (point.y - center.y)
+                 <= radius * radius;
+        }
         /// <summary>
         /// given a line segment AB and a point P, this function calculates the 
         ///  perpendicular distance between them
@@ -234,7 +242,7 @@ namespace Generic
             //move the circle into the local space defined by the vector B-A with origin
             //at A
             Vector2 LocalPos = center.PointToLocalSpace(toBNorm, toBNorm.Perpendicular(), A);
-
+            //Vector2 LocalPos = center;
             bool ipFound = false;
 
             //if the local position + the radius is negative then the circle lays behind

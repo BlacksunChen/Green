@@ -71,6 +71,18 @@ namespace Green
         void Start()
         {
             UpdateSoldiersInfo();
+            UpdatePlanetsInfo();
+        }
+        public void UpdatePlanetsInfo()
+        {
+            var planetsRoot = GameObject.Find(GameplayManager.Instance.PlanetsRoot);
+            var planets = planetsRoot.GetComponentsInChildren<Planet>();
+            Debug.LogFormat("Update Planets: {0}", planets.Length);
+            _planets = new List<Planet>();
+            foreach(var p in planets)
+            {
+                _planets.Add(p);
+            }
         }
         public void UpdateSoldiersInfo()
         {

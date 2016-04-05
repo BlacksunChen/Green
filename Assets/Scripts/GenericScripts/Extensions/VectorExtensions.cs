@@ -77,12 +77,12 @@ namespace Generic
             //make a copy of the point
             Vector2 TransPoint = point;
 
-            Quaternion rotate = Quaternion.LookRotation(AgentHeading, Vector3.forward);
+            Quaternion rotate = Quaternion.LookRotation(Vector3.forward, AgentHeading);
 
             Matrix4x4 transMatrix = Matrix4x4.TRS(AgentPosition, rotate, Vector3.one);
 
 
-            return transMatrix * point;
+            return transMatrix * new Vector4(point.x, point.y, 0, 1);
         }
 
         public static Vector2 PointToLocalSpace(this Vector2 point,
@@ -90,16 +90,15 @@ namespace Generic
                                                 Vector2 AgentSide,
                                                 Vector2 AgentPosition)
         {
-            //make a copy of the point
-            Vector2 TransPoint = point;
-
             //C2DMatrix matTransform;
             //Matrix4x4 matTransform = Matrix4x4.
-            
-            Quaternion rotate = Quaternion.LookRotation(AgentHeading, Vector3.Cross(AgentHeading, AgentSide));
-            Matrix4x4 transMatrix = Matrix4x4.TRS(AgentPosition, rotate, Vector3.one);
+            Quaternion rotate = Quaternion.LookRotation(Vector3.forward, AgentSide);
+            //Quaternion rotate = Quaternion.LookRotation(AgentHeading, Vector3.Cross(AgentHeading, AgentSide));
+            Matrix4x4 transMatrix = Matrix4x4.TRS(AgentPosition, rotate, Vector3.one).inverse;
 
-            return transMatrix * point;
+            var transPoint = transMatrix * new Vector4(point.x, point.y, 0, 1);
+            return transPoint;
+
         }
 
         public static float SqrDistance(this Vector2 v1, Vector2 v2)

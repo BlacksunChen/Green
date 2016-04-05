@@ -25,22 +25,36 @@ namespace Green
 
         public CircleBorder2D InCircle;
 
+        public float InCircleRad
+        {
+            get { return InCircle.Radius; }
+        }
+
+        public float OutCircleRad
+        {
+            get { return OutCircle.Radius; }
+        }
+
         public bool IsIntersection(Vector2 A,
                                    Vector2 B,
                                out float dist,
-                               out Vector2 point)
+                               out Vector2 point,
+                               out CircleBorder2D.Area type)
         {
             bool isOut = false, isIn = false;
             isOut = OutCircle.IsIntersection(A, B, out dist, out point);
             if (isOut)
             {
+                type = CircleBorder2D.Area.OutCircle;
                 return isOut;
             }
             isIn = InCircle.IsIntersection(A, B, out dist, out point);
             if(isIn)
             {
+                type = CircleBorder2D.Area.InCircle;
                 return isIn;
             }
+            type = CircleBorder2D.Area.None;
             return false;
         }
 
@@ -52,7 +66,7 @@ namespace Green
         public virtual Vector2 GetTangentNormal(Vector2 point)
         {
             //反正是同心圆
-            var center = InCircle.Center;
+            var center = InCircle.CenterInWorldSpace;
             return new Vector2(point.x - center.x, point.y - center.y).normalized;
         }
 
@@ -81,7 +95,6 @@ namespace Green
                 {
                     inExist = true;
                     InCircle = wall;
-                    
                 }
                 if(wall.gameObject.name == "Out")
                 {

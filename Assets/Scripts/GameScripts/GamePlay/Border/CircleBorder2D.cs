@@ -6,13 +6,14 @@ public class CircleBorder2D : MonoBehaviour
 {
     public enum Area
     {
+        None,
         InCircle,
         OutCircle
     }
     [SerializeField, SetProperty("Radius")]
     protected float   _radius;
     [SerializeField, SetProperty("Center")]
-    protected Vector2 _center;
+    protected Vector2 _offset;
     //protected Area    _areaType;
     
     public float Radius
@@ -27,18 +28,18 @@ public class CircleBorder2D : MonoBehaviour
         }
     }
 
-    public Vector2 Center
+    public Vector2 CenterInWorldSpace
     {
-        get { return _center; }
-        set { _center = value; }
-    }
-    public void Init(float radius, Vector2 center)
-    {
-        _radius = radius;
-        _center = center;
-        //_areaType = type;
+        get
+        {
+            return transform.position;
+        }
     }
 
+    void Start()
+    {
+        //_center = transform.position;
+    }
     public virtual bool IsIntersection(Vector2 A, 
                                        Vector2 B,
                                    out float dist,
@@ -49,7 +50,7 @@ public class CircleBorder2D : MonoBehaviour
 
         dist = Vector2.Distance(A, point);
         return Geometry.GetLineSegmentCircleClosestIntersectionPoint(
-                    A, B, _center, _radius, ref point);
+                    A, B, CenterInWorldSpace, _radius, ref point);
 
     }
 
@@ -75,8 +76,8 @@ public class CircleBorder2D : MonoBehaviour
         Vector3 firstPoint = Vector3.zero;
         for (float theta = 0; theta < 2 * Mathf.PI; theta += CircleTheta)
         {
-            float x = Radius * Mathf.Cos(theta) + Center.x;
-            float y = Radius * Mathf.Sin(theta) + Center.y;
+            float x = Radius * Mathf.Cos(theta);// + Center.x;
+            float y = Radius * Mathf.Sin(theta);// + Center.y;
             Vector3 endPoint = new Vector3(x, y, 0);
             if (theta == 0)
             {
