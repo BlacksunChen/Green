@@ -6,7 +6,7 @@ using System;
 
 namespace Green
 {
-    public class CellSpacePartition<Entity> : MonoBehaviour, IEnumerable<Entity>// IEnumerator<Entity>, IEnumerable
+    public class CellSpacePartition<Entity> : IEnumerable<Entity>// IEnumerator<Entity>, IEnumerable
         where Entity : Base2DEntity
     {
         /// <summary>
@@ -41,6 +41,7 @@ namespace Green
         float _cellSizeX;
         float _cellSizeY;
 
+        Vector2 _leftButtom;
         /*
         public Entity Current
         {
@@ -65,8 +66,10 @@ namespace Green
 
         int PositionToIndex(Vector2 pos)
         {
-            int idx = (int)(_numCellsX * pos.x / _spaceWidth) +
-            ((int)((_numCellsY) * pos.y / _spaceHeight) * _numCellsX);
+            Vector2 posInCell = pos - _leftButtom;
+            int x = (int)(_numCellsX * posInCell.x / _spaceWidth);
+            int y = (int)(_numCellsY * posInCell.y / _spaceHeight);
+            int idx = x + _numCellsX * y;
 
             //if the entity's position is equal to vector2d(m_dSpaceWidth, m_dSpaceHeight)
             //then the index will overshoot. We need to check for this and adjust
@@ -74,7 +77,8 @@ namespace Green
 
             return idx;
         }
-        public CellSpacePartition(float width,
+        public CellSpacePartition(Vector2 leftButtom,
+                                  float width,
                                   float height,
                                   int cellsX,
                                   int cellsY,
@@ -82,10 +86,16 @@ namespace Green
         {
             _spaceWidth = width;
             _spaceHeight = height;
-            _cellSizeX = cellsX;
-            _cellSizeY = cellsY;
+            _numCellsX = cellsX;
+            _numCellsY = cellsY;
+
+            _leftButtom = leftButtom;
+
+            _cellSizeX = width / cellsX;
+            _cellSizeY = height / cellsY;
             _neightbors = new List<Entity>();
 
+            _cells = new List<Cell<Entity>>();
             Vector2 boundSize = new Vector2(cellsX, cellsY);
             //lb->rt
             //create the cells
@@ -93,8 +103,8 @@ namespace Green
             {
                 for (int x = 0; x < _numCellsX; ++x)
                 {
-                    float right = x * _cellSizeX;
-                    float top = y * _cellSizeY;
+                    float right = x * _cellSizeX + _leftButtom.x;
+                    float top = y * _cellSizeY + _leftButtom.y;
                     float centerX = right - _cellSizeX / 2;
                     
                     float centerY = top - _cellSizeY / 2;
@@ -161,7 +171,7 @@ namespace Green
         /// <param name="ent"></param>
         public void AddEntity(Entity ent)
         {
-            if(ent != null)
+            if(ent == null)
             {
                 Debug.LogError("Add Entity null");
             }

@@ -14,21 +14,29 @@ namespace Generic
         protected List<T> _history;
         protected int _nextUpdateSlot;
         protected T _zeroValue;
+        int _sampleSize = 0;
 
         public Smoother(int sampleSize, T zeroValue)
         {
-            _history = new List<T>(sampleSize);
+            _sampleSize = sampleSize;
+            _history = new List<T>(_sampleSize);
             _zeroValue = zeroValue;
             _nextUpdateSlot = 0;
         }
 
         public T Update(T mostRecentValue)
         {
-            _history[_nextUpdateSlot++] = mostRecentValue;
-
-            if (_nextUpdateSlot == _history.Count)
+            if(_history.Count == _sampleSize)
             {
-                _nextUpdateSlot = 0;
+                _history[_nextUpdateSlot++] = mostRecentValue;
+                if (_nextUpdateSlot == _history.Count)
+                {
+                    _nextUpdateSlot = 0;
+                }
+            }
+            else
+            {
+                _history.Add(mostRecentValue);
             }
 
             T sum = _zeroValue;

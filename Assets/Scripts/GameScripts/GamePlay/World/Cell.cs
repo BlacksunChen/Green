@@ -14,17 +14,8 @@ namespace Green
         public Cell(Vector2 center, Vector2 size)
         {
             BoundBox = new Bounds(center, size);
+            Members = new LinkedList<T>();
         }
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        
     }
 }

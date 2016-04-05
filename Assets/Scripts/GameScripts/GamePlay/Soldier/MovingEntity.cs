@@ -73,6 +73,10 @@ namespace Green
             {
                 return _smoothedHeading;
             }
+            set
+            {
+                _smoothedHeading = value;
+            }
         }
 
         public SteeringBehaviors Steering
@@ -115,6 +119,10 @@ namespace Green
             {
                 return _mass;
             }
+            set
+            {
+                _mass = value;
+            }
         }
 
         public Vector2 Side
@@ -122,6 +130,10 @@ namespace Green
             get
             {
                 return _side;
+            }
+            set
+            {
+                _side = value;
             }
         }
 
@@ -237,19 +249,13 @@ namespace Green
             }
         }
         #endregion
-        public void Init(GameWorld world,
-               
-               Vector2 position,
-               float rotation,
-               Vector2 velocity,
-               float mass,
-               float max_force,
-               float max_speed,
-               float max_turn_rate,
-               float scale)
-        {
 
+        void Awake()
+        {
+            _steering = new SteeringBehaviors(this);
+            _headingSmoother = new SmootherVector(SteeringParams.Instance.NumSamplesForSmoothing, new Vector2(0.0f, 0.0f));
         }
+
         protected virtual void Start()
         {
             Position = transform.position;
@@ -261,6 +267,11 @@ namespace Green
             _maxSpeed = SteeringParams.Instance.MaxSpeed;
             _maxTurnRate = SteeringParams.Instance.MaxTurnRatePerSecond;
             _maxForce = SteeringParams.Instance.MaxSteeringForce;
+            _steering.WallAvoidanceOn();
+            _steering.WanderOn();
+            _world = GameManager.Instance.World;
+            
+            
         }
 
 
@@ -297,11 +308,7 @@ namespace Green
         public void SmoothingOff() { _smoothingOn = false; }
         public void ToggleSmoothing() { _smoothingOn = !_smoothingOn; }
 
-        void Awake()
-        {
-            _steering = new SteeringBehaviors(this);
-            _headingSmoother = new SmootherVector(SteeringParams.Instance.NumSamplesForSmoothing, new Vector2(0.0f, 0.0f));
-        }
+        
         protected virtual void Update()
         {
             //keep a record of its old position so we can update its cell later

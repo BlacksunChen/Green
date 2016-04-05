@@ -5,7 +5,7 @@ using Generic;
 
 namespace Green
 {
-    public class GameWorld : Singleton<GameWorld>
+    public class GameWorld : MonoBehaviour
     {
         List<MovingEntity> _movingEntities;
 
@@ -25,8 +25,8 @@ namespace Green
         /// <summary>
         /// local copy of client window dimensions
         /// </summary>
-        int _cxClient;
-        int _cyClient;
+        float _cxClient;
+        float _cyClient;
 
         /// <summary>
         /// the position of the crosshair
@@ -53,15 +53,36 @@ namespace Green
         //bool _viewKeys = false;
         bool _showCellSpaceInfo = false;
 
-        void Init(int cx, int cy)
+        void Awake()
         {
-            _cxClient =cx;
-            _cyClient =cy;
-            _crosshair =new Vector2(_cxClient / 2.0f, _cxClient / 2.0f);
+            var background = GameObject.Find(GameplayManager.Instance.Background);
+            var meshSize = background.GetComponent<MeshRenderer>().bounds.size;
+            _cxClient = meshSize.x;
+            _cyClient = meshSize.y;
+            Vector2 center = background.transform.position;
+            Vector2 leftButtom = new Vector2(center.x - meshSize.x / 2, center.y - meshSize.y / 2);
+            _crosshair = new Vector2(_cxClient / 2.0f, _cxClient / 2.0f);
             //_path =NULL;
 
             //setup the spatial subdivision class
-            _cellSpace = new CellSpacePartition<MovingEntity>((float)cx, (float)cy, SteeringParams.Instance.NumCellsX, SteeringParams.Instance.NumCellsY, SteeringParams.Instance.NumAgents);
+            _cellSpace = new CellSpacePartition<MovingEntity>(leftButtom, _cxClient, _cyClient, SteeringParams.Instance.NumCellsX, SteeringParams.Instance.NumCellsY, SteeringParams.Instance.NumAgents);
+        }
+
+        void Start()
+        {
+            UpdateSoldiersInfo();
+        }
+        public void UpdateSoldiersInfo()
+        {
+            var soliderRoot = GameObject.Find(GameplayManager.Instance.SoldierRoot);
+            var soldiers = GetComponentsInChildren<MovingEntity>();
+            Debug.LogFormat("Update Soldiers: {0}", soldiers.Length);
+            _movingEntities = new List<MovingEntity>();
+            foreach (var s in soldiers)
+            {
+                _movingEntities.Add(s);
+                _cellSpace.AddEntity(s);
+            }
         }
         public void NonPenetrationContraint(MovingEntity v)
         {
@@ -85,7 +106,7 @@ namespace Green
                 return _planets;
             }
         }
-
+        
         public Vector2 Crosshair
         {
             get
@@ -97,6 +118,7 @@ namespace Green
                 _crosshair = value;
             }
         }
+
         public CellSpacePartition<MovingEntity> CellSpace
         {
             get
@@ -111,12 +133,6 @@ namespace Green
             {
                 return _movingEntities;
             }
-        }
-
-        // Use this for initialization
-        void Start()
-        {
-
         }
 
         // Update is called once per frame

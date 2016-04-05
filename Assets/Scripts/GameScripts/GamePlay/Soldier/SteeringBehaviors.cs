@@ -64,7 +64,7 @@ namespace Green
 
         //the current position on the wander circle the agent is
         //attempting to steer towards
-        Vector2 _wanderTarget;
+        Vector2 _wanderTarget = new Vector2();
 
         //explained above
         float _wanderJitter;
@@ -168,18 +168,19 @@ namespace Green
         //creates the antenna utilized by the wall avoidance behavior
         void CreateFeelers()
         {
+            _feelers.Clear();
             //feeler pointing straight in front
-            _feelers[0] = _movingEntity.Position + _wallDetectionFeelerLength * _movingEntity.Heading;
+            _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength * _movingEntity.Heading);
 
             //feeler to left
             Vector2 temp = _movingEntity.Heading;
             temp.RotateAroundOrigin(Mathf.PI / 2 * 3.5f);
-            _feelers[1] = _movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp;
+            _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp);
 
             //feeler to right
             temp = _movingEntity.Heading;
             temp.RotateAroundOrigin(Mathf.PI / 2 * 0.5f);
-            _feelers[2] = _movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp;
+            _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp);
         }
 
 

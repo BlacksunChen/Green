@@ -16,6 +16,7 @@ namespace Green
         public string Background = "Background/";
         public string PlanetsRoot = "Planets/";
         public string SoldierRoot = "Soldiers/";
+        public string World = "Gameplay/";
 
         public string GetRoot(GameplayType type)
         {
