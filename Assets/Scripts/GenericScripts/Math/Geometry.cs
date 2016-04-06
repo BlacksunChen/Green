@@ -6,6 +6,14 @@ namespace Generic
 {
     public class Geometry
     {
+        public static Vector2 GetRamdomPointOnRing(float outRad, float inRad, Vector2 center)
+        {
+            float deg = UnityEngine.Random.Range(0f, 360f);
+            float l = UnityEngine.Random.Range(inRad, outRad);
+            float x = l * Mathf.Cos(Mathf.Deg2Rad * deg) + center.x;
+            float y = l * Mathf.Sin(Mathf.Deg2Rad * deg) + center.y;
+            return new Vector2(x, y);
+        }
         /// <summary>
         /// Returns true if the two circles overlap
         /// </summary>

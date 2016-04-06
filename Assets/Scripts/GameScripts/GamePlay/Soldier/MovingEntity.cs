@@ -23,18 +23,18 @@ namespace Green
         SteeringBehaviors _steering;
 
         [SerializeField, SetProperty("Velocity")]
-        Vector2 _velocity;
+        Vector2 _velocity = new Vector2(0.39f, 2.04f);
 
         //a normalized vector pointing in the direction the entity is heading. 
         [SerializeField, SetProperty("Heading")]
-        Vector2 _heading;
+        Vector2 _heading = new Vector2(1f, 0f);
 
         //a vector perpendicular to the heading vector
         [SerializeField, SetProperty("Side")]
         Vector2 _side;
 
         [SerializeField, SetProperty("Mass")]
-        float _mass;
+        float _mass = 0.13f;
 
         //the maximum speed this entity may travel at.
         [SerializeField, SetProperty("MaxSpeed")]
@@ -61,7 +61,7 @@ namespace Green
         Vector2 _smoothedHeading;
 
         //when true, smoothing is active
-        bool _smoothingOn = true;
+        bool _smoothingOn = false;
 
         #endregion
         // Vector2 _position;

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Green
 {
@@ -25,6 +25,10 @@ namespace Green
 
         public CircleBorder2D InCircle;
 
+        Star _star;
+
+        public List<Soldier> PlayerSoldiers;
+        public List<Soldier> EnemySoldiers;
         public float InCircleRad
         {
             get { return InCircle.Radius; }
@@ -56,6 +60,7 @@ namespace Green
             }
             type = CircleBorder2D.Area.None;
             return false;
+            
         }
 
         /// <summary>
@@ -78,12 +83,51 @@ namespace Green
         {
 
         }
+        void Awake()
+        {
+            PlayerSoldiers = new List<Soldier>();
+            EnemySoldiers = new List<Soldier>();
+        }
+
+       
         // Use this for initialization
         void Start()
         {
             SetCircleWall();
+            _star = GetComponent<Star>();
+            if (_star == null) Debug.LogError("Need Script: Star");
+
         }
 
+        public void AddSolider(Soldier s, SoldierType type)
+        {
+            switch (type)
+            {
+                case SoldierType.Player:
+                    PlayerSoldiers.Add(s);
+                    break;
+                case SoldierType.Enemy:
+                    EnemySoldiers.Add(s);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void RemoveSoldier(Soldier s, SoldierType type)
+        {
+            switch (type)
+            {
+                case SoldierType.Player:
+                    PlayerSoldiers.Remove(s);
+                    break;
+                case SoldierType.Enemy:
+                    EnemySoldiers.Remove(s);
+                    break;
+                default:
+                    break;
+            }
+        }
         void SetCircleWall()
         {
             var walls = GetComponentsInChildren<CircleBorder2D>();

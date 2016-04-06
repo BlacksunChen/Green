@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using Generic.Tuples;
+using Generic;
 
 namespace Green
 {
@@ -41,18 +40,60 @@ namespace Green
 			NeutralityToPlayer = 3,//玩家正在占领的中立星球
 			NeutralityToAI = 4//电脑正在占领的中立星球
 		}
+        [SerializeField, SetProperty("State")]
 		private e_State _state;//存储状态
 
-		private int _DEF;//防御力
-		private int _vigour;//活力，增长量
-		private int _capacity;//容量
+        [SerializeField, SetProperty("DEF")]
+        private int _DEF;//防御力
+
+        [SerializeField, SetProperty("Vigour")]
+        private int _vigour;//活力，增长量
+
+        [SerializeField, SetProperty("Capacity")]
+        private int _capacity;//容量
+
+        [SerializeField, SetProperty("Location")]
         private Vector2 _location;
         //private Tuple<int, int> _location;//坐标
+
         
         private Tuple<double, double> _troops;//双方兵力，前者是玩家，后者是AI
-		private double _schedule;//中立星球占领进度（中立星球的那四个状态有效）
 
-		public int DEF
+        [SerializeField, SetProperty("Troops")]
+        private double _playerTroops;
+
+        [SerializeField, SetProperty("Troops")]
+        private double _enemyTroops;
+
+        [SerializeField, SetProperty("Schedule")]
+        private double _schedule;//中立星球占领进度（中立星球的那四个状态有效）
+
+        public double PlayerTroops
+        {
+            get
+            {
+                return _troops.Item1;
+            }
+            set
+            {
+                _troops = new Tuple<double, double>(value, _troops.Item2);
+                _playerTroops = value;
+            }
+        }
+
+        public double EnemyTroops
+        {
+            get
+            {
+                return _troops.Item1;
+            }
+            set
+            {
+                _troops = new Tuple<double, double>(_troops.Item1, value);
+                _enemyTroops = value;
+            }
+        }
+        public int DEF
 		{
 			get
 			{
@@ -96,6 +137,7 @@ namespace Green
 				_location = value;
 			}
 		}
+
 		public Tuple<double, double> Troops
 		{
 			get
@@ -129,5 +171,11 @@ namespace Green
 				_state = value;
 			}
 		}
+
+        void Start()
+        {
+            _playerTroops = _troops.Item1;
+            _enemyTroops = _troops.Item2;
+        }
 	}
 }

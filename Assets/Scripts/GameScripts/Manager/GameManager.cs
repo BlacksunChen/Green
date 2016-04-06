@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Generic;
+using System.Collections.Generic;
 
 namespace Green
 {
+    public enum SoldierType
+    {
+        Player,
+        Enemy
+    }
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField, SetProperty("World")]
@@ -27,16 +32,56 @@ namespace Green
             _world = obj.GetComponent<GameWorld>();
         }
 
-        // Use this for initialization
-        void Start()
+        public void OnSendSoldier()
         {
-
+            var from = GameObject.Find("planet_1").GetComponent<Planet>();
+            var to = GameObject.Find("planet_2").GetComponent<Planet>();
+            
+            SendSoldier(from, to, 5, SoldierType.Player);
         }
 
-        // Update is called once per frame
-        void Update()
+        public void SendSoldier(Planet from, Planet to, int soldierNum, SoldierType type)
         {
+            List<Soldier> soldierInPlanetFrom;
+            List<Soldier> soldierInPlanetTo;
+            switch (type)
+            {
+                case SoldierType.Player:
+                    soldierInPlanetFrom = from.PlayerSoldiers;
+                    soldierInPlanetTo = to.PlayerSoldiers;
+                    break;
+                case SoldierType.Enemy:
+                    soldierInPlanetFrom = from.EnemySoldiers;
+                    soldierInPlanetTo = to.EnemySoldiers;
+                    break;
+                default:
+                    soldierInPlanetFrom = new List<Soldier>();
+                    soldierInPlanetTo = new List<Soldier>();
+                    break;
+            }
+            if(soldierNum > soldierInPlanetFrom.Count)
+            {
+                soldierNum = soldierInPlanetFrom.Count;
+            }
+            var soldiers = soldierInPlanetFrom.GetRange(0, soldierNum);
 
+            
+
+            foreach(var s in soldiers)
+            {
+                s.UpdateState(Soldier.StateType.Move);
+                s.SetSeekDestination(to,
+                    () =>
+                    {
+                        to.AddSolider(s, s.Bloc);
+
+                        from.RemoveSoldier(s, s.Bloc);
+                    });
+            }
         }
+
+        
+        
+
     }
 }

@@ -82,7 +82,7 @@ namespace Green
 
         //the length of the 'feeler/s' used in wall detection
         [SerializeField, SetProperty("WallDetectionFeelerLength")]
-        float _wallDetectionFeelerLength;
+        float _wallDetectionFeelerLength = 1.8f;
         
         public float WallDetectionFeelerLength
         {
@@ -96,11 +96,11 @@ namespace Green
 
         //explained above
         [SerializeField, SetProperty("WanderJitterPerSec")]
-        float _wanderJitter = 80f;
+        float _wanderJitter = 25.7f;
         [SerializeField, SetProperty("WanderRad")]
-        float _wanderRadius = 1.2f;
+        float _wanderRadius = 0.93f;
         [SerializeField, SetProperty("WanderDist")]
-        float _wanderDistance = 2.0f;
+        float _wanderDistance = 0.88f;
 
 
         //multipliers. These can be adjusted to effect strength of the  
@@ -137,7 +137,30 @@ namespace Green
         Vector2 _offset;
 
 
+        Vector2 _destination;
 
+        public Vector2 Destination
+        {
+            get { return _destination; }
+            set { _destination = value; }
+        }
+
+        Planet _seekToPlanet;
+        Action _onSeekEnded;
+        public Vector2 SetDistination(Planet p, Action onSeekEnded)
+        {
+            _onSeekEnded = onSeekEnded;
+            _seekToPlanet = p;
+            Vector2 pointToSeek = Geometry.GetRamdomPointOnRing(p.OutCircleRad, p.InCircleRad, p.transform.position);
+            _destination = pointToSeek;
+            return _destination;
+        }
+
+        Vector2 _seekTarget;
+        void OnGizmosDrawSeekTarget()
+        {
+            OnGizmosDrawCircle(_destination, 0.25f);
+        }
         //binary flags to indicate whether or not a behavior should be active
         behavior_type _flags;
 
@@ -267,8 +290,11 @@ namespace Green
             // 恢复默认矩阵
             //Gizmos.matrix = defaultMatrix;
         }
+
+        
         void OnDrawGizmos()
         {
+            //if (!ShowGizmos) return;
             if (transform == null) return;
 
             // 设置矩阵
@@ -292,6 +318,7 @@ namespace Green
             // 恢复默认矩阵
             Gizmos.matrix = defaultMatrix;
             OnGizmosDrawWander();
+            OnGizmosDrawSeekTarget();
         }
 
         /* .......................................................
@@ -307,12 +334,30 @@ namespace Green
         /// </summary>
         /// <param name="TargetPos"></param>
         /// <returns></returns>
+        [SerializeField, SetProperty("SeekScale")]
+        private float _seekScale = 1f;
+        public float SeekScale
+        {
+            get
+            {
+                return _seekScale;
+            }
+            set
+            {
+                _seekScale = value;
+            }
+        }
         Vector2 Seek(Vector2 TargetPos)
         {
+            if(Geometry.PointInCircle(_movingEntity.Position, _seekToPlanet.OutCircle.CenterInWorldSpace, _seekToPlanet.OutCircle.Radius))
+            {
+                _onSeekEnded();
+                return new Vector2();
+            }
             Vector2 DesiredVelocity = (TargetPos - _movingEntity.Position).normalized
                             * _movingEntity.MaxSpeed;
 
-            return (DesiredVelocity - _movingEntity.Velocity);
+            return (DesiredVelocity - _movingEntity.Velocity) * SeekScale;
         }
 
         /// <summary>
@@ -445,7 +490,13 @@ namespace Green
             //now flee away from predicted future position of the pursuer
             return Flee(pursuer.Position + pursuer.Velocity * LookAheadTime);
         }
-
+        [SerializeField, SetProperty("WanderScale")]
+        float _wanderScale = 1f;
+        public float WanderScale
+        {
+            get { return _wanderScale; }
+            set { _wanderScale = value; }
+        }
         /// <summary>
         /// this behavior makes the agent wander about randomly
         /// </summary>
@@ -475,12 +526,14 @@ namespace Green
                                                  _movingEntity.Position);
             WanderTargetToDraw = Target;
             //and steer towards it
-            _wanderForce = Target - _movingEntity.Position;
+            _wanderForce = (Target - _movingEntity.Position) * WanderScale;
             return _wanderForce;
         }
         private Vector2 _wanderForce;
+        public bool ShowGUI = false;
         void OnGUI()
         {
+            if (!ShowGUI) return;
             GUI.TextField(new Rect(0f,  0f, 500f, 20f), "WanderForce:" + _wanderForce.ToString() + "Length:" + _wanderForce.magnitude.ToString());
             GUI.TextField(new Rect(0f, 30f, 500f, 20f), "WallAvoidanceForce:" + _wallAvoidanceForce.ToString() + "Length:" + _wallAvoidanceForce.magnitude.ToString());
             GUI.TextField(new Rect(0f, 60f, 500f, 20f), "TotalSteeringForce:" + _steeringForceTotal.ToString() + "Length:" + _steeringForceTotal.magnitude.ToString());
@@ -721,9 +774,9 @@ namespace Green
             _wallAvoidanceForce = SteeringForce;
             return SteeringForce;
         }
-        [SerializeField, SetProperty("侧向制动比例"), Range(0f, 1f)]
-        float _侧向制动比例;
-        [SerializeField, SetProperty("反向制动比例"), Range(0f, 1f)]
+        [SerializeField, SetProperty("侧向制动比例")]
+        float _侧向制动比例 = 0.35f;
+        [SerializeField, SetProperty("反向制动比例")]
         float _反向制动比例;
         public float 侧向制动比例
         {
@@ -1134,7 +1187,7 @@ namespace Green
 
             if (On(behavior_type.seek))
             {
-                _steeringForce += Seek(_movingEntity.World.Crosshair) * _weightSeek;
+                _steeringForce += Seek(_destination) * _weightSeek;
             }
 
             if (On(behavior_type.flee))
@@ -1144,7 +1197,7 @@ namespace Green
 
             if (On(behavior_type.arrive))
             {
-                _steeringForce += Arrive(_movingEntity.World.Crosshair, _deceleration) * _weightArrive;
+                _steeringForce += Arrive(_destination, _deceleration) * _weightArrive;
             }
 
             if (On(behavior_type.pursuit))
@@ -1307,7 +1360,7 @@ namespace Green
 
             if (On(behavior_type.seek))
             {
-                force = Seek(_movingEntity.World.Crosshair) * _weightSeek;
+                force = Seek(_destination) * _weightSeek;
 
                 if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
@@ -1315,7 +1368,7 @@ namespace Green
 
             if (On(behavior_type.arrive))
             {
-                force = Arrive(_movingEntity.World.Crosshair, _deceleration) * _weightArrive;
+                force = Arrive(_destination, _deceleration) * _weightArrive;
 
                 if (!AccumulateForce(ref _steeringForce, force)) return _steeringForce;
             }
@@ -1552,7 +1605,7 @@ namespace Green
 
             if (On(behavior_type.seek) && RandFloat() < SteeringParams.Instance.prSeek)
             {
-                _steeringForce += Seek(_movingEntity.World.Crosshair) * _weightSeek / SteeringParams.Instance.prSeek;
+                _steeringForce += Seek(_destination) * _weightSeek / SteeringParams.Instance.prSeek;
 
                 if (!_steeringForce.IsZero())
                 {
@@ -1564,7 +1617,7 @@ namespace Green
 
             if (On(behavior_type.arrive) && RandFloat() < SteeringParams.Instance.prArrive)
             {
-                _steeringForce += Arrive(_movingEntity.World.Crosshair, _deceleration) *
+                _steeringForce += Arrive(_destination, _deceleration) *
                                     _weightArrive / SteeringParams.Instance.prArrive;
 
                 if (!_steeringForce.IsZero())
@@ -1761,7 +1814,7 @@ namespace Green
 
         public void SetSummingMethod(summing_method sm) { _summingMethod = sm; }
 
-
+        public void ClearFlags() { _flags = behavior_type.none; }
         public void FleeOn() { _flags |= behavior_type.flee; }
         public void SeekOn() { _flags |= behavior_type.seek; }
         public void ArriveOn() { _flags |= behavior_type.arrive; }

@@ -40,7 +40,7 @@ namespace Green
         //too).
         public float SteeringForceTweaker = 200f;
 
-        public float MaxSteeringForce    = 2f;
+        public float MaxSteeringForce    = 14.97f;
         public float MaxSpeed = 15f;
         public float VehicleMass = 1f;
 
