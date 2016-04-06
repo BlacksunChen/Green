@@ -38,16 +38,16 @@ namespace Green
 
         //the maximum speed this entity may travel at.
         [SerializeField, SetProperty("MaxSpeed")]
-        float _maxSpeed;
+        float _maxSpeed = SteeringParams.Instance.MaxSpeed;
 
         //the maximum force this entity can produce to power itself 
         //(think rockets and thrust)
         [SerializeField, SetProperty("MaxForce")]
-        float _maxForce;
+        float _maxForce = SteeringParams.Instance.MaxSteeringForce;
 
         //the maximum rate (radians per second)this vehicle can rotate         
         [SerializeField, SetProperty("MaxTurnRate")]
-        float _maxTurnRate;
+        float _maxTurnRate = SteeringParams.Instance.MaxTurnRatePerSecond;
 
         [SerializeField, SetProperty("World")]
         GameWorld _world;
@@ -196,7 +196,7 @@ namespace Green
             //-----------------------------------------------------------------------------
             set
             {
-                if (!(value.SqrMagnitude() < float.Epsilon))
+                if ((value.SqrMagnitude() < float.Epsilon))
                 {
                     Debug.LogErrorFormat("heading is a vector of zero length");
                 }
@@ -260,14 +260,14 @@ namespace Green
             _steering = GetComponent<SteeringBehaviors>();
             _steering.SetMovingEntity(this);
             Position = transform.position;
-            _scale = new Vector2(1f, 1f);
-            _heading = new Vector2(1f, 0f);
+            //_scale = new Vector2(1f, 1f);
+            Heading = new Vector2(1f, 0f);
 
             _side = _heading.Perpendicular();
-            _mass = SteeringParams.Instance.VehicleMass;
-            _maxSpeed = SteeringParams.Instance.MaxSpeed;
-            _maxTurnRate = SteeringParams.Instance.MaxTurnRatePerSecond;
-            _maxForce = SteeringParams.Instance.MaxSteeringForce;
+            Mass = 0.2f;
+            //MaxSpeed = SteeringParams.Instance.MaxSpeed;
+            //MaxTurnRate = SteeringParams.Instance.MaxTurnRatePerSecond;
+            //MaxForce = SteeringParams.Instance.MaxSteeringForce;
             //_steering.WallAvoidanceOn();
             //_steering.WanderOn();
 
@@ -326,10 +326,12 @@ namespace Green
             _velocity += acceleration * Time.deltaTime;
 
             //make sure vehicle does not exceed maximum velocity
-            _velocity.Truncate(_maxSpeed);
+            _velocity = _velocity.Truncate(_maxSpeed);
 
+            //把本地速度转成世界坐标
+            Vector4 worldVec = new Vector4(_velocity.x, _velocity.y, 0, 1);
             //update the position
-            Position += _velocity * Time.deltaTime;
+            Position += worldVec.ToVector2() * Scale * Time.deltaTime;
 
             //update the heading if the vehicle has a non zero velocity
             if (_velocity.sqrMagnitude > float.Epsilon)
@@ -360,7 +362,7 @@ namespace Green
         }
         Quaternion GetRotation()
         {
-            Vector3 to = new Vector3(_smoothedHeading.x, _smoothedHeading.y, 0);
+            Vector3 to = new Vector3(_heading.x, _heading.y, 0);
             Vector3 from = new Vector3(1, 0, 0);
             return Quaternion.FromToRotation(from, to);
         }

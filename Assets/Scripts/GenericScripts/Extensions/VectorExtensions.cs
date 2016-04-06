@@ -37,13 +37,12 @@ namespace Generic
         /// </summary>
         /// <param name="v"></param>
         /// <param name="ang"></param>
-        public static void RotateAroundOrigin(this Vector2 v, float ang)
+        public static Vector2 RotateAroundOrigin(this Vector2 v, float ang)
         {
             Quaternion rotate = Quaternion.AngleAxis(ang, Vector3.forward);
 
             var temp = rotate * v;
-            v.x = temp.x;
-            v.y = temp.y; 
+            return new Vector2(temp.x, temp.y); 
         }
 
         /// <summary>
@@ -71,13 +70,13 @@ namespace Generic
         /// Transforms a point from the agent's local space into world space
         /// </summary>
         public static Vector2 ToWorldSpace(this Vector2 point,
-                                           Vector2 AgentHeading,
+                                           Vector2 AgentSide,
                                            Vector2 AgentPosition)
         {
             //make a copy of the point
             Vector2 TransPoint = point;
 
-            Quaternion rotate = Quaternion.LookRotation(Vector3.forward, AgentHeading);
+            Quaternion rotate = Quaternion.LookRotation(Vector3.forward, AgentSide);
 
             Matrix4x4 transMatrix = Matrix4x4.TRS(AgentPosition, rotate, Vector3.one);
 
@@ -136,14 +135,16 @@ namespace Generic
         /// </summary>
         /// <param name="v"></param>
         /// <param name="max"></param>
-        public static void Truncate(this Vector2 v, float max)
+        public static Vector2 Truncate(this Vector2 v, float max)
         {
             if (v.magnitude > max)
             {
                 v.Normalize();
 
                 v *= max;
+                return v;
             }
+            return v;
         }
 
         /// <summary>

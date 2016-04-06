@@ -8,8 +8,8 @@ namespace Generic
         bool m_bTag;
 
 
-
-        protected Vector2 _scale;
+        [SerializeField, SetProperty("Scale")]
+        protected float _scale = 0.05f;
 
         //used by the constructor to give each entity a unique ID
         //each entity has a unique ID
@@ -28,16 +28,15 @@ namespace Generic
 
 
 
-        public Vector2 Scale
+        public float Scale
         {
             get
             {
-                return this.transform.localScale;
+                return _scale;
             }
             set
             {
-                float z = transform.localScale.z;
-                this.transform.localScale = new Vector3(value.x, value.y, z);
+                _scale = value;
             }
         }
         /*
@@ -61,7 +60,7 @@ namespace Generic
             }
             set
             {
-                float z = transform.position.z;
+                var z = transform.position.z;
                 this.transform.position = new Vector3(value.x, value.y, z);
             }
         }

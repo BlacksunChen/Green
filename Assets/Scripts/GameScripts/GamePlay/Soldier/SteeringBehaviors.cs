@@ -158,9 +158,20 @@ namespace Green
         bool _cellSpaceOn;
 
         //what type of method is used to sum any active behavior
+        [SerializeField, SetProperty("SummingMethod")]
         summing_method _summingMethod;
 
-
+        public summing_method SummingMethod
+        {
+            get
+            {
+                return _summingMethod;
+            }
+            set
+            {
+                _summingMethod = value;
+            }
+        }
         //this function tests if a specific bit of m_iFlags is set
         bool On(behavior_type bt) { return (_flags & bt) == bt; }
 
@@ -443,30 +454,39 @@ namespace Green
         {
             //this behavior is dependent on the update rate, so this line must
             //be included when using time independent framerate.
-            float JitterThisTimeSlice = _wanderJitter * Time.deltaTime;
+            float JitterThisTimeSlice = WanderJitterPerSec * Time.deltaTime;
 
             //first, add a small random vector to the target's position
-            _wanderTarget += new Vector2(UnityEngine.Random.Range(-1, 1) * JitterThisTimeSlice,
-                                         UnityEngine.Random.Range(-1, 1) * JitterThisTimeSlice);
+            _wanderTarget += new Vector2(UnityEngine.Random.Range(-1f, 1f) * JitterThisTimeSlice,
+                                         UnityEngine.Random.Range(-1f, 1f) * JitterThisTimeSlice);
 
             //reproject this new vector back on to a unit circle
             _wanderTarget.Normalize();
 
             //increase the length of the vector to the same as the radius
             //of the wander circle
-            _wanderTarget *= _wanderRadius;
+            _wanderTarget *= WanderRad;
 
             //move the target into a position WanderDist in front of the agent
-            Vector2 target = _wanderTarget + new Vector2(_wanderDistance, 0);
+            Vector2 target = _wanderTarget + new Vector2(WanderDist, 0);
 
             //project the target into world space
-            Vector2 Target = target.ToWorldSpace(_movingEntity.Heading,
+            Vector2 Target = target.ToWorldSpace(_movingEntity.Side,
                                                  _movingEntity.Position);
             WanderTargetToDraw = Target;
             //and steer towards it
-            return Target - _movingEntity.Position;
+            _wanderForce = Target - _movingEntity.Position;
+            return _wanderForce;
         }
-        public Vector2 WanderTargetToDraw;
+        private Vector2 _wanderForce;
+        void OnGUI()
+        {
+            GUI.TextField(new Rect(0f,  0f, 500f, 20f), "WanderForce:" + _wanderForce.ToString() + "Length:" + _wanderForce.magnitude.ToString());
+            GUI.TextField(new Rect(0f, 30f, 500f, 20f), "WallAvoidanceForce:" + _wallAvoidanceForce.ToString() + "Length:" + _wallAvoidanceForce.magnitude.ToString());
+            GUI.TextField(new Rect(0f, 60f, 500f, 20f), "TotalSteeringForce:" + _steeringForceTotal.ToString() + "Length:" + _steeringForceTotal.magnitude.ToString());
+            GUI.TextField(new Rect(0f, 90f, 500f, 20f), "Velocity Length:" + _movingEntity.Velocity.magnitude.ToString());
+        }
+        Vector2 WanderTargetToDraw;
         void OnGizmosDrawWander()
         {
             var xy = _wanderDistance * _movingEntity.Heading.normalized;
@@ -475,7 +495,7 @@ namespace Green
             Vector3 center = _movingEntity.transform.position + length;
 
             OnGizmosDrawCircle(center, _wanderRadius);
-            OnGizmosDrawCircle(WanderTargetToDraw, 0.2f);
+            OnGizmosDrawCircle(WanderTargetToDraw, 0.05f);
         }
 
         /// <summary>
@@ -646,12 +666,12 @@ namespace Green
                     //will overshoot the wall
                     if (closestWallType == CircleBorder2D.Area.InCircle)
                     {
-                        if (Geometry.PointInCircle(flr, inPlanet.InCircle.CenterInWorldSpace, inPlanet.InCircle.Radius))
+                        if (!Geometry.PointInCircle(flr, inPlanet.InCircle.CenterInWorldSpace, inPlanet.InCircle.Radius))
                             return new Vector2(0, 0);
                     }
                     else if(closestWallType == CircleBorder2D.Area.OutCircle)
                     {
-                        if(!Geometry.PointInCircle(flr, inPlanet.OutCircle.CenterInWorldSpace, inPlanet.OutCircle.Radius))
+                        if(Geometry.PointInCircle(flr, inPlanet.OutCircle.CenterInWorldSpace, inPlanet.OutCircle.Radius))
                         {
                             return new Vector2(0, 0);
                         }
@@ -665,31 +685,65 @@ namespace Green
                 }  
                 else //有可能在很里面或者很外面，回来
                 {
-                    //内圈 向外走
+                    //内圈 向外走 1/2的侧向制动力加1/2的往回制动力
                     if(Geometry.PointInCircle(flr, inPlanet.InCircle.CenterInWorldSpace, inPlanet.InCircle.Radius))
                     {
                         var length = inPlanet.InCircleRad - Vector2.Distance(inPlanet.InCircle.transform.position, _movingEntity.Position);
-                        SteeringForce = _movingEntity.Side.normalized * length * AvoidanceForceScale;
+                        Vector2 vecToCenter = _movingEntity.Position - inPlanet.InCircle.CenterInWorldSpace;
+                        SteeringForce += vecToCenter.normalized * length * 反向制动比例 * AvoidanceForceScale;
+                        if (_movingEntity.Heading.x > 0) //向右拐
+                        {
+                            SteeringForce += _movingEntity.Heading.PerpendicularRight().normalized * length * 侧向制动比例 * AvoidanceForceScale;
+                        }
+                        else //向左拐
+                        {
+                            SteeringForce += _movingEntity.Heading.Perpendicular().normalized * length * 侧向制动比例 * AvoidanceForceScale;
+                        }
+                        
                     }
                     else if(!Geometry.PointInCircle(flr, inPlanet.OutCircle.CenterInWorldSpace, inPlanet.OutCircle.Radius))
                     {
                         var length = Vector2.Distance(inPlanet.InCircle.transform.position, _movingEntity.Position) - inPlanet.InCircleRad;
-                        SteeringForce = _movingEntity.Side.normalized * length * AvoidanceForceScale;
+                        Vector2 vecToCenter = inPlanet.InCircle.CenterInWorldSpace - _movingEntity.Position;
+                        SteeringForce += vecToCenter.normalized * length * 反向制动比例 * AvoidanceForceScale;
+                        if (_movingEntity.Heading.x > 0) //向右拐
+                        {
+                            SteeringForce += _movingEntity.Heading.PerpendicularRight().normalized * length * 侧向制动比例 * AvoidanceForceScale;
+                        }
+                        else
+                        {
+                            SteeringForce += _movingEntity.Heading.Perpendicular().normalized * length * 侧向制动比例 * AvoidanceForceScale;
+                        }
+                                 
                     }
                 }
-               // }//next wall
-
-
-                //if an intersection point has been detected, calculate a force  
-                //that will direct the agent away
-                //内圈 
-                
-
             }//next feeler
-
+            _wallAvoidanceForce = SteeringForce;
             return SteeringForce;
         }
-
+        [SerializeField, SetProperty("侧向制动比例"), Range(0f, 1f)]
+        float _侧向制动比例;
+        [SerializeField, SetProperty("反向制动比例"), Range(0f, 1f)]
+        float _反向制动比例;
+        public float 侧向制动比例
+        {
+            get { return _侧向制动比例; }
+            set
+            {
+                _侧向制动比例 = value;
+                _反向制动比例 = 1 - value;
+            }
+        }
+        public float 反向制动比例
+        {
+            get { return _反向制动比例; }
+            set
+            {
+                _反向制动比例 = value;
+                _侧向制动比例 = 1 - value;
+            }
+        }
+        private Vector2 _wallAvoidanceForce;
 
         /// <summary>
         /// given a series of Vector2Ds, this method produces a force that will
@@ -1143,7 +1197,7 @@ namespace Green
                 _steeringForce += FollowPath() * _weightFollowPath;
             }
 
-            _steeringForce.Truncate(_movingEntity.MaxForce);
+            _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
             return _steeringForce;
         }
@@ -1344,7 +1398,7 @@ namespace Green
 
                 if (!_steeringForce.IsZero())
                 {
-                    _steeringForce.Truncate(_movingEntity.MaxForce);
+                    _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                     return _steeringForce;
                 }
@@ -1373,7 +1427,7 @@ namespace Green
 
                     if (!_steeringForce.IsZero())
                     {
-                        _steeringForce.Truncate(_movingEntity.MaxForce);
+                        _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                         return _steeringForce;
                     }
@@ -1389,7 +1443,7 @@ namespace Green
 
                     if (!_steeringForce.IsZero())
                     {
-                        _steeringForce.Truncate(_movingEntity.MaxForce);
+                        _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                         return _steeringForce;
                     }
@@ -1403,7 +1457,7 @@ namespace Green
 
                 if (!_steeringForce.IsZero())
                 {
-                    _steeringForce.Truncate(_movingEntity.MaxForce);
+                    _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                     return _steeringForce;
                 }
@@ -1420,7 +1474,7 @@ namespace Green
 
                 if (!_steeringForce.IsZero())
                 {
-                    _steeringForce.Truncate(_movingEntity.MaxForce);
+                    _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                     return _steeringForce;
                 }
@@ -1436,7 +1490,7 @@ namespace Green
 
                     if (!_steeringForce.IsZero())
                     {
-                        _steeringForce.Truncate(_movingEntity.MaxForce);
+                        _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                         return _steeringForce;
                     }
@@ -1449,7 +1503,7 @@ namespace Green
 
                     if (!_steeringForce.IsZero())
                     {
-                        _steeringForce.Truncate(_movingEntity.MaxForce);
+                        _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                         return _steeringForce;
                     }
@@ -1464,7 +1518,7 @@ namespace Green
 
                     if (!_steeringForce.IsZero())
                     {
-                        _steeringForce.Truncate(_movingEntity.MaxForce);
+                        _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                         return _steeringForce;
                     }
@@ -1477,7 +1531,7 @@ namespace Green
 
                     if (!_steeringForce.IsZero())
                     {
-                        _steeringForce.Truncate(_movingEntity.MaxForce);
+                        _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                         return _steeringForce;
                     }
@@ -1490,7 +1544,7 @@ namespace Green
 
                 if (!_steeringForce.IsZero())
                 {
-                    _steeringForce.Truncate(_movingEntity.MaxForce);
+                    _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                     return _steeringForce;
                 }
@@ -1502,7 +1556,7 @@ namespace Green
 
                 if (!_steeringForce.IsZero())
                 {
-                    _steeringForce.Truncate(_movingEntity.MaxForce);
+                    _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                     return _steeringForce;
                 }
@@ -1515,7 +1569,7 @@ namespace Green
 
                 if (!_steeringForce.IsZero())
                 {
-                    _steeringForce.Truncate(_movingEntity.MaxForce);
+                    _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
 
                     return _steeringForce;
                 }
@@ -1524,7 +1578,6 @@ namespace Green
             return _steeringForce;
         }
 
-        [SerializeField]
         public float WanderRad// = 1.2f;
         {
             get
@@ -1538,7 +1591,6 @@ namespace Green
         }
 
         //distance the wander circle is projected in front of the agent
-        [SerializeField]
         public float WanderDist// = 2.0f;
         {
             get
@@ -1552,7 +1604,6 @@ namespace Green
         }
 
         //the maximum amount of displacement along the circle each frame
-        [SerializeField]
         public float WanderJitterPerSec //= 80.0f;
         {
             get
@@ -1599,7 +1650,7 @@ namespace Green
             _weightEvade = SteeringParams.Instance.EvadeWeight;
             _weightFollowPath = SteeringParams.Instance.FollowPathWeight;
             _cellSpaceOn = true;
-            _summingMethod = summing_method.prioritized;
+           // _summingMethod = summing_method.prioritized;
             BehaviorsOn();
         }
 
@@ -1648,10 +1699,10 @@ namespace Green
                     break;
 
             }//end switch
-
+            _steeringForceTotal = _steeringForce;
             return _steeringForce;
         }
-
+        private Vector2 _steeringForceTotal;
         /// <summary>
         /// calculates the component of the steering force that is parallel
         //with the MovingEntity heading
