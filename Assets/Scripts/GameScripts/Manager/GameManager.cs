@@ -40,6 +40,20 @@ namespace Green
             SendSoldier(from, to, 5, SoldierType.Player);
         }
 
+        public void OnSendSoldier2To3()
+        {
+            var from = GameObject.Find("planet_2").GetComponent<Planet>();
+            var to = GameObject.Find("planet_3").GetComponent<Planet>();
+
+            SendSoldier(from, to, 5, SoldierType.Player);
+        }
+        public void OnSendSoldier3to4()
+        {
+            var from = GameObject.Find("planet_3").GetComponent<Planet>();
+            var to = GameObject.Find("planet_4").GetComponent<Planet>();
+
+            SendSoldier(from, to, 5, SoldierType.Player);
+        }
         public void SendSoldier(Planet from, Planet to, int soldierNum, SoldierType type)
         {
             List<Soldier> soldierInPlanetFrom;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace RTS_Cam
+namespace Green
 {
     [CustomEditor(typeof(RTS_Camera))]
     public class RTS_CameraEditor : Editor
@@ -150,8 +150,9 @@ namespace RTS_Cam
                 using (new HorizontalBlock())
                 {
                     camera.maxHeight = EditorGUILayout.FloatField("Max height: ", camera.maxHeight);
-                    camera.minHeight = EditorGUILayout.FloatField("Min height: ", camera.minHeight);
+                    camera.minHeight = EditorGUILayout.FloatField("Min height: ", camera.minHeight);    
                 }
+                camera.heightRange = EditorGUILayout.FloatField("Height Range", camera.heightRange);
             }  
         }
     }
