@@ -14,7 +14,7 @@ namespace Green
         };
 
         [Flags]
-        private enum behavior_type : int
+        public enum behavior_type : int
         {
             none = 1 << 0,
             seek = 1 << 1,
