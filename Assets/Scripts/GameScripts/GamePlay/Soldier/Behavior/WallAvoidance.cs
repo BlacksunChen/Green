@@ -41,7 +41,7 @@ namespace Green
         //a vertex buffer to contain the feelers rqd for wall avoidance  
         List<Vector2> _feelers;
 
-        public WallAvoidance(MovingEntity entity): base(entity, "WallAvoidance")
+        public WallAvoidance(MovingEntity entity): base(entity, "WallAvoidance", Type_.wall_avoidance)
         {
 
         }

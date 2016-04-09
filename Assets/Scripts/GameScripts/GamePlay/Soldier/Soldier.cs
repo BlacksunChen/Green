@@ -21,13 +21,11 @@ namespace Green
 
         public StateType CurrentType = StateType.Patrol;
 
-        SteeringBehaviors _behaviors;
-
         MovingEntity _movingEntity;
         public void UpdateState(StateType state)
         {
             CurrentType = state;
-            _behaviors.ClearFlags();
+            _movingEntity.ClearBehavior();
             switch (state)
             {
                 case StateType.Patrol:
@@ -45,20 +43,20 @@ namespace Green
         
         void PatrolOn()
         {
-            _behaviors.WanderOn();
-            _behaviors.WallAvoidanceOn();
+            _movingEntity.BehaviorOn(SteeringBehavior.Type_.wander);
+            _movingEntity.BehaviorOn(SteeringBehavior.Type_.seek);
             //set Patrol Param
-            _behaviors.WanderScale = 12.34f;
-            _behaviors.SeekScale = 1f;
-            _movingEntity.MaxForce = 14.97f;    
+            //_behaviors.WanderScale = 12.34f;
+            //_behaviors.SeekScale = 1f;
+            //_movingEntity.MaxForce = 14.97f;    
         }
 
         void MoveOn()
         {
-            _behaviors.SeekOn();
-            _behaviors.WanderOn();
-            _behaviors.SeekScale = 25f;
-            _behaviors.WanderScale = 2f;
+            _movingEntity.BehaviorOn(SteeringBehavior.Type_.seek);
+            _movingEntity.BehaviorOn(SteeringBehavior.Type_.wander);
+            //_behaviors.SeekScale = 25f;
+            //_behaviors.WanderScale = 2f;
         }
         /// <summary>
         /// 
@@ -69,7 +67,8 @@ namespace Green
         /// </param>
         public void SetSeekDestination(Planet p, Action onSeekEnded)
         {
-            _behaviors.SetDistination(p,
+            var seek = _movingEntity.GetBehavior(SteeringBehavior.Type_.seek) as Seek;
+            seek.SetDistination(p,
                 () =>
                 {
                     SetPlanet(p);
@@ -91,12 +90,6 @@ namespace Green
         void Start()
         {
             InPlanet.PlayerSoldiers.Add(this);
-            _behaviors = GetComponent<SteeringBehaviors>();
-            
-            if (_behaviors == null)
-            {
-                Debug.LogError("Need Script: SteeringBehaviors");
-            }
 
             _movingEntity = GetComponent<MovingEntity>();
             if (_movingEntity == null)

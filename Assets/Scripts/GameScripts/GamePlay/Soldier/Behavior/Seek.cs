@@ -16,10 +16,8 @@ namespace Green
 
         Action _onSeekEnded;
   
-        public Seek(MovingEntity movingEntity, Vector2 targetPos): base(movingEntity, "Seek")
+        public Seek(MovingEntity movingEntity): base(movingEntity, "Seek", Type_.seek)
         {
-            _destination = targetPos;
-            _movingEntity = movingEntity;
         }
 
         public Vector2 SetDistination(Planet p, Action onSeekEnded)
@@ -42,7 +40,7 @@ namespace Green
 
         public override Vector2 CalculateForce()
         {
-            if (!IsActive()) return new Vector2(); 
+            if (!Active) return new Vector2(); 
             if (Geometry.PointInCircle(_movingEntity.Position, _seekToPlanet.OutCircle.CenterInWorldSpace, _seekToPlanet.OutCircle.Radius))
             {
                 _onSeekEnded();
@@ -56,7 +54,14 @@ namespace Green
 
         public override void OnDrawGizmos()
         {
+            base.OnDrawGizmos();
             OnGizmosDrawCircle(new Vector3(_destination.x, _destination.y, _movingEntity.transform.position.z), 0.25f);
+        }
+
+        public override void OnGUI()
+        {
+            base.OnGUI();
+            
         }
     }
 }

@@ -19,8 +19,7 @@ namespace Green
     {
         #region private field
         //the steering behavior class
-        [SerializeField, SetProperty("Steering")]
-        SteeringBehaviors _steering;
+        Dithered  _behaviors;
 
         [SerializeField, SetProperty("Velocity")]
         Vector2 _velocity = new Vector2(0.39f, 2.04f);
@@ -79,15 +78,15 @@ namespace Green
             }
         }
 
-        public SteeringBehaviors Steering
+        public Dithered Steering
         {
             get
             {
-                return _steering;
+                return _behaviors;
             }
             set
             {
-                _steering = value;
+                _behaviors = value;
             }
         }
         public GameWorld World
@@ -257,8 +256,8 @@ namespace Green
 
         protected virtual void Start()
         {
-            _steering = GetComponent<SteeringBehaviors>();
-            _steering.SetMovingEntity(this);
+            _behaviors = GetComponent<Dithered>();
+           // _behaviors.AddBehavior(new Seek(this), )
             Position = transform.position;
             //_scale = new Vector2(1f, 1f);
             Heading = new Vector2(1f, 0f);
@@ -305,7 +304,28 @@ namespace Green
         public void SmoothingOff() { _smoothingOn = false; }
         public void ToggleSmoothing() { _smoothingOn = !_smoothingOn; }
 
-        
+        public void BehaviorOn(SteeringBehavior.Type_ type)
+        {
+            _behaviors.GetBehavior(type).ActiveOn();
+        }
+
+        public void BehaviorOff(SteeringBehavior.Type_ type)
+        {
+            _behaviors.GetBehavior(type).ActiveOff();
+        }
+
+        public SteeringBehavior GetBehavior(SteeringBehavior.Type_ type)
+        {
+            return _behaviors.GetBehavior(type);
+        }
+
+        public void ClearBehavior()
+        {
+            foreach(var b in _behaviors.Behaviors)
+            {
+                b.Behavior.ActiveOff();
+            }
+        }
         protected virtual void Update()
         {
             //keep a record of its old position so we can update its cell later
@@ -317,7 +337,7 @@ namespace Green
 
             //calculate the combined force from each steering behavior in the 
             //vehicle's list
-            SteeringForce = _steering.Calculate();
+            SteeringForce = _behaviors.SummingForce();
 
             //Acceleration = Force/Mass
             Vector2 acceleration = SteeringForce / _mass;
@@ -349,10 +369,12 @@ namespace Green
             */
 
             //update the vehicle's current cell if space partitioning is turned on
+            /*
             if (Steering.IsSpacePartitioningOn())
             {
                 World.CellSpace.UpdateEntity(this, OldPos);
             }
+            */
 
             if (IsSmoothingOn())
             {

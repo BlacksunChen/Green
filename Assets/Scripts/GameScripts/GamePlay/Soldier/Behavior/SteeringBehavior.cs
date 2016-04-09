@@ -1,13 +1,49 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Green
 {
+    
+
     /// <summary>
     /// 行为抽象类
     /// </summary>
     public abstract class SteeringBehavior
     {
-        public SteeringBehaviors.behavior_type Type;
+        [Flags]
+        public enum Type_ : int
+        {
+            none = 1 << 0,
+            seek = 1 << 1,
+            flee = 1 << 2,
+            arrive = 1 << 3,
+            wander = 1 << 4,
+            cohesion = 1 << 5,
+            separation = 1 << 6,
+            allignment = 1 << 7,
+            obstacle_avoidance = 1 << 8,
+            wall_avoidance = 1 << 9,
+            follow_path = 1 << 10,
+            pursuit = 1 << 11,
+            evade = 1 << 12,
+            interpose = 1 << 13,
+            hide = 1 << 14,
+            flock = 1 << 15,
+            offset_pursuit = 1 << 16,
+        }
+        public static SteeringBehavior Create(MovingEntity entity, SteeringBehavior.Type_ type)
+        {
+            if(type == Type_.seek)
+            {
+                return new Seek(entity);
+            }
+            else if(type == Type_.wall_avoidance)
+            {
+                return new WallAvoidance(entity);
+            }
+            return null;
+        }
+        public Type_ Type;
         public abstract Vector2 CalculateForce();
         public virtual void OnDrawGizmos() { }
         public virtual void OnGUI(){ }
@@ -24,10 +60,11 @@ namespace Green
             get;set;
         }
 
-        protected SteeringBehavior(MovingEntity entity, string name)
+        protected SteeringBehavior(MovingEntity entity, string name, SteeringBehavior.Type_ type)
         {
             _movingEntity = entity;
             BehaviorName = name;
+            Type = type;
         }
 
         protected void OnGizmosDrawCircle(Vector3 center, float radius)

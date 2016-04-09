@@ -1,26 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using Generic;
 
 namespace Green
 {
+    [ExecuteInEditMode]
+    [RequireComponent(typeof(MovingEntity))]
     public class Dithered : SummingMethod
     {
-        public Dithered(MovingEntity entity, string name) : base(name)
+        public Dithered(string name) : base("Dithered")
         {
-            _movingEntity = entity;
-            _behaviors = new List<BehaviorWrapperDithered>();
+            
         }
 
+        void Awake()
+        {
+            _behaviors = new List<BehaviorWrapper>();
+        }
+        void Start()
+        {
+            _movingEntity = GetComponent<MovingEntity>();
+        }
         MovingEntity _movingEntity;
 
+        public MovingEntity Target
+        {
+            get
+            {
+                if(_movingEntity == null)
+                {
+                    _movingEntity = GetComponent<MovingEntity>();
+                }
+                return _movingEntity;
+            }
+        }
         Vector2 _steeringForce = new Vector2();
 
-        List<BehaviorWrapperDithered> _behaviors;
+        List<BehaviorWrapper> _behaviors;
+        
+        public List<BehaviorWrapper> Behaviors
+        {
+            get
+            {
+                if(_behaviors == null)
+                {
+                    _behaviors = new List<BehaviorWrapper>();
+                }
+                return _behaviors;
+            }
+        }
 
+        public SteeringBehavior GetBehavior(SteeringBehavior.Type_ type)
+        {
+            foreach(var b in Behaviors)
+            {
+                if(b.Type == type)
+                {
+                    return b.Behavior;
+                }
+            }
+            Debug.LogErrorFormat("Get Behavior Error:{0}", type.ToString());
+            return null;
+        }
         /// <summary>
         /// random float between 0 and 1
         /// </summary>
@@ -32,20 +74,38 @@ namespace Green
 
         public void AddBehavior(SteeringBehavior behavior, float priority, float weight)
         {
-            _behaviors.Add(new BehaviorWrapperDithered(behavior, priority, weight));
+            if(behavior == null)
+            {
+                Debug.LogError("Behavior = null");
+            }
+            bool isContain = false;
+            foreach (var b in Behaviors)
+            {
+                if (b.Type == behavior.Type)
+                {
+                    Debug.LogError("Has Behavior: " + behavior.Type.ToString());
+                    return;
+                }
+            }
+            Behaviors.Add(new BehaviorWrapper(behavior, priority, weight));
         }
 
+        public void AddEmptyBehavior()
+        {
+            Behaviors.Add(new BehaviorWrapper());
+        }
         public override Vector2 SummingForce()
         {
             _steeringForce.Zero();
-            foreach (var behavior in _behaviors)
+            foreach (var behavior in Behaviors)
             {
-                if (behavior.Behavior.Active && RandFloat() < behavior.Priority)
+                var b = behavior;
+                if (b.Behavior.Active && RandFloat() < b.Priority)
                 {
-                    _steeringForce += behavior.Behavior.CalculateForce() * behavior.Weight / behavior.Priority;
+                    _steeringForce += b.Behavior.CalculateForce() * b.Weight / b.Priority;
                     if (!_steeringForce.IsZero())
                     {
-                        _steeringForce = _steeringForce.Truncate(_movingEntity.MaxForce);
+                        _steeringForce = _steeringForce.Truncate(Target.MaxForce);
 
                         return _steeringForce;
                     }
@@ -54,9 +114,13 @@ namespace Green
             return _steeringForce;
         }
 
+       public  void RemoveLastBehavior()
+        {
+            Behaviors.RemoveAt(Behaviors.Count - 1);
+        }
         void OnGUI()
         {
-            foreach(var behavior in _behaviors)
+            foreach(var behavior in Behaviors)
             {
                 behavior.Behavior.OnGUI();
             }
@@ -64,23 +128,46 @@ namespace Green
 
         void OnDrawGizmos()
         {
-            foreach (var behavior in _behaviors)
+            foreach (var behavior in Behaviors)
             {
                 behavior.Behavior.OnDrawGizmos();
             }
         }
 
-        public class BehaviorWrapperDithered
+        public class BehaviorWrapper
         {
             public SteeringBehavior Behavior;
             public float Priority;
             public float Weight;
 
-            public BehaviorWrapperDithered(SteeringBehavior behavior, float pri, float weight)
+            public SteeringBehavior.Type_ Type
+            {
+                get
+                {
+                    if (Behavior == null)
+                        return SteeringBehavior.Type_.none;
+                    else
+                        return Behavior.Type;
+                }
+            }
+
+            /// <summary>
+            /// 检查
+            /// </summary>
+            public void UpdateBehaviorType(MovingEntity entity, SteeringBehavior.Type_ type)
+            {
+                if (type == Type) return;
+                Behavior = SteeringBehavior.Create(entity, type);                
+            }
+
+            public BehaviorWrapper(SteeringBehavior behavior, float pri, float weight)
             {
                 Behavior = behavior;
                 Priority = pri;
                 Weight = weight;
+            }
+            public BehaviorWrapper(): this(null, 0f, 0f)
+            {
             }
         }
     }
