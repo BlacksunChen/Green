@@ -12,11 +12,23 @@ namespace Green
         public virtual void OnDrawGizmos() { }
         public virtual void OnGUI(){ }
 
-        protected bool _active;
-
-        public bool IsActive() { return _active; }
+        public bool Active {  get { return _active; } }
         public void ActiveOn() { _active = true; }
         public void ActiveOff() { _active = false; }
+
+        protected MovingEntity _movingEntity;
+        protected bool _active;
+
+        public string BehaviorName
+        {
+            get;set;
+        }
+
+        protected SteeringBehavior(MovingEntity entity, string name)
+        {
+            _movingEntity = entity;
+            BehaviorName = name;
+        }
 
         protected void OnGizmosDrawCircle(Vector3 center, float radius)
         {

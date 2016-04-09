@@ -12,11 +12,11 @@ namespace Green
 
         Vector2 _seekTarget;
 
-        MovingEntity _movingEntity;
+        
 
         Action _onSeekEnded;
   
-        public Seek(MovingEntity movingEntity, Vector2 targetPos)
+        public Seek(MovingEntity movingEntity, Vector2 targetPos): base(movingEntity, "Seek")
         {
             _destination = targetPos;
             _movingEntity = movingEntity;
