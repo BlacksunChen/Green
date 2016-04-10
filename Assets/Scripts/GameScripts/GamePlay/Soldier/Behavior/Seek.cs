@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Generic;
+using UnityEditor;
 
 namespace Green
 {
@@ -11,8 +12,6 @@ namespace Green
         Vector2 _destination;
 
         Vector2 _seekTarget;
-
-        
 
         Action _onSeekEnded;
   
@@ -55,13 +54,24 @@ namespace Green
         public override void OnDrawGizmos()
         {
             base.OnDrawGizmos();
-            OnGizmosDrawCircle(new Vector3(_destination.x, _destination.y, _movingEntity.transform.position.z), 0.25f);
+            OnGizmosDrawCircleInWorldSpace(new Vector3(_destination.x, _destination.y, _movingEntity.transform.position.z), 0.25f);
         }
 
         public override void OnGUI()
         {
             base.OnGUI();
             
+        }
+
+        public override void OnDrawInspector()
+        {
+            base.OnDrawInspector();
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                EditorGUILayout.Vector2Field("Destination: ", _destination);
+                EditorGUILayout.ObjectField("To Planet: ", _seekToPlanet, typeof(Planet), true);
+            }
+            GUILayout.EndVertical();
         }
     }
 }

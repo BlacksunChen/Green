@@ -257,7 +257,8 @@ namespace Green
         protected virtual void Start()
         {
             _behaviors = GetComponent<Dithered>();
-           // _behaviors.AddBehavior(new Seek(this), )
+            SetBehaviors(_behaviors);
+            // _behaviors.AddBehavior(new Seek(this), )
             Position = transform.position;
             //_scale = new Vector2(1f, 1f);
             Heading = new Vector2(1f, 0f);
@@ -273,6 +274,12 @@ namespace Green
             _world = GameManager.Instance.World;
         }
 
+        void SetBehaviors(Dithered d)
+        {
+            d.AddBehavior(new Seek(this), .8f, 1f);
+            d.AddBehavior(new WallAvoidance(this), .5f, 5.29f);
+            d.AddBehavior(new Wander(this), .8f, 4.35f);
+        }
         public bool RotateHeadingToFacePosition(Vector2 target)
         {
             Vector2 toTarget = (target - Position).normalized;
@@ -306,17 +313,17 @@ namespace Green
 
         public void BehaviorOn(SteeringBehavior.Type_ type)
         {
-            _behaviors.GetBehavior(type).ActiveOn();
+            _behaviors.GetBehavior(type).Behavior.ActiveOn();
         }
 
         public void BehaviorOff(SteeringBehavior.Type_ type)
         {
-            _behaviors.GetBehavior(type).ActiveOff();
+            _behaviors.GetBehavior(type).Behavior.ActiveOff();
         }
 
         public SteeringBehavior GetBehavior(SteeringBehavior.Type_ type)
         {
-            return _behaviors.GetBehavior(type);
+            return _behaviors.GetBehavior(type).Behavior;
         }
 
         public void ClearBehavior()
@@ -378,7 +385,7 @@ namespace Green
 
             if (IsSmoothingOn())
             {
-                _smoothedHeading = _headingSmoother.Update(Heading);
+                //_smoothedHeading = _headingSmoother.Update(Heading);
             }
             transform.rotation = GetRotation();
         }

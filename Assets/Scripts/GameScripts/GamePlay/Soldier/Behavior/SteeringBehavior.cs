@@ -3,13 +3,12 @@ using UnityEngine;
 
 namespace Green
 {
-    
-
     /// <summary>
     /// 行为抽象类
     /// </summary>
     public abstract class SteeringBehavior
     {
+
         [Flags]
         public enum Type_ : int
         {
@@ -31,6 +30,24 @@ namespace Green
             flock = 1 << 15,
             offset_pursuit = 1 << 16,
         }
+        public Type_ Type;
+
+        public string BehaviorName
+        {
+            get; set;
+        }
+
+        protected MovingEntity _movingEntity;
+
+        protected bool _active;
+
+        
+        /// <summary>
+        /// 工厂方法
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static SteeringBehavior Create(MovingEntity entity, SteeringBehavior.Type_ type)
         {
             if(type == Type_.seek)
@@ -41,23 +58,42 @@ namespace Green
             {
                 return new WallAvoidance(entity);
             }
+            else if(type == Type_.wander)
+            {
+                return new Wander(entity);
+            }
             return null;
         }
-        public Type_ Type;
+        
+
+        /// <summary>
+        /// 计算该行为所用到的力
+        /// </summary>
         public abstract Vector2 CalculateForce();
+
+        /// <summary>
+        /// 画辅助图像
+        /// </summary>
         public virtual void OnDrawGizmos() { }
+
+        /// <summary>
+        /// 画辅助界面
+        /// </summary>
         public virtual void OnGUI(){ }
 
-        public bool Active {  get { return _active; } }
+        /// <summary>
+        /// 激活该行为
+        /// </summary>
+        public bool Active {  get { return _active; }  set { _active = value; } }
         public void ActiveOn() { _active = true; }
         public void ActiveOff() { _active = false; }
 
-        protected MovingEntity _movingEntity;
-        protected bool _active;
-
-        public string BehaviorName
+        /// <summary>
+        /// 用于编辑脚本面板
+        /// </summary>
+        public virtual void OnDrawInspector()
         {
-            get;set;
+
         }
 
         protected SteeringBehavior(MovingEntity entity, string name, SteeringBehavior.Type_ type)
@@ -67,11 +103,21 @@ namespace Green
             Type = type;
         }
 
-        protected void OnGizmosDrawCircle(Vector3 center, float radius)
+        protected void OnGizmosDrawCircleInLocalSpace(Vector3 center, float radius)
+        {
+            OnGizmosDrawCircle(_movingEntity.transform.localToWorldMatrix, center, radius);
+        }
+
+        protected void OnGizmosDrawCircleInWorldSpace(Vector3 center, float radius)
+        {
+            OnGizmosDrawCircle(Gizmos.matrix, center, radius);
+        }
+
+        protected void OnGizmosDrawCircle(Matrix4x4 matrix, Vector3 center, float radius)
         {
             // 设置矩阵
             Matrix4x4 defaultMatrix = Gizmos.matrix;
-            //Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.matrix = matrix;
 
             // 设置颜色
             Color defaultColor = Gizmos.color;
@@ -103,7 +149,8 @@ namespace Green
             Gizmos.color = defaultColor;
 
             // 恢复默认矩阵
-            //Gizmos.matrix = defaultMatrix;
+            Gizmos.matrix = defaultMatrix;
         }
+
     }
 }

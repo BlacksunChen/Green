@@ -51,13 +51,13 @@ namespace Green
             }
         }
 
-        public SteeringBehavior GetBehavior(SteeringBehavior.Type_ type)
+        public BehaviorWrapper GetBehavior(SteeringBehavior.Type_ type)
         {
             foreach(var b in Behaviors)
             {
                 if(b.Type == type)
                 {
-                    return b.Behavior;
+                    return b;
                 }
             }
             Debug.LogErrorFormat("Get Behavior Error:{0}", type.ToString());

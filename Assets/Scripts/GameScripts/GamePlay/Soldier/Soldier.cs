@@ -44,7 +44,7 @@ namespace Green
         void PatrolOn()
         {
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.wander);
-            _movingEntity.BehaviorOn(SteeringBehavior.Type_.seek);
+            _movingEntity.BehaviorOn(SteeringBehavior.Type_.wall_avoidance);
             //set Patrol Param
             //_behaviors.WanderScale = 12.34f;
             //_behaviors.SeekScale = 1f;

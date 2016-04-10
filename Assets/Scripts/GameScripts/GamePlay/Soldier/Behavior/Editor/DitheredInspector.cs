@@ -49,11 +49,15 @@ namespace Green.Test
             {
                 behavior.UpdateBehaviorType(dithered.Target, type);
             }
+            behavior.Behavior.Active = EditorGUILayout.ToggleLeft("Active", behavior.Behavior.Active);
+
+
             using (new HorizontalBlock())
             {
                 behavior.Priority = EditorGUILayout.FloatField("优先级: ", behavior.Priority);
                 behavior.Weight = EditorGUILayout.FloatField("权重", behavior.Weight);
             }
+            behavior.Behavior.OnDrawInspector();
         }
     }
 }

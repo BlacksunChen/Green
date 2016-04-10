@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Generic;
+using UnityEditor;
 
 namespace Green
 {
@@ -30,16 +31,25 @@ namespace Green
             }
         }
 
-        [SerializeField, SetProperty("侧向制动比例")]
         float _侧向制动比例 = 0.35f;
-        [SerializeField, SetProperty("反向制动比例")]
-        float _反向制动比例;
+        float _反向制动比例 = 0.65f;
 
         float _wallDetectionFeelerLength = 1.8f;
-        Vector2 _wallAvoidanceForce;
+
+        public float WallDetectionFeelerLength
+        {
+            get
+            {
+                return _wallDetectionFeelerLength;
+            }
+            set
+            {
+                _wallDetectionFeelerLength = value;
+            }
+        }
 
         //a vertex buffer to contain the feelers rqd for wall avoidance  
-        List<Vector2> _feelers;
+        List<Vector2> _feelers = new List<Vector2>();
 
         public WallAvoidance(MovingEntity entity): base(entity, "WallAvoidance", Type_.wall_avoidance)
         {
@@ -48,6 +58,7 @@ namespace Green
 
         public override Vector2 CalculateForce()
         {
+            if (!Active) return new Vector2();
             //the feelers are contained in a std::vector, m_Feelers
             CreateFeelers();
 
@@ -142,7 +153,6 @@ namespace Green
                     }
                 }
             }//next feeler
-            _wallAvoidanceForce = SteeringForce;
             return SteeringForce;
         }
 
@@ -152,19 +162,43 @@ namespace Green
             _feelers.Clear();
             //feeler pointing straight in front
             _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength * _movingEntity.Heading);
-
-            //feeler to left
-            Vector2 temp = _movingEntity.Heading;
-            temp.RotateAroundOrigin(Mathf.PI / 2 * 3.5f);
-            _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp);
-
-            /*
-            //feeler to right
-            Vector2 temp1 = _movingEntity.Heading;
-            temp1.RotateAroundOrigin(Mathf.PI / 2 * 0.5f);
-            _feelers.Add(_movingEntity.Position + _wallDetectionFeelerLength / 2.0f * temp1);
-            */
         }
-        
+        public override void OnDrawGizmos()
+        {
+            base.OnDrawGizmos();
+
+            // 设置矩阵
+            Matrix4x4 defaultMatrix = Gizmos.matrix;
+            //Gizmos.matrix = transform.localToWorldMatrix;
+
+            // 设置颜色
+            Color defaultColor = Gizmos.color;
+            Gizmos.color = Color.red;
+
+            var xy = _wallDetectionFeelerLength * _movingEntity.Heading.normalized;
+            Vector3 length = new Vector3(xy.x, xy.y, 0);
+
+            Vector3 to1 = _movingEntity.transform.position + length;
+
+            Gizmos.DrawLine(_movingEntity.transform.position, to1);
+
+            // 恢复默认颜色
+            Gizmos.color = defaultColor;
+
+            // 恢复默认矩阵
+            Gizmos.matrix = defaultMatrix;
+        }
+
+        public override void OnDrawInspector()
+        {
+            base.OnDrawInspector();
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                侧向制动比例 = EditorGUILayout.FloatField("侧向制动比例: ", 侧向制动比例);
+                反向制动比例 = EditorGUILayout.FloatField("反向制动比例: ", 反向制动比例);
+                WallDetectionFeelerLength = EditorGUILayout.FloatField("Detection Feeler Length:", WallDetectionFeelerLength);
+            }
+            GUILayout.EndVertical();
+        }
     }
 }

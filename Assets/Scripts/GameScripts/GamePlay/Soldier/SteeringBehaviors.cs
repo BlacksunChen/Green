@@ -4,6 +4,7 @@ using UnityEngine;
 using Generic;
 namespace Green
 {
+    [Obsolete]
     public class SteeringBehaviors:MonoBehaviour
     {
         public enum summing_method
@@ -12,7 +13,7 @@ namespace Green
             prioritized,
             dithered
         };
-
+        
         [Flags]
         public enum behavior_type : int
         {
@@ -46,7 +47,7 @@ namespace Green
         public bool ToggleWall_avoidance = false;
         public bool ToggleFollow_path = false;
         public bool ToggleFlock = false;
-
+        
         void BehaviorsOn()
         {
             if (ToggleSeek) SeekOn();
