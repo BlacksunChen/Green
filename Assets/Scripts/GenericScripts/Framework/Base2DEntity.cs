@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Generic
+namespace Utilities
 {
     public class Base2DEntity : MonoBehaviour
     {

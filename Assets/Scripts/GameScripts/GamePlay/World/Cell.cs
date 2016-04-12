@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Generic;
+using Utilities;
 namespace Green
 {
     public class Cell<T>

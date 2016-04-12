@@ -13,7 +13,7 @@
 
 using UnityEngine;
 
-namespace Generic
+namespace Utilities
 {
 
     /// <summary>

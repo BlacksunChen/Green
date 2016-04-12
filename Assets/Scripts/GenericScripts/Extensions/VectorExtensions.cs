@@ -7,7 +7,7 @@
 using UnityEngine;
 
 
-namespace Generic
+namespace Utilities
 {
 
     public static class VectorExtensions

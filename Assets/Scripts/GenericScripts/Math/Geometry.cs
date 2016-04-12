@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Generic
+namespace Utilities
 {
     public class Geometry
     {

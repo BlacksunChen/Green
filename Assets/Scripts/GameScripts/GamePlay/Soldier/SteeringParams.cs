@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Generic;
+using Utilities;
 
 namespace Green
 {

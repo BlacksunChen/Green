@@ -2,7 +2,7 @@
 // Licensed under The MIT License (See LICENSE for full text)
 using UnityEngine;
 
-namespace Generic
+namespace Utilities
 {
     public class SetPropertyAttribute : PropertyAttribute
     {

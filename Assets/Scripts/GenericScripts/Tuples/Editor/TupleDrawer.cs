@@ -7,7 +7,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Generic.Tuples
+namespace Utilities.Tuples
 {
     [CustomPropertyDrawer(typeof(TupleI))]
     public class TupleIDrawer : PropertyDrawer

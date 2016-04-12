@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Generic.Tuples
+namespace Utilities.Tuples
 {
     public static class TupleExtensions
     {

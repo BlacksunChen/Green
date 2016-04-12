@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Generic;
+using Utilities;
 
 public class CircleBorder2D : MonoBehaviour
 {

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Generic;
+using Utilities;
 using System.Collections.Generic;
 
 namespace Green
@@ -73,15 +73,15 @@ namespace Green
                     soldierInPlanetTo = new List<Soldier>();
                     break;
             }
-            if(soldierNum > soldierInPlanetFrom.Count)
+            if (soldierNum > soldierInPlanetFrom.Count)
             {
                 soldierNum = soldierInPlanetFrom.Count;
             }
             var soldiers = soldierInPlanetFrom.GetRange(0, soldierNum);
 
-            
 
-            foreach(var s in soldiers)
+
+            foreach (var s in soldiers)
             {
                 s.UpdateState(Soldier.StateType.Move);
                 s.SetSeekDestination(to,
@@ -93,9 +93,5 @@ namespace Green
                     });
             }
         }
-
-        
-        
-
     }
 }

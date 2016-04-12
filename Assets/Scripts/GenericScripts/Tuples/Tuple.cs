@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 
-namespace Generic.Tuples
+namespace Utilities.Tuples
 {
 
     #region Core

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Generic.Tuples;
+using Utilities.Tuples;
 using UnityEngine;
 
 namespace Green
@@ -174,8 +174,7 @@ namespace Green
 				Tuple<double,double> final = AI.GetInstance ().GetResult (i).Troops;
 				_needed [i] = final.Item1 / (1.1 - (double)Situation.GetInstance ().Stars [i].DEF / 50) - final.Item2;
 			}
-			return _needed;
-
+			return _needed; 
 		}
 
 		//若玩家不再操作，此时星球A派往星球B多少时确保胜利

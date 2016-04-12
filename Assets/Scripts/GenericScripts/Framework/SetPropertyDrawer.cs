@@ -5,7 +5,7 @@ using UnityEditor;
 using System;
 using System.Reflection;
 
-namespace Generic
+namespace Utilities
 {
     [CustomPropertyDrawer(typeof(SetPropertyAttribute))]
     public class SetPropertyDrawer : PropertyDrawer

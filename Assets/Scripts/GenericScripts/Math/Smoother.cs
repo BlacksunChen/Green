@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Generic
+namespace Utilities
 {
     /// <summary>
     /// help calculate the average value of a history

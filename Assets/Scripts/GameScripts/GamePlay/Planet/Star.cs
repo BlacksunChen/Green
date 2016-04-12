@@ -2,14 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Generic.Tuples;
-using Generic;
+using Utilities.Tuples;
+using Utilities;
 
 namespace Green
 {
 	public class Star:MonoBehaviour
 	{
 		//Star的cor
+        
 		public Star(Star star)
 		{
 			_state = star.State;
@@ -20,6 +21,8 @@ namespace Green
 			_location = star.Location;
 			_troops = star.Troops;
 		}
+        
+        
 		public Star(e_State state,int def,int vigour,int capacity,
             Vector2 location, Tuple<double, double> troops,double schedule)
 		{
@@ -31,6 +34,7 @@ namespace Green
 			_troops = troops;
 			_schedule = schedule;
 		}
+        
 		//星球所处状态
 		public enum e_State
 		{
@@ -176,6 +180,12 @@ namespace Green
         {
             _playerTroops = _troops.Item1;
             _enemyTroops = _troops.Item2;
+            _state = State;
+            _schedule = Schedule;
+            _DEF = DEF;
+            _vigour = Vigour;
+            _capacity = Capacity;
+            _location = Location;
         }
 	}
 }

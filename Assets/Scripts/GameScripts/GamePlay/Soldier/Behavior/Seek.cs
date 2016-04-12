@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using Generic;
+using Utilities;
 using UnityEditor;
 
 namespace Green

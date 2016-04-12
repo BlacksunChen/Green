@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Generic;
+using Utilities;
 //------------------------------------------------------------------------
 //
 //  Name:   MovingEntity.h
