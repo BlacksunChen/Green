@@ -10,7 +10,7 @@ namespace Green
 	public class Star:MonoBehaviour
 	{
 		//Star的cor
-        
+        /*
 		public Star(Star star)
 		{
 			_state = star.State;
@@ -21,17 +21,25 @@ namespace Green
 			_location = star.Location;
 			_troops = star.Troops;
 		}
+        */
         
-        
-		public Star(e_State state,int def,int vigour,int capacity,
-            Vector2 location, Tuple<double, double> troops,double schedule)
+		void SetProperty(
+            e_State state,
+            int def,
+            int vigour,
+            int capacity,
+            Vector2 location,
+            double enemyTroops,
+            double playerTroops,
+            double schedule)
 		{
 			_state = state;
 			_DEF = def;
 			_vigour = vigour;
 			_capacity = capacity;
 			_location = location;
-			_troops = troops;
+            _enemyTroops = enemyTroops;
+            _playerTroops = playerTroops;
 			_schedule = schedule;
 		}
         
@@ -61,7 +69,7 @@ namespace Green
         //private Tuple<int, int> _location;//坐标
 
         
-        private Tuple<double, double> _troops;//双方兵力，前者是玩家，后者是AI
+        //private Tuple<double, double> _troops;//双方兵力，前者是玩家，后者是AI
 
         [SerializeField, SetProperty("Troops")]
         private double _playerTroops;
@@ -76,11 +84,10 @@ namespace Green
         {
             get
             {
-                return _troops.Item1;
+                return _playerTroops;
             }
             set
             {
-                _troops = new Tuple<double, double>(value, _troops.Item2);
                 _playerTroops = value;
             }
         }
@@ -89,11 +96,10 @@ namespace Green
         {
             get
             {
-                return _troops.Item1;
+                return _enemyTroops;
             }
             set
             {
-                _troops = new Tuple<double, double>(_troops.Item1, value);
                 _enemyTroops = value;
             }
         }
@@ -142,17 +148,6 @@ namespace Green
 			}
 		}
 
-		public Tuple<double, double> Troops
-		{
-			get
-			{
-				return _troops;
-			}
-			set
-			{
-				_troops = value;
-			}
-		}
 		public double Schedule
 		{
 			get
@@ -178,14 +173,14 @@ namespace Green
 
         void Start()
         {
-            _playerTroops = _troops.Item1;
-            _enemyTroops = _troops.Item2;
+            /*
             _state = State;
             _schedule = Schedule;
             _DEF = DEF;
             _vigour = Vigour;
             _capacity = Capacity;
             _location = Location;
+            */
         }
 	}
 }

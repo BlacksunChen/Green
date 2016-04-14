@@ -12,11 +12,11 @@ namespace Green
     }
     public class GameplayManager : Singleton<GameplayManager>
     {
-        public string Root = "Gameplay/";
-        public string Background = "Background/";
-        public string PlanetsRoot = "Planets/";
-        public string SoldierRoot = "Soldiers/";
-        public string World = "Gameplay/";
+        public const string Root = "Gameplay/";
+        public const string Background = "Background/";
+        public const string PlanetsRoot = "Planets/";
+        public const string SoldierRoot = "Soldiers/";
+        public const string World = "Gameplay/";
 
         public string GetRoot(GameplayType type)
         {

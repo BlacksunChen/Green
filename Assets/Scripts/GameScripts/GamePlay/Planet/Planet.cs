@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Utilities;
 
 namespace Green
 {
@@ -8,19 +9,6 @@ namespace Green
     /// </summary>
     public class Planet : MonoBehaviour
     {
-        public enum WarState
-        {
-            Peace,
-            War
-        }
-
-        public enum CaptureState
-        {
-            Player,
-            Enemy,
-            None
-        }
-
         public CircleBorder2D OutCircle;
 
         public CircleBorder2D InCircle;
@@ -157,6 +145,11 @@ namespace Green
         void Update()
         {
 
+        }
+
+        public Vector2 GetRandomPositionInPlanet()
+        {
+            return Geometry.GetRamdomPointOnRing(OutCircleRad, InCircleRad, transform.position);
         }
     }
 }

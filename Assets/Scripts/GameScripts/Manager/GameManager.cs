@@ -9,6 +9,13 @@ namespace Green
         Player,
         Enemy
     }
+
+    public enum GameState
+    {
+        Playing,
+        Pause,
+        GameOver
+    }
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField, SetProperty("World")]
@@ -24,11 +31,56 @@ namespace Green
                 return _world;
             }
         }
-        
+
+        private GameState _state = GameState.Playing;
+        public GameState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                _state = value;
+            }
+        }
+
+        public void ChangeState(GameState state)
+        {
+            _state = state;
+            switch (state)
+            {
+                case GameState.Playing:
+                    OnChangeStatePlay();
+                    break;
+                case GameState.Pause:
+                    OnChangeStatePause();
+                    break;
+                case GameState.GameOver:
+                    OnChangeStateGameOver();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnChangeStatePlay()
+        {
+
+        }
+
+        public void OnChangeStatePause()
+        {
+
+        }
+        public void OnChangeStateGameOver()
+        {
+
+        }
         protected override void Awake()
         {
             base.Awake();
-            var obj = GameObject.Find(GameplayManager.Instance.World);
+            var obj = GameObject.Find(GameplayManager.World);
             _world = obj.GetComponent<GameWorld>();
         }
 
@@ -78,8 +130,6 @@ namespace Green
                 soldierNum = soldierInPlanetFrom.Count;
             }
             var soldiers = soldierInPlanetFrom.GetRange(0, soldierNum);
-
-
 
             foreach (var s in soldiers)
             {

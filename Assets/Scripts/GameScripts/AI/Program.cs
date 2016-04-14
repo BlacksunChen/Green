@@ -8,7 +8,7 @@ namespace Green
     {
         static void Main(string[] args)
         {
-			
+			/*
             Star star0 = new Star(Star.e_State.Player,10, 10, 400, new Vector2(200f, 200f), new Tuple<double, double>(50, 0),0);
             Star star1 = new Star(Star.e_State.Player, 5, 7, 400, new Vector2(200f, 700f), new Tuple<double, double>(50, 0), 0);
             Star star2 = new Star(Star.e_State.NeutralityPeace, 10, 10, 400, new Vector2(450f, 450f), new Tuple<double, double>(0, 0), 0);
@@ -30,7 +30,7 @@ namespace Green
 			Situation.GetInstance().PlayerOnTheWay.Add(new ArmySituation(0, 1, 70,-300f));
 
 			//AI.GetInstance ().GetResult (1);
-            /*
+            
             for(int i=0;i<stars.Count;++i)
             {
                 for (int j = 0; j < stars.Count; ++j)
@@ -39,10 +39,10 @@ namespace Green
                 }
                 Console.WriteLine();
             }
-            */
+            
 			//AI.GetInstance ().GetResult (1);
 			AI.GetInstance ().Run ();
-			        
+			*/      
 		}
     }
 }

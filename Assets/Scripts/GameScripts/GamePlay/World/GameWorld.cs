@@ -32,13 +32,13 @@ namespace Green
         /// <summary>
         /// local copy of client window dimensions
         /// </summary>
-        float _cxClient;
-        float _cyClient;
+        //float _cxClient;
+        //float _cyClient;
 
         /// <summary>
         /// the position of the crosshair
         /// </summary>
-        Vector2 _crosshair;
+        //Vector2 _crosshair;
 
         /// <summary>
         /// keeps track of the average FPS
@@ -62,6 +62,13 @@ namespace Green
             */
         }
 
+        void Update()
+        {
+            if(GameManager.Instance.State == GameState.Playing)
+            {
+
+            }
+        }
         void Start()
         {
             //UpdateSoldiersInfo();
@@ -69,7 +76,7 @@ namespace Green
         }
         public void UpdatePlanetsInfo()
         {
-            var planetsRoot = GameObject.Find(GameplayManager.Instance.PlanetsRoot);
+            var planetsRoot = GameObject.Find(GameplayManager.PlanetsRoot);
             var planets = planetsRoot.GetComponentsInChildren<Planet>();
             Debug.LogFormat("Update Planets: {0}", planets.Length);
             _planets = new Dictionary<string, Planet>();
@@ -80,17 +87,17 @@ namespace Green
         }
         public void UpdateSoldiersInfo()
         {
-            var soliderRoot = GameObject.Find(GameplayManager.Instance.SoldierRoot);
-            var soldiers = GetComponentsInChildren<MovingEntity>();
-            Debug.LogFormat("Update Soldiers: {0}", soldiers.Length);
             /*
-            _movingEntities = new List<MovingEntity>();
+            var soliderRoot = GameObject.Find(GameplayManager.Instance.SoldierRoot);
+            var soldiers = GetComponentsInChildren<Soldier>();
+            Debug.LogFormat("Update Soldiers: {0}", soldiers.Length);
+
             foreach (var s in soldiers)
             {
-                _movingEntities.Add(s);
+                
                 //_cellSpace.AddEntity(s);
             }
-            */
+           */
         }
         /*
         public void NonPenetrationContraint(MovingEntity v)
@@ -140,6 +147,7 @@ namespace Green
             }
         }
         */
+
         // Update is called once per frame
         void Update()
         {
