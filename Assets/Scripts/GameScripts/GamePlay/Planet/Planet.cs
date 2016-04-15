@@ -17,6 +17,13 @@ namespace Green
 
         public List<Soldier> PlayerSoldiers;
         public List<Soldier> EnemySoldiers;
+
+        public Star GetProperty()
+        {
+            if (_star == null)  Debug.LogError("Lose Script: Star");
+            return _star;
+        }
+
         public float InCircleRad
         {
             get { return InCircle.Radius; }

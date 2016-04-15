@@ -10,19 +10,15 @@ namespace Green
         //List<MovingEntity> _movingEntities;
        // List<Base2DEntity> _obstacles;
 
-        Dictionary<string, Planet> _planets;
+        Dictionary<string, Star> _planets;
 
-        public Dictionary<string, Planet> Planets
+        public Dictionary<string, Star> Planets
         {
             get
             {
                 return _planets;
             }
         }
-
-        //CellSpacePartition<MovingEntity> _cellSpace;
-
-        //Path _path;
 
         /// <summary>
         /// set true to pause the motion
@@ -66,94 +62,47 @@ namespace Green
         {
             if(GameManager.Instance.State == GameState.Playing)
             {
-
+                StartCoroutine(UpdateSituationInEachPlanet());
             }
         }
+
+        IEnumerator UpdateSituationInEachPlanet()
+        {
+            while (true)
+            {
+                foreach (var p in _planets)
+                {
+                    p.Value.BattlePerTime(BattleManager.CalculatePerTime);
+                    
+                    //更新状态
+                    var isBattle = p.Value.WhetherBattle();
+                    //
+                    if (isBattle)
+                    {
+                        p.Value.BattlePerTime(BattleManager.CalculatePerTime);
+                    }
+
+                }
+                yield return new WaitForSeconds(BattleManager.CalculatePerTime);
+            }
+        }
+
+        /// </summary>
         void Start()
         {
             //UpdateSoldiersInfo();
             UpdatePlanetsInfo();
         }
+
         public void UpdatePlanetsInfo()
         {
             var planetsRoot = GameObject.Find(GameplayManager.PlanetsRoot);
-            var planets = planetsRoot.GetComponentsInChildren<Planet>();
+            var planets = planetsRoot.GetComponentsInChildren<Star>();
             Debug.LogFormat("Update Planets: {0}", planets.Length);
-            _planets = new Dictionary<string, Planet>();
+            _planets = new Dictionary<string, Star>();
             foreach(var p in planets)
             {
                 _planets.Add(p.name, p);
-            }
-        }
-        public void UpdateSoldiersInfo()
-        {
-            /*
-            var soliderRoot = GameObject.Find(GameplayManager.Instance.SoldierRoot);
-            var soldiers = GetComponentsInChildren<Soldier>();
-            Debug.LogFormat("Update Soldiers: {0}", soldiers.Length);
-
-            foreach (var s in soldiers)
-            {
-                
-                //_cellSpace.AddEntity(s);
-            }
-           */
-        }
-        /*
-        public void NonPenetrationContraint(MovingEntity v)
-        {
-            EntityUtils.EnforceNonPenetrationConstraint(v, _movingEntities);
-        }
-
-        public void TagVehiclesWithinViewRange(MovingEntity entity, float range)
-        {
-            EntityUtils.TagNeighbors(entity, _movingEntities, range);
-        }
-
-        public void TagObstaclesWithinViewRange(MovingEntity entity, float range)
-        {
-            EntityUtils.TagNeighbors(entity, _movingEntities, range);
-        }
-        */
-
-        /*
-        public Vector2 Crosshair
-        {
-            get
-            {
-                return _crosshair;
-            }
-            set
-            {
-                _crosshair = value;
-            }
-        }
-        */
-        /*
-        public CellSpacePartition<MovingEntity> CellSpace
-        {
-            get
-            {
-                return _cellSpace;
-            }
-        }
-        */
-        /*
-        public List<MovingEntity> Agents
-        {
-            get
-            {
-                return _movingEntities;
-            }
-        }
-        */
-
-        // Update is called once per frame
-        void Update()
-        {
-            if (_paused)
-            {
-                Time.timeScale = 0;
             }
         }
     }
