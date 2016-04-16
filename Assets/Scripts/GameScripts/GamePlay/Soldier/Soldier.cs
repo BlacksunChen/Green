@@ -22,6 +22,12 @@ namespace Green
         public StateType CurrentType = StateType.Patrol;
 
         MovingEntity _movingEntity;
+
+        public SoldierStyle Style
+        {
+            get;set;
+        }
+
         public void UpdateState(StateType state)
         {
             CurrentType = state;

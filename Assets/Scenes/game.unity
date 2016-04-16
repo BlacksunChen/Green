@@ -373,12 +373,11 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 92307823}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20048c13a5d194941bac6cd566a5e468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetsTag: 506c616e6574
 --- !u!114 &92307830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,54 +389,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ef8c68bade09b41aca258d42a632f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastTab: 2
-  movementSettingsFoldout: 0
-  zoomingSettingsFoldout: 0
-  rotationSettingsFoldout: 0
-  heightSettingsFoldout: 0
-  mapLimitSettingsFoldout: 0
-  targetingSettingsFoldout: 0
-  inputSettingsFoldout: 0
-  useFixedUpdate: 0
-  keyboardMovementSpeed: 5
-  screenEdgeMovementSpeed: 3
-  followingSpeed: 5
-  rotationSped: 3
-  panningSpeed: 10
-  mouseRotationSpeed: 10
-  autoHeight: 1
-  groundMask: {}
-  heightRange: 2
-  maxHeight: 10
-  minHeight: 10
-  heightDampening: 1
-  keyboardZoomingSensitivity: 2
-  scrollWheelZoomingSensitivity: 25
-  limitMap: 0
-  limitX: 50
-  limitY: 50
-  targetFollow: {fileID: 0}
-  targetOffset: {x: 0, y: 0, z: 0}
-  useScreenEdgeInput: 1
-  screenEdgeBorder: 25
-  useKeyboardInput: 1
-  horizontalAxis: 486f72697a6f6e74616c
-  verticalAxis: 566572746963616c
-  usePanning: 1
-  panningKey: 325
-  useKeyboardZooming: 1
-  zoomInKey: 101
-  zoomOutKey: 113
-  useTouchInput: 1
-  useScrollwheelZooming: 1
-  zoomingAxis: 4d6f757365205363726f6c6c576865656c
-  useKeyboardRotation: 1
-  rotateRightKey: 120
-  rotateLeftKey: 122
-  useMouseRotation: 1
-  mouseRotationKey: 324
-  xSpeed: 250
-  ySpeed: 120
 --- !u!1 &204439030
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,15 +425,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 204439030}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e21ba546be2ec174b9e3e868440751d5, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d9004273b1ddf54f9d582f4a23f0fed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsPersistent: 0
-  Root: 47616d65706c61792f
-  Background: 4261636b67726f756e642f
-  PlanetsRoot: 506c616e6574732f
-  SoldierRoot: 536f6c64696572732f
-  World: 47616d65706c61792f
 --- !u!1 &220077244
 GameObject:
   m_ObjectHideFlags: 0
@@ -1130,10 +1076,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1044419211}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b429d1ebe5ecc334aa75fe4441a32003, type: 3}
+  m_Script: {fileID: 11500000, guid: 32de4656e8962f447937619cc563dcb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 5.47
+  _radius: 4.99
   _offset: {x: 0, y: 0}
   CircleTheta: 0.1
   CircleColor: {r: 0, g: 1, b: 0, a: 1}
@@ -1202,9 +1148,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1100795171}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e42cd19719935f342823530fc6361da5, type: 3}
+  m_Script: {fileID: 11500000, guid: bc7d6fd056b92cd46b6b90736a4c03f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerPopulation: 0
+  _enemyPopulation: 0
 --- !u!1 &1282310986
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,7 +1189,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1282310986}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfb0bda5d0cb87744a7c9038f482f7b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 70a1cde0b77c1ee40b46e63716ad7fb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsPersistent: 0
@@ -1483,12 +1431,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1631647302}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6229f1b398be802479ee900f8c2d673d, type: 3}
+  m_Script: {fileID: 11500000, guid: f13fe6b7dde1e654c8e757df6f9f2b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _state: 0
-  _DEF: 0
-  _vigour: 0
+  _selectedState: 0
+  _DEF: 2
+  _vigour: 5
   _capacity: 0
   _location: {x: 0, y: 0}
   _playerTroops: 0
@@ -1607,10 +1555,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1764444479}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b429d1ebe5ecc334aa75fe4441a32003, type: 3}
+  m_Script: {fileID: 11500000, guid: 32de4656e8962f447937619cc563dcb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 3.68
+  _radius: 3.37
   _offset: {x: 0, y: 0}
   CircleTheta: 0.1
   CircleColor: {r: 0, g: 1, b: 0, a: 1}

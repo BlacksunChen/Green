@@ -94,6 +94,7 @@ namespace Green
 
         }
 
+        
         public void AddSolider(Soldier s, SoldierType type)
         {
             switch (type)
@@ -103,6 +104,21 @@ namespace Green
                     break;
                 case SoldierType.Enemy:
                     EnemySoldiers.Add(s);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void AddSoliders(List<Soldier> s, SoldierType type)
+        {
+            switch (type)
+            {
+                case SoldierType.Player:
+                    PlayerSoldiers.AddRange(s);
+                    break;
+                case SoldierType.Enemy:
+                    EnemySoldiers.AddRange(s);
                     break;
                 default:
                     break;
@@ -123,6 +139,7 @@ namespace Green
                     break;
             }
         }
+
         void SetCircleWall()
         {
             var walls = GetComponentsInChildren<CircleBorder2D>();
@@ -158,5 +175,64 @@ namespace Green
         {
             return Geometry.GetRamdomPointOnRing(OutCircleRad, InCircleRad, transform.position);
         }
+
+        public void UpdateSoldiersToCount(int to, SoldierType type)
+        {
+            int detla = 0;
+            switch (type)
+            {
+                case SoldierType.Player:
+                    detla = to - PlayerSoldiers.Count;
+                    break;
+                case SoldierType.Enemy:
+                    detla = to - EnemySoldiers.Count;
+                    break;
+                default:
+                    break;
+            }
+
+            //加兵
+            if(detla > 0)
+            {
+                CreateSoldiers(detla, type);
+            }
+            else if(detla < 0)
+            {
+                RandomRemoveSoldiers(detla, type);
+            }
+        }
+
+        public void CreateSoldiers(int count, SoldierType type)
+        {
+            for(int i = 0; i < count; ++i)
+            {
+                var soldier = new SoldierStyle(this, Soldier_Style.A, type);
+                if (soldier == null)
+                    Debug.LogErrorFormat("CreateSoldier Failed in Planet: {0}", name);
+                AddSolider(soldier.GetSoldier(), type);
+            }
+        }
+
+        public void RandomRemoveSoldiers(int count, SoldierType type)
+        {
+            List<Soldier> list = new List<Soldier>();
+            switch (type)
+            {
+                case SoldierType.Player:
+                    list = PlayerSoldiers;
+                    break;
+                case SoldierType.Enemy:
+                    list = EnemySoldiers;
+                    break;
+                default:
+                    break;
+            }
+            while(count-- > 0)
+            {
+                list.RemoveAt(UnityEngine.Random.Range(0, list.Count));
+            }
+        }
+
+
     }
 }

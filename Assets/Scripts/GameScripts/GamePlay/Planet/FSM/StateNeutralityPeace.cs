@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace Green
 {
@@ -8,7 +9,7 @@ namespace Green
         public Star.e_State State;
 
         private Star _star;
-        public StateNeutralityPeace(Star _star)
+        public StateNeutralityPeace(Star _star) : base(Star.e_State.NeutralityPeace)
         {
             FSMTransition.CheckCondition neutralToAI = () =>
             {
@@ -35,7 +36,12 @@ namespace Green
             return;
         }
 
-        protected override void OnExit()
+        public override void OnExit()
+        {
+            return;
+        }
+
+        public override void OnUpdate()
         {
             return;
         }

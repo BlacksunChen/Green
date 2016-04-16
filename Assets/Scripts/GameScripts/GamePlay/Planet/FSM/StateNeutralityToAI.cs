@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace Green
 {
@@ -31,13 +32,19 @@ namespace Green
 
         public override void OnEnter()
         {
-            //改变星球动画
+            _star.StartCapture();
             return;
         }
 
-        protected override void OnExit()
+        public override void OnExit()
         {
+            _star.StopCapture();
             return;
+        }
+
+        public override void OnUpdate()
+        {
+            _star.Schedule += Formula.CalculateCaptureProgress(_star.EnemyTroops);
         }
     }
 }

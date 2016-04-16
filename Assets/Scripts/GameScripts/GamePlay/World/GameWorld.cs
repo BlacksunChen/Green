@@ -20,21 +20,32 @@ namespace Green
             }
         }
 
+        [SerializeField, SetProperty("PlayerPopulation")]
+        float _playerPopulation = 0f;
+
+        [SerializeField, SetProperty("EnemyPopulation")]
+        float _enemyPopulation = 0f;
+
+
+        public float PlayerPopulation
+        {
+            get
+            {
+                return _playerPopulation;
+            }
+        }
+
+        public float EnemyPopulation
+        {
+            get
+            {
+                return _enemyPopulation;
+            }
+        }
         /// <summary>
         /// set true to pause the motion
         /// </summary>
         bool _paused = false;
-
-        /// <summary>
-        /// local copy of client window dimensions
-        /// </summary>
-        //float _cxClient;
-        //float _cyClient;
-
-        /// <summary>
-        /// the position of the crosshair
-        /// </summary>
-        //Vector2 _crosshair;
 
         /// <summary>
         /// keeps track of the average FPS
@@ -70,20 +81,34 @@ namespace Green
         {
             while (true)
             {
+                UpdatePopulation();
                 foreach (var p in _planets)
                 {
-                    p.Value.BattlePerTime(BattleManager.CalculatePerTime);
-                    
-                    //更新状态
-                    var isBattle = p.Value.WhetherBattle();
-                    //
-                    if (isBattle)
-                    {
-                        p.Value.BattlePerTime(BattleManager.CalculatePerTime);
-                    }
-
+                    p.Value.OnUpdateSituation();
+                    p.Value.OnUpdateSoldierAnimation();
                 }
-                yield return new WaitForSeconds(BattleManager.CalculatePerTime);
+
+                yield return new WaitForSeconds(Formula.CalculatePerTime);
+            }
+        }
+       
+        /// <summary>
+        /// 更新双方人口
+        /// </summary>
+        void UpdatePopulation()
+        {
+            _enemyPopulation = 0f;
+            _playerPopulation = 0f;
+            foreach(var p in _planets)
+            {
+                if(p.Value.State == Star.e_State.AI)
+                {
+                    _enemyPopulation += p.Value.Capacity;
+                }
+                else if(p.Value.State == Star.e_State.Player)
+                {
+                    _playerPopulation += p.Value.Capacity;
+                }
             }
         }
 

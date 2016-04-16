@@ -7,6 +7,8 @@ using Utilities;
 
 namespace Green
 {
+    [ExecuteInEditMode]
+    [RequireComponent(typeof(Planet))]
     public class Star : MonoBehaviour
     {
         //Star的cor
@@ -55,21 +57,47 @@ namespace Green
 
         private FSMState _fsmState;
 
-        private e_State _state
+        [SerializeField, SetProperty("SelectedState")]
+        private e_State _selectedState = e_State.Player;
+
+        public e_State SelectedState
+        {
+            get
+            {
+                return _selectedState;
+            }
+            set
+            {
+                _selectedState = value;
+            }
+        }
+
+        public e_State State
         {
             get
             {
                 return _fsmState.EnumState;
             }
         }
+        
+        public FSMState FsmState
+        {
+            get
+            {
+                return _fsmState;
+            }
+        }
 
         [SerializeField, SetProperty("DEF")]
+        [Range(0f, 10f)]
         private int _DEF;//防御力
 
         [SerializeField, SetProperty("Vigour")]
+        [Range(0f, 10f)]
         private int _vigour;//活力，增长量
 
         [SerializeField, SetProperty("Capacity")]
+        [Range(0f, 20f)]
         private int _capacity;//容量
 
         [SerializeField, SetProperty("Location")]
@@ -170,14 +198,7 @@ namespace Green
 
         void Start()
         {
-            /*
-            _state = State;
-            _schedule = Schedule;
-            _DEF = DEF;
-            _vigour = Vigour;
-            _capacity = Capacity;
-            _location = Location;
-            */
+            SetProperty(_selectedState, DEF, Vigour, Capacity, Location, EnemyTroops, PlayerTroops, Schedule);
         }
 
         void SetInitState(e_State state)
@@ -203,10 +224,11 @@ namespace Green
                     break;
             }
         }
+
         public bool IsBattleInPlanet()
         {
             //被占领 和平
-            if (_state == e_State.AI || _state == e_State.Player || _state == e_State.NeutralityPeace)
+            if (State == e_State.AI || State == e_State.Player || State == e_State.NeutralityPeace)
             {
                 if (_enemyTroops > 0 && _playerTroops > 0)
                 {
@@ -220,41 +242,74 @@ namespace Green
         {
             if (!IsBattleInPlanet()) return;
 
-            if (_state == e_State.AI)
+            if (State == e_State.AI)
             {
-                _enemyTroops  += BattleManager.CalculateDamageForDefOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
-                _playerTroops += BattleManager.CalculateDamageForAttackOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
+                _enemyTroops  += Formula.CalculateDamageForDefOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
+                _playerTroops += Formula.CalculateDamageForAttackOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
             }
-            else if (_state == e_State.Player)
+            else if (State == e_State.Player)
             {
-                _enemyTroops  += BattleManager.CalculateDamageForAttackOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
-                _playerTroops += BattleManager.CalculateDamageForDefOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
+                _enemyTroops  += Formula.CalculateDamageForAttackOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
+                _playerTroops += Formula.CalculateDamageForDefOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
             }
             else
             {
-                _enemyTroops  += BattleManager.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
-                _playerTroops += BattleManager.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
+                _enemyTroops  += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
+                _playerTroops += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
             }
         }
 
-        public void UpdateStateAfterBattle()
-        {
-            _state = _fsmState.NextState();
-    
-        }
-
+        bool _isDuringCapture = false;
+        
         public void StartCapture()
         {
             _schedule = 0;
+            _isDuringCapture = true;
         }
 
-        public void UpdateCaptureProgress()
+        public void StopCapture()
         {
-            if (_state == e_State.NeutralityToAI)
-                _schedule += BattleManager.CalculateCaptureProgress(_enemyTroops);
-            else if (_state == e_State.NeutralityToPlayer)
-                _schedule += BattleManager.CalculateCaptureProgress(_playerTroops);
-            _schedule = Truncate(_schedule, 0f, 1f);
+            _isDuringCapture = false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void OnUpdateSituation()
+        {
+            //战斗清算
+            BattlePerTime(Formula.CalculatePerTime);
+
+            //本状态执行更新
+            _fsmState.OnUpdate();
+            //判断是否有到条件进入下一个状态
+            _fsmState = _fsmState.NextState();
+        }
+
+        Planet m_planet = null;
+        public Planet _planet
+        {
+            get
+            {
+                if (m_planet == null)
+                {
+                    m_planet = GetComponent<Planet>();
+                    if (m_planet == null)
+                        Debug.LogError("Need Script: Planet");
+                }
+                return m_planet;
+            }
+        }
+
+        /// <summary>
+        /// 更新上层士兵动画：增加/删除
+        /// </summary>
+        public void OnUpdateSoldierAnimation()
+        {
+            int enemyCount = Mathf.FloorToInt(_enemyTroops);
+            int playerCount = Mathf.FloorToInt(_playerTroops);
+            _planet.UpdateSoldiersToCount(enemyCount, SoldierType.Enemy);
+            _planet.UpdateSoldiersToCount(playerCount, SoldierType.Player);
         }
 
         float Truncate(float num, float min, float max)

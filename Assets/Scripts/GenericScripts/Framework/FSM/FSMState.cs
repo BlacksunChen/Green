@@ -16,8 +16,9 @@ namespace Green
 
         public abstract void OnEnter();
 
-        protected abstract void OnExit();
+        public abstract void OnExit();
 
+        public abstract void OnUpdate();
         #endregion
 
 

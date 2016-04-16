@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace Green
 {
@@ -35,9 +36,14 @@ namespace Green
             return;
         }
 
-        protected override void OnExit()
+        public override void OnExit()
         {
             return;
+        }
+
+        public override void OnUpdate()
+        {
+            _star.PlayerTroops += Formula.CalculateSoldierIncreasePerTime(_star.Vigour);
         }
     }
 }
