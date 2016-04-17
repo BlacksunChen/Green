@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Utilities;
 
 namespace Green
 {
     public class StateNeutralityPeace : FSMState
     {
-        public Star.e_State State;
-
-        private Star _star;
-        public StateNeutralityPeace(Star _star) : base(Star.e_State.NeutralityPeace)
+        public StateNeutralityPeace(FSM fsm, Star star) : base(star, Star.e_State.NeutralityPeace)
         {
+            _fsm = fsm;
+            _fsm.AddState(this);
             FSMTransition.CheckCondition neutralToAI = () =>
             {
-                if (_star.EnemyTroops > 0f && _star.PlayerTroops <= 0f)
+                if (star.EnemyTroops > 0f && star.PlayerTroops <= 0f)
                     return true;
                 else
                     return false;
@@ -21,13 +21,13 @@ namespace Green
 
             FSMTransition.CheckCondition neutralToPlayer = () =>
             {
-                if (_star.EnemyTroops <= 0f && _star.PlayerTroops > 0f)
+                if (star.EnemyTroops <= 0f && star.PlayerTroops > 0f)
                     return true;
                 else
                     return false;
             };
-            _transitions.Add(new FSMTransition(new StateNeutralityToAI(_star), neutralToAI));
-            _transitions.Add(new FSMTransition(new StateNeutralityToPlayer(_star), neutralToPlayer));
+            _transitions.Add(new FSMTransition(Star.e_State.NeutralityToAI, neutralToAI));
+            _transitions.Add(new FSMTransition(Star.e_State.NeutralityToPlayer, neutralToPlayer));
         }
 
         public override void OnEnter()

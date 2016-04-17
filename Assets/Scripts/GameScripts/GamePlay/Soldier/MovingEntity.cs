@@ -19,7 +19,18 @@ namespace Green
     {
         #region private field
         //the steering behavior class
-        Dithered  _behaviors;
+        Dithered _behaviors = null;
+        Dithered Behaviors
+        {
+            get
+            {
+                if(_behaviors == null)
+                {
+                    _behaviors = GetComponent<Dithered>();
+                }
+                return _behaviors;
+            }
+        }
 
         [SerializeField, SetProperty("Velocity")]
         Vector2 _velocity = new Vector2(0.39f, 2.04f);
@@ -254,10 +265,10 @@ namespace Green
             _smoothingOn = true;
         }
 
+        
         protected virtual void Start()
         {
-            _behaviors = GetComponent<Dithered>();
-            SetBehaviors(_behaviors);
+            SetBehaviors(Behaviors);
             // _behaviors.AddBehavior(new Seek(this), )
             Position = transform.position;
             //_scale = new Vector2(1f, 1f);
@@ -313,22 +324,22 @@ namespace Green
 
         public void BehaviorOn(SteeringBehavior.Type_ type)
         {
-            _behaviors.GetBehavior(type).Behavior.ActiveOn();
+            Behaviors.GetBehavior(type).Behavior.ActiveOn();
         }
 
         public void BehaviorOff(SteeringBehavior.Type_ type)
         {
-            _behaviors.GetBehavior(type).Behavior.ActiveOff();
+            Behaviors.GetBehavior(type).Behavior.ActiveOff();
         }
 
         public SteeringBehavior GetBehavior(SteeringBehavior.Type_ type)
         {
-            return _behaviors.GetBehavior(type).Behavior;
+            return Behaviors.GetBehavior(type).Behavior;
         }
 
         public void ClearBehavior()
         {
-            foreach(var b in _behaviors.Behaviors)
+            foreach(var b in Behaviors.Behaviors)
             {
                 b.Behavior.ActiveOff();
             }
@@ -344,7 +355,7 @@ namespace Green
 
             //calculate the combined force from each steering behavior in the 
             //vehicle's list
-            SteeringForce = _behaviors.SummingForce();
+            SteeringForce = Behaviors.SummingForce();
 
             //Acceleration = Force/Mass
             Vector2 acceleration = SteeringForce / _mass;

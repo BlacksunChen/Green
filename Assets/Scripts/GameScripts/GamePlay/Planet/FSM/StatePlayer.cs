@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Utilities;
 
 namespace Green
 {
     public class StatePlayer : FSMState
     {
-        public Star.e_State State;
-
-        private Star _star;
-        public StatePlayer(Star _star): base(Star.e_State.Player)
+        //FSM _fsm;
+        public StatePlayer(FSM fsm, Star star) : base(star, Star.e_State.Player)
         {
+            _fsm = fsm;
+            _fsm.AddState(this);
             FSMTransition.CheckCondition neutralToAI = () =>
             {
-                if (_star.EnemyTroops > 0 && _star.PlayerTroops <= 0)
+                if (star.EnemyTroops > 0 && star.PlayerTroops <= 0)
                     return true;
                 else
                     return false;
@@ -21,13 +22,13 @@ namespace Green
 
             FSMTransition.CheckCondition neutral = () =>
             {
-                if (_star.EnemyTroops <= 0f && _star.PlayerTroops <= 0f)
+                if (star.EnemyTroops <= 0f && star.PlayerTroops <= 0f)
                     return true;
                 else
                     return false;
             };
-            _transitions.Add(new FSMTransition(new StateNeutralityToAI(_star), neutralToAI));
-            _transitions.Add(new FSMTransition(new StateNeutralityPeace(_star), neutral));
+            _transitions.Add(new FSMTransition(Star.e_State.NeutralityToAI, neutralToAI));
+            _transitions.Add(new FSMTransition(Star.e_State.NeutralityPeace, neutral));
         }
 
         public override void OnEnter()
@@ -43,7 +44,8 @@ namespace Green
 
         public override void OnUpdate()
         {
-            _star.PlayerTroops += Formula.CalculateSoldierIncreasePerTime(_star.Vigour);
+            if(_star.Capacity > _star.PlayerTroops)
+                _star.PlayerTroops += Formula.CalculateSoldierIncreasePerTime(_star.Vigour);
         }
     }
 }

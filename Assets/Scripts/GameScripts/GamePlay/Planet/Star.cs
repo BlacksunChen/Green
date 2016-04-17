@@ -54,11 +54,20 @@ namespace Green
             NeutralityToPlayer = 3, //玩家正在占领的中立星球
             NeutralityToAI = 4,     //电脑正在占领的中立星球
         }
+        private FSM _fsm;
 
         private FSMState _fsmState;
 
         [SerializeField, SetProperty("SelectedState")]
         private e_State _selectedState = e_State.Player;
+
+        public FSM FiniteStateMachine
+        {
+            get
+            {
+                return _fsm;
+            }
+        }
 
         public e_State SelectedState
         {
@@ -196,6 +205,11 @@ namespace Green
             }
         }
 
+        public Star(): base()
+        {
+            _fsm = new FSM(this);
+        }
+
         void Start()
         {
             SetProperty(_selectedState, DEF, Vigour, Capacity, Location, EnemyTroops, PlayerTroops, Schedule);
@@ -206,19 +220,19 @@ namespace Green
             switch (state)
             {
                 case e_State.Player:
-                    _fsmState = new StatePlayer(this);
+                    _fsmState = new StatePlayer(_fsm, this);
                     break;
                 case e_State.AI:
-                    _fsmState = new StateAI(this);
+                    _fsmState = new StateAI(_fsm, this);
                     break;
                 case e_State.NeutralityPeace:
-                    _fsmState = new StateNeutralityPeace(this);
+                    _fsmState = new StateNeutralityPeace(_fsm, this);
                     break;
                 case e_State.NeutralityToPlayer:
-                    _fsmState = new StateNeutralityToPlayer(this);
+                    _fsmState = new StateNeutralityToPlayer(_fsm, this);
                     break;
                 case e_State.NeutralityToAI:
-                    _fsmState = new StateNeutralityToAI(this);
+                    _fsmState = new StateNeutralityToAI(_fsm, this);
                     break;
                 default:
                     break;

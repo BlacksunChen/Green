@@ -1,17 +1,14 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using Green;
 
-namespace Green
+namespace Utilities
 {
     [Serializable]
     public class FSMTransition
     {
-        [SerializeField]
         string Name;
-
-        [SerializeField]
-        FSMState _toState;
 
         //[SerializeField]
         //TransitionCondition condition;
@@ -19,7 +16,7 @@ namespace Green
 
         public CheckCondition Check;
 
-        public FSMState NextState
+        public Star.e_State NextState
         {
             get
             {
@@ -27,7 +24,8 @@ namespace Green
             }
         }
 
-        public FSMTransition(FSMState nextState, CheckCondition callback)
+        Star.e_State _toState;
+        public FSMTransition(Star.e_State nextState, CheckCondition callback)
         {
             _toState = nextState;
             Check = callback;

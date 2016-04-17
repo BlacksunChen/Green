@@ -9,9 +9,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 409948}
   - 61: {fileID: 6171916}
-  - 114: {fileID: 11490032}
   - 114: {fileID: 11416200}
   - 114: {fileID: 11453522}
+  - 114: {fileID: 11490032}
   m_Layer: 0
   m_Name: plane
   m_TagString: Untagged
@@ -137,7 +137,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 102406}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b994338c613e4c948a33ecdc2831d534, type: 3}
+  m_Script: {fileID: 11500000, guid: be73fbdc2a4ec2e488d3602ca476a057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11490032

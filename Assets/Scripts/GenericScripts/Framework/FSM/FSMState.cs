@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Green;
 
-namespace Green
+namespace Utilities
 {
     public abstract class FSMState
     {
         #region Variables
 
+        protected FSM _fsm;
         [SerializeField]
         protected List<FSMTransition> _transitions = new List<FSMTransition>();
         #endregion
@@ -26,8 +28,12 @@ namespace Green
 
         public readonly Star.e_State EnumState;
 
-        public FSMState(Star.e_State state)
+        protected Star _star;
+
+        public FSMState(Star star, Star.e_State state)
         {
+            _fsm = star.FiniteStateMachine;
+            _star = star;
             EnumState = state;
         }
 
@@ -38,8 +44,9 @@ namespace Green
                 if(condition.Check())
                 {
                     OnExit();
-                    condition.NextState.OnEnter();
-                    return condition.NextState;
+                    var nextState = _fsm.GetState(condition.NextState);
+                    nextState.OnEnter();
+                    return nextState;
                 }
             }
             return this;

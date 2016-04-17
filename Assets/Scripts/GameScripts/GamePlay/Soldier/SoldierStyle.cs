@@ -43,6 +43,7 @@ namespace Green
 
             _soldier.Style = this;
 
+            _soldier.InPlanet = inPlanet;
             //set tag
             go.tag = Settings.SOLDIER_TAG;
 
