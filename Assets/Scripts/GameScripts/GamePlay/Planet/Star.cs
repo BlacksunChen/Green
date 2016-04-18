@@ -11,20 +11,6 @@ namespace Green
     [RequireComponent(typeof(Planet))]
     public class Star : MonoBehaviour
     {
-        //Star的cor
-        /*
-		public Star(Star star)
-		{
-			_state = star.State;
-			_schedule = star.Schedule;
-			_DEF = star.DEF;
-			_vigour = star.Vigour;
-			_capacity = star.Capacity;
-			_location = star.Location;
-			_troops = star.Troops;
-		}
-        */
-
         void SetProperty(
             e_State state,
             int def,
@@ -54,6 +40,7 @@ namespace Green
             NeutralityToPlayer = 3, //玩家正在占领的中立星球
             NeutralityToAI = 4,     //电脑正在占领的中立星球
         }
+
         private FSM _fsm;
 
         private FSMState _fsmState;
@@ -69,6 +56,7 @@ namespace Green
             }
         }
 
+        
         public e_State SelectedState
         {
             get
@@ -80,7 +68,7 @@ namespace Green
                 _selectedState = value;
             }
         }
-
+        
         public e_State State
         {
             get
@@ -217,26 +205,7 @@ namespace Green
 
         void SetInitState(e_State state)
         {
-            switch (state)
-            {
-                case e_State.Player:
-                    _fsmState = new StatePlayer(_fsm, this);
-                    break;
-                case e_State.AI:
-                    _fsmState = new StateAI(_fsm, this);
-                    break;
-                case e_State.NeutralityPeace:
-                    _fsmState = new StateNeutralityPeace(_fsm, this);
-                    break;
-                case e_State.NeutralityToPlayer:
-                    _fsmState = new StateNeutralityToPlayer(_fsm, this);
-                    break;
-                case e_State.NeutralityToAI:
-                    _fsmState = new StateNeutralityToAI(_fsm, this);
-                    break;
-                default:
-                    break;
-            }
+            _fsmState = _fsm.GetState(state);
         }
 
         public bool IsBattleInPlanet()
@@ -256,21 +225,30 @@ namespace Green
         {
             if (!IsBattleInPlanet()) return;
 
+            float enemy = 0f;
+            float player = 0f;
+
             if (State == e_State.AI)
             {
-                _enemyTroops  += Formula.CalculateDamageForDefOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
-                _playerTroops += Formula.CalculateDamageForAttackOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
+                enemy += Formula.CalculateDamageForDefOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
+                player += Formula.CalculateDamageForAttackOnePerTime(_enemyTroops, _playerTroops, DEF, perTime);
             }
             else if (State == e_State.Player)
             {
-                _enemyTroops  += Formula.CalculateDamageForAttackOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
-                _playerTroops += Formula.CalculateDamageForDefOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
+                enemy += Formula.CalculateDamageForAttackOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
+                player += Formula.CalculateDamageForDefOnePerTime(_playerTroops, _enemyTroops, DEF, perTime);
             }
             else
             {
-                _enemyTroops  += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
-                _playerTroops += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
+                enemy += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
+                player += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
             }
+            _enemyTroops += enemy;
+            _playerTroops += player;
+            DebugInConsole.LogFormat("我方损失兵力:{0} 总兵力:{1}", player, _playerTroops);
+            DebugInConsole.LogFormat("敌方损失兵力:{0} 总兵力:{1}", enemy, _enemyTroops);
+            _enemyTroops = Truncate(_enemyTroops, 0f);
+            _playerTroops = Truncate(_playerTroops, 0f);
         }
 
         bool _isDuringCapture = false;
@@ -322,6 +300,7 @@ namespace Green
         {
             int enemyCount = Mathf.FloorToInt(_enemyTroops);
             int playerCount = Mathf.FloorToInt(_playerTroops);
+            
             _planet.UpdateSoldiersToCount(enemyCount, SoldierType.Enemy);
             _planet.UpdateSoldiersToCount(playerCount, SoldierType.Player);
         }

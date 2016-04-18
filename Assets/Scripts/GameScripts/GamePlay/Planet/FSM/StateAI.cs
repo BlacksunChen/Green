@@ -10,7 +10,7 @@ namespace Green
         public StateAI(FSM fsm, Star star) : base(star, Star.e_State.AI)
         {
             _fsm = fsm;
-            _fsm.AddState(this);
+            //_fsm.AddState(this);
             FSMTransition.CheckCondition neutralToPlayer = () =>
             {
                 if (star.EnemyTroops <= 0 && star.PlayerTroops > 0)
@@ -42,7 +42,7 @@ namespace Green
 
         public override void OnUpdate()
         {
-            if (_star.Capacity > _star.EnemyTroops)
+            if (GameWorld.Instance.EnemyPopulation < GameWorld.Instance.EnemyMaxPopulation)
                 _star.EnemyTroops += Formula.CalculateSoldierIncreasePerTime(_star.Vigour);
         }
     }

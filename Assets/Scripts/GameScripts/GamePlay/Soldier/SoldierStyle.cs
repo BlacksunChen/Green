@@ -42,7 +42,7 @@ namespace Green
                 Debug.LogError("Need Script: Soldier");
 
             _soldier.Style = this;
-
+            _soldier.Bloc = type;
             _soldier.InPlanet = inPlanet;
             //set tag
             go.tag = Settings.SOLDIER_TAG;

@@ -11,7 +11,7 @@ namespace Green
         public StateNeutralityToAI(FSM fsm, Star star) : base(star, Star.e_State.NeutralityToAI)
         {
             _fsm = fsm;
-            _fsm.AddState(this);
+            //_fsm.AddState(this);
             FSMTransition.CheckCondition toAI = () =>
             {
                 if (star.Schedule >= 1)

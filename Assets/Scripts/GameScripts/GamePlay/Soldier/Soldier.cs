@@ -25,7 +25,7 @@ namespace Green
 
         public SoldierStyle Style
         {
-            get;set;
+            get; set;
         }
 
         public void UpdateState(StateType state)
@@ -46,7 +46,7 @@ namespace Green
                     break;
             }
         }
-        
+
         void PatrolOn()
         {
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.wander);
@@ -61,6 +61,7 @@ namespace Green
         {
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.seek);
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.wander);
+
             //_behaviors.SeekScale = 25f;
             //_behaviors.WanderScale = 2f;
         }
@@ -95,22 +96,23 @@ namespace Green
         // Use this for initialization
         void Start()
         {
-            InPlanet.PlayerSoldiers.Add(this);
-
             _movingEntity = GetComponent<MovingEntity>();
             if (_movingEntity == null)
             {
                 Debug.LogError("Need Script: MovingEntity");
             }
-
             UpdateState(StateType.Patrol);
-
         }
-        
+
         // Update is called once per frame
         void Update()
         {
 
+        }
+
+        public void Destory()
+        {
+            GameObject.DestroyObject(gameObject);
         }
     }
 }

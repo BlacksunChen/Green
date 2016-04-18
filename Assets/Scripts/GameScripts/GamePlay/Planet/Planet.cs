@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using Utilities;
 
@@ -95,15 +96,17 @@ namespace Green
         }
 
         
-        public void AddSolider(Soldier s, SoldierType type)
+        public void SoldierArrive(Soldier s, SoldierType type)
         {
             switch (type)
             {
                 case SoldierType.Player:
                     PlayerSoldiers.Add(s);
+                    _star.PlayerTroops++;
                     break;
                 case SoldierType.Enemy:
                     EnemySoldiers.Add(s);
+                    _star.EnemyTroops++;
                     break;
                 default:
                     break;
@@ -116,24 +119,28 @@ namespace Green
             {
                 case SoldierType.Player:
                     PlayerSoldiers.AddRange(s);
+                    _star.PlayerTroops += s.Count;
                     break;
                 case SoldierType.Enemy:
                     EnemySoldiers.AddRange(s);
+                    _star.EnemyTroops += s.Count;
                     break;
                 default:
                     break;
             }
         }
 
-        public void RemoveSoldier(Soldier s, SoldierType type)
+        public void SoldierLeave(Soldier s, SoldierType type)
         {
             switch (type)
             {
                 case SoldierType.Player:
                     PlayerSoldiers.Remove(s);
+                    _star.PlayerTroops--;
                     break;
                 case SoldierType.Enemy:
                     EnemySoldiers.Remove(s);
+                    _star.EnemyTroops--;
                     break;
                 default:
                     break;
@@ -183,9 +190,11 @@ namespace Green
             {
                 case SoldierType.Player:
                     detla = to - PlayerSoldiers.Count;
+                    DebugInConsole.LogFormat("我方增加兵力:{0} 之前兵力{1} 目前兵力{2}", detla, PlayerSoldiers.Count, to);
                     break;
                 case SoldierType.Enemy:
                     detla = to - EnemySoldiers.Count;
+                    DebugInConsole.LogFormat("敌方增加兵力:{0} 之前兵力{1} 目前兵力{2}", detla, EnemySoldiers.Count, to);
                     break;
                 default:
                     break;
@@ -198,7 +207,7 @@ namespace Green
             }
             else if(detla < 0)
             {
-                RandomRemoveSoldiers(detla, type);
+                RandomRemoveSoldiers(-detla, type);
             }
         }
 
@@ -213,6 +222,23 @@ namespace Green
             }
         }
 
+        public void AddSolider(Soldier s, SoldierType type)
+        {
+            switch (type)
+            {
+                case SoldierType.Player:
+                    PlayerSoldiers.Add(s);
+                    //_star.PlayerTroops++;
+                    break;
+                case SoldierType.Enemy:
+                    EnemySoldiers.Add(s);
+                    //_star.EnemyTroops++;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public void RandomRemoveSoldiers(int count, SoldierType type)
         {
             List<Soldier> list = new List<Soldier>();
@@ -220,16 +246,21 @@ namespace Green
             {
                 case SoldierType.Player:
                     list = PlayerSoldiers;
+                    //_star.PlayerTroops -= count;
                     break;
                 case SoldierType.Enemy:
                     list = EnemySoldiers;
+                    //_star.EnemyTroops -= count;
                     break;
                 default:
                     break;
             }
             while(count-- > 0)
             {
-                list.RemoveAt(UnityEngine.Random.Range(0, list.Count));
+                var idx = UnityEngine.Random.Range(0, Math.Min(0, list.Count-1));
+                var go = list[idx];
+                list.Remove(go);
+                go.Destory();                 
             }
         }
 

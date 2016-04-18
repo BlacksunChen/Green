@@ -10,7 +10,7 @@ namespace Green
         public StateNeutralityPeace(FSM fsm, Star star) : base(star, Star.e_State.NeutralityPeace)
         {
             _fsm = fsm;
-            _fsm.AddState(this);
+            //_fsm.AddState(this);
             FSMTransition.CheckCondition neutralToAI = () =>
             {
                 if (star.EnemyTroops > 0f && star.PlayerTroops <= 0f)

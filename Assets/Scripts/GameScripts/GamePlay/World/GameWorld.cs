@@ -5,7 +5,7 @@ using Utilities;
 
 namespace Green
 {
-    public class GameWorld : MonoBehaviour
+    public class GameWorld : Singleton<GameWorld>
     {
         //List<MovingEntity> _movingEntities;
        // List<Base2DEntity> _obstacles;
@@ -21,11 +21,16 @@ namespace Green
         }
 
         [SerializeField, SetProperty("PlayerPopulation")]
-        float _playerPopulation = 0f;
+        float _playerPopulation = 0;
 
         [SerializeField, SetProperty("EnemyPopulation")]
-        float _enemyPopulation = 0f;
+        float _enemyPopulation = 0;
 
+        [SerializeField, SetProperty("PlayerMaxPopulation")]
+        float _playerMaxPopulation = 0;
+
+        [SerializeField, SetProperty("EnemyMaxPopulation")]
+        float _enemyMaxPopulation = 0;
 
         public float PlayerPopulation
         {
@@ -40,6 +45,22 @@ namespace Green
             get
             {
                 return _enemyPopulation;
+            }
+        }
+
+        public float PlayerMaxPopulation
+        {
+            get
+            {
+                return _playerMaxPopulation;
+            }
+        }
+
+        public float EnemyMaxPopulation
+        {
+            get
+            {
+                return _enemyMaxPopulation;
             }
         }
         /// <summary>
@@ -69,26 +90,34 @@ namespace Green
             */
         }
 
+        Timer _timer;
+
         void Update()
         {
             if(GameManager.Instance.State == GameState.Playing)
-            {
-                StartCoroutine(UpdateSituationInEachPlanet());
+            {          
+                UpdateSituationInEachPlanet();
             }
         }
-
-        IEnumerator UpdateSituationInEachPlanet()
+        int updateCountIndex = 0;
+        void UpdateSituationInEachPlanet()
         {
-            while (true)
+            _timer.Resume();
+            _timer.Update();
+            if (_timer.CurrentState == TimerState.FINISHED)
             {
+                DebugInConsole.LogFormat("*******************第{0}秒*******************", updateCountIndex++);
                 UpdatePopulation();
                 foreach (var p in _planets)
                 {
+                    DebugInConsole.LogFormat("*****星球: {0}*****", p.Value.name);
                     p.Value.OnUpdateSituation();
                     p.Value.OnUpdateSoldierAnimation();
+                    DebugInConsole.Log      ("*******************");
                 }
-
-                yield return new WaitForSeconds(Formula.CalculatePerTime);
+                DebugInConsole.LogFormat("*********************************************");
+                //yield return new WaitForSeconds(Formula.CalculatePerTime);
+                //}
             }
         }
        
@@ -97,24 +126,32 @@ namespace Green
         /// </summary>
         void UpdatePopulation()
         {
-            _enemyPopulation = 0f;
-            _playerPopulation = 0f;
+            _enemyPopulation = 0;
+            _playerPopulation = 0;
+            _playerMaxPopulation = 0;
+            _enemyMaxPopulation = 0;
             foreach(var p in _planets)
             {
-                if(p.Value.State == Star.e_State.AI)
-                {
-                    _enemyPopulation += p.Value.Capacity;
+                _enemyPopulation += p.Value.EnemyTroops;
+                _playerPopulation += p.Value.PlayerTroops;
+
+                if (p.Value.State == Star.e_State.AI)
+                {                  
+                    _enemyMaxPopulation += p.Value.Capacity;
                 }
                 else if(p.Value.State == Star.e_State.Player)
                 {
-                    _playerPopulation += p.Value.Capacity;
+                    _playerMaxPopulation += p.Value.Capacity;
                 }
             }
+            DebugInConsole.LogFormat("敌方总人口：{0} 目前人口: {1}", _enemyMaxPopulation, _enemyPopulation);
+            DebugInConsole.LogFormat("我方总人口：{0} 目前人口: {1}", _playerMaxPopulation, _playerPopulation);
         }
 
         /// </summary>
         void Start()
         {
+            _timer = new Timer(Formula.CalculatePerTime, true, true);
             //UpdateSoldiersInfo();
             UpdatePlanetsInfo();
         }

@@ -11,7 +11,7 @@ namespace Green
         public StateNeutralityToPlayer(FSM fsm, Star star) : base(star, Star.e_State.NeutralityToPlayer)
         {
             _fsm = fsm;
-            _fsm.AddState(this);
+            //_fsm.AddState(this);
             FSMTransition.CheckCondition toPlayer = () =>
             {
                 if (star.Schedule >= 1)
@@ -27,7 +27,7 @@ namespace Green
                 else
                     return false;
             };
-            _transitions.Add(new FSMTransition(Star.e_State.NeutralityToPlayer, toPlayer));
+            _transitions.Add(new FSMTransition(Star.e_State.Player, toPlayer));
             _transitions.Add(new FSMTransition(Star.e_State.NeutralityPeace, neutral));
         }
 

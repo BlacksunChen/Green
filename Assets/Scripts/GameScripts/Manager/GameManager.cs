@@ -32,7 +32,9 @@ namespace Green
             }
         }
 
+        [SerializeField, SetProperty("State")]
         private GameState _state = GameState.Playing;
+
         public GameState State
         {
             get
@@ -130,16 +132,15 @@ namespace Green
                 soldierNum = soldierInPlanetFrom.Count;
             }
             var soldiers = soldierInPlanetFrom.GetRange(0, soldierNum);
-
+            Debug.LogFormat("{0} 派 {1}兵 从{2}到{3}", type.ToString(), soldierNum, from.name, to.name);
             foreach (var s in soldiers)
             {
                 s.UpdateState(Soldier.StateType.Move);
+                from.SoldierLeave(s, s.Bloc);
                 s.SetSeekDestination(to,
                     () =>
                     {
-                        to.AddSolider(s, s.Bloc);
-
-                        from.RemoveSoldier(s, s.Bloc);
+                        to.SoldierArrive(s, s.Bloc);                      
                     });
             }
         }

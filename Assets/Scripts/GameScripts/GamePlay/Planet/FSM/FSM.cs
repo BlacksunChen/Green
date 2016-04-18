@@ -12,11 +12,11 @@ namespace Green
 
         public FSM(Star star)
         {
-            //_stateDic.Add(Star.e_State.AI, new StateAI(this, star));
-            //_stateDic.Add(Star.e_State.NeutralityPeace, new StateNeutralityPeace(this, star));
-            //_stateDic.Add(Star.e_State.NeutralityToAI, new StateNeutralityToAI(this, star));
-            //_stateDic.Add(Star.e_State.NeutralityToPlayer, new StateNeutralityToPlayer(this, star));
-            //_stateDic.Add(Star.e_State.Player, new StatePlayer(this, star));
+            _stateDic.Add(Star.e_State.AI, new StateAI(this, star));
+            _stateDic.Add(Star.e_State.NeutralityPeace, new StateNeutralityPeace(this, star));
+            _stateDic.Add(Star.e_State.NeutralityToAI, new StateNeutralityToAI(this, star));
+            _stateDic.Add(Star.e_State.NeutralityToPlayer, new StateNeutralityToPlayer(this, star));
+            _stateDic.Add(Star.e_State.Player, new StatePlayer(this, star));
         }
 
         public void AddState<T>(T state)

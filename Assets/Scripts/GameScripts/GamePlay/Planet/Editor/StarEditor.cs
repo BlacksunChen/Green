@@ -14,11 +14,11 @@ namespace Green
             base.OnInspectorGUI();
             if (Target.FsmState == null)
             {
-                //var e = EditorGUILayout.EnumPopup("Current State:", Star.e_State.Player);
+                var e = EditorGUILayout.EnumPopup("Current State:", Star.e_State.Player);
             }
             else
             {
-                //EditorGUILayout.EnumPopup("Current State:", Target.State);
+                EditorGUILayout.EnumPopup("Current State:", Target.State);
             }
         }
     }
