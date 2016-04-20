@@ -107,6 +107,7 @@ namespace Green
             if (_timer.CurrentState == TimerState.FINISHED)
             {
                 DebugInConsole.LogFormat("*******************第{0}秒*******************", updateCountIndex++);
+                UpdateSoldiersInPlanets();
                 UpdatePopulation();
                 foreach (var p in _planets)
                 {
@@ -121,6 +122,37 @@ namespace Green
             }
         }
        
+        void UpdateSoldiersInPlanets()
+        {
+            Debug.Log("刷新星球内士兵...");
+            var soldierRoot = GameplayManager.SoldierRoot;
+            var rootGo = GameObject.Find(soldierRoot);
+            if (rootGo == null) Debug.LogFormat("Can not find {0} in Scene!", soldierRoot);
+            var soldiers = rootGo.GetComponentsInChildren<Soldier>();
+            Debug.LogFormat("敌我士兵总数: {0}", soldiers.Length);
+            foreach (var p in Planets)
+            {
+                p.Value.Planet_.PlayerSoldiers.Clear();
+                p.Value.Planet_.EnemySoldiers.Clear();
+            }
+            foreach(var s in soldiers)
+            {
+                switch (s.Bloc)
+                {
+                    case SoldierType.Player:
+                        if(s.InPlanet != null)
+                            s.InPlanet.PlayerSoldiers.Add(s);
+                        break;
+                    case SoldierType.Enemy:
+                        if(s.InPlanet != null)
+                            s.InPlanet.EnemySoldiers.Add(s);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        }
         /// <summary>
         /// 更新双方人口
         /// </summary>
@@ -167,5 +199,68 @@ namespace Green
                 _planets.Add(p.name, p);
             }
         }
+        #region Test Send Soldier
+        public void OnSendSoldier()
+        {
+            var from = GameObject.Find("planet_1").GetComponent<Planet>();
+            var to = GameObject.Find("planet_2").GetComponent<Planet>();
+
+            SendSoldier(from, to, 5, SoldierType.Enemy);
+        }
+
+        public void OnSendSoldier2To3()
+        {
+            var from = GameObject.Find("planet_2").GetComponent<Planet>();
+            var to = GameObject.Find("planet_3").GetComponent<Planet>();
+
+            SendSoldier(from, to, 5, SoldierType.Player);
+        }
+        public void OnSendSoldier3to4()
+        {
+            var from = GameObject.Find("planet_3").GetComponent<Planet>();
+            var to = GameObject.Find("planet_4").GetComponent<Planet>();
+
+            SendSoldier(from, to, 5, SoldierType.Player);
+        }
+        #endregion
+
+        #region Interface
+        public void SendSoldier(Planet from, Planet to, int soldierNum, SoldierType type)
+        {
+            List<Soldier> soldierInPlanetFrom;
+            List<Soldier> soldierInPlanetTo;
+            switch (type)
+            {
+                case SoldierType.Player:
+                    soldierInPlanetFrom = from.PlayerSoldiers;
+                    soldierInPlanetTo = to.PlayerSoldiers;
+                    break;
+                case SoldierType.Enemy:
+                    soldierInPlanetFrom = from.EnemySoldiers;
+                    soldierInPlanetTo = to.EnemySoldiers;
+                    break;
+                default:
+                    soldierInPlanetFrom = new List<Soldier>();
+                    soldierInPlanetTo = new List<Soldier>();
+                    break;
+            }
+            if (soldierNum > soldierInPlanetFrom.Count)
+            {
+                soldierNum = soldierInPlanetFrom.Count;
+            }
+            var soldiers = soldierInPlanetFrom.GetRange(0, soldierNum);
+            Debug.LogFormat("{0} 派 {1}兵 从{2}到{3}", type.ToString(), soldierNum, from.name, to.name);
+            foreach (var s in soldiers)
+            {
+                s.UpdateState(Soldier.StateType.Move);
+                from.SoldierLeave(s, s.Bloc);
+                s.SetSeekDestination(to,
+                    () =>
+                    {
+                        to.SoldierArrive(s, s.Bloc);
+                    });
+            }
+        }
+        #endregion
     }
 }

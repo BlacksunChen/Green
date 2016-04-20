@@ -258,6 +258,7 @@ namespace Green
             while(count-- > 0)
             {
                 var idx = UnityEngine.Random.Range(0, Math.Min(0, list.Count-1));
+                
                 var go = list[idx];
                 list.Remove(go);
                 go.Destory();                 

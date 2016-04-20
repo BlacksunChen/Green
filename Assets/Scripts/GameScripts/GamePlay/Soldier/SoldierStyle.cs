@@ -57,7 +57,7 @@ namespace Green
             var pos = inPlanet.GetRandomPositionInPlanet();
             transform.position = new Vector3(pos.x, pos.y, z);
             //set parent
-            transform.SetParent(GameObject.Find(GameplayManager.SoldierRoot).transform, false);
+            transform.SetParent(GameObject.Find(GetParentName(type)).transform, false);
 
             go.SetActive(true);     
         }
@@ -65,6 +65,24 @@ namespace Green
         string GenerateSoldierName(Planet planet, SoldierType type)
         {
             return "Soldier" + "_in_" + planet.name + "_" + type.ToString();
+        }
+
+        string GetParentName(SoldierType type)
+        {
+            var root = GameplayManager.SoldierRoot;
+            switch (type)
+            {
+                case SoldierType.Player:
+                    root += "Players";
+                    break;
+                case SoldierType.Enemy:
+
+                    root += "Enemies";
+                    break;
+                default:
+                    break;
+            }
+            return root;
         }
     }
 }

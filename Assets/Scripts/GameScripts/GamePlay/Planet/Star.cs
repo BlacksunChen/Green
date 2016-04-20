@@ -104,10 +104,10 @@ namespace Green
 
         //private Tuple<double, double> _troops;//双方兵力，前者是玩家，后者是AI
 
-        [SerializeField, SetProperty("Troops")]
+        [SerializeField, SetProperty("PlayerTroops")]
         private float _playerTroops;
 
-        [SerializeField, SetProperty("Troops")]
+        [SerializeField, SetProperty("EnemyTroops")]
         private float _enemyTroops;
 
         [SerializeField, SetProperty("Schedule")]
@@ -121,7 +121,10 @@ namespace Green
             }
             set
             {
-                _playerTroops = value;
+                if (value < 0f)
+                    _playerTroops = 0f;
+                else
+                    _playerTroops = value;
             }
         }
 
@@ -133,7 +136,10 @@ namespace Green
             }
             set
             {
-                _enemyTroops = value;
+                if (value < 0f)
+                    _enemyTroops = 0f;
+                else
+                    _enemyTroops = value;
             }
         }
         public int DEF
@@ -243,12 +249,13 @@ namespace Green
                 enemy += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
                 player += Formula.CalculateDamageForNeutralOnePerTime(_enemyTroops, _playerTroops, perTime);
             }
-            _enemyTroops += enemy;
-            _playerTroops += player;
-            DebugInConsole.LogFormat("我方损失兵力:{0} 总兵力:{1}", player, _playerTroops);
-            DebugInConsole.LogFormat("敌方损失兵力:{0} 总兵力:{1}", enemy, _enemyTroops);
-            _enemyTroops = Truncate(_enemyTroops, 0f);
-            _playerTroops = Truncate(_playerTroops, 0f);
+            EnemyTroops += enemy;
+            PlayerTroops += player;
+            DebugInConsole.LogFormat("我方损失兵力:{0} 总兵力:{1}", player, PlayerTroops);
+            DebugInConsole.LogFormat("敌方损失兵力:{0} 总兵力:{1}", enemy, EnemyTroops);
+            //Truncate(ref _enemyTroops, 0f);
+            //Truncate(ref _playerTroops, 0f);
+           
         }
 
         bool _isDuringCapture = false;
@@ -269,17 +276,18 @@ namespace Green
         /// </summary>
         public void OnUpdateSituation()
         {
-            //战斗清算
-            BattlePerTime(Formula.CalculatePerTime);
-
             //本状态执行更新
             _fsmState.OnUpdate();
+            
+            //战斗清算
+            BattlePerTime(Formula.CalculatePerTime);
+           
             //判断是否有到条件进入下一个状态
             _fsmState = _fsmState.NextState();
         }
 
         Planet m_planet = null;
-        public Planet _planet
+        public Planet Planet_
         {
             get
             {
@@ -301,21 +309,19 @@ namespace Green
             int enemyCount = Mathf.FloorToInt(_enemyTroops);
             int playerCount = Mathf.FloorToInt(_playerTroops);
             
-            _planet.UpdateSoldiersToCount(enemyCount, SoldierType.Enemy);
-            _planet.UpdateSoldiersToCount(playerCount, SoldierType.Player);
+            Planet_.UpdateSoldiersToCount(enemyCount, SoldierType.Enemy);
+            Planet_.UpdateSoldiersToCount(playerCount, SoldierType.Player);
         }
 
-        float Truncate(float num, float min, float max)
+        void Truncate(ref float num, float min, float max)
         {
-            if (num >= max) return max;
-            if (num <= min) return min;
-            return num;
+            if (num >= max) num = max;
+            if (num <= min) num = min;
         }
 
-        float Truncate(float num, float min)
+        void Truncate(ref float num, float min)
         {
-            if (num <= min) return min;
-            return num;
+            if (num <= min) num = min;
         }
     }
 }

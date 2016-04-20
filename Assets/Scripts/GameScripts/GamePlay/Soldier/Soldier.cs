@@ -61,7 +61,7 @@ namespace Green
         {
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.seek);
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.wander);
-
+            InPlanet = null;
             //_behaviors.SeekScale = 25f;
             //_behaviors.WanderScale = 2f;
         }
