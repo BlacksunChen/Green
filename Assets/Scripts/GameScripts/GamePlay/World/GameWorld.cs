@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Utilities;
 
 namespace Green
@@ -73,7 +74,7 @@ namespace Green
         /// </summary>
         float _avFrameTime = 0f;
 
-        void Awake()
+        protected override void Awake()
         {
             /*
             var background = GameObject.Find(GameplayManager.Instance.Background);
@@ -99,14 +100,14 @@ namespace Green
                 UpdateSituationInEachPlanet();
             }
         }
-        int updateCountIndex = 0;
+        int _updateCountIndex = 0;
         void UpdateSituationInEachPlanet()
         {
             _timer.Resume();
             _timer.Update();
             if (_timer.CurrentState == TimerState.FINISHED)
             {
-                DebugInConsole.LogFormat("*******************第{0}秒*******************", updateCountIndex++);
+                DebugInConsole.LogFormat("*******************第{0}秒*******************", _updateCountIndex++);
                 UpdateSoldiersInPlanets();
                 UpdatePopulation();
                 foreach (var p in _planets)
@@ -124,12 +125,11 @@ namespace Green
        
         void UpdateSoldiersInPlanets()
         {
-            Debug.Log("刷新星球内士兵...");
-            var soldierRoot = GameplayManager.SoldierRoot;
-            var rootGo = GameObject.Find(soldierRoot);
-            if (rootGo == null) Debug.LogFormat("Can not find {0} in Scene!", soldierRoot);
+            DebugInConsole.Log("刷新星球内士兵...");
+            var rootGo = GameObject.Find(GameplayManager.SoldierRoot);
+            if (rootGo == null) Debug.LogFormat("Can not find {0} in Scene!", GameplayManager.SoldierRoot);
             var soldiers = rootGo.GetComponentsInChildren<Soldier>();
-            Debug.LogFormat("敌我士兵总数: {0}", soldiers.Length);
+            DebugInConsole.LogFormat("敌我士兵总数: {0}", soldiers.Length);
             foreach (var p in Planets)
             {
                 p.Value.Planet_.PlayerSoldiers.Clear();
@@ -180,7 +180,6 @@ namespace Green
             DebugInConsole.LogFormat("我方总人口：{0} 目前人口: {1}", _playerMaxPopulation, _playerPopulation);
         }
 
-        /// </summary>
         void Start()
         {
             _timer = new Timer(Formula.CalculatePerTime, true, true);
@@ -215,7 +214,7 @@ namespace Green
 
             SendSoldier(from, to, 5, SoldierType.Player);
         }
-        public void OnSendSoldier3to4()
+        public void OnSendSoldier3To4()
         {
             var from = GameObject.Find("planet_3").GetComponent<Planet>();
             var to = GameObject.Find("planet_4").GetComponent<Planet>();
@@ -228,20 +227,16 @@ namespace Green
         public void SendSoldier(Planet from, Planet to, int soldierNum, SoldierType type)
         {
             List<Soldier> soldierInPlanetFrom;
-            List<Soldier> soldierInPlanetTo;
             switch (type)
             {
                 case SoldierType.Player:
                     soldierInPlanetFrom = from.PlayerSoldiers;
-                    soldierInPlanetTo = to.PlayerSoldiers;
                     break;
                 case SoldierType.Enemy:
                     soldierInPlanetFrom = from.EnemySoldiers;
-                    soldierInPlanetTo = to.EnemySoldiers;
                     break;
                 default:
                     soldierInPlanetFrom = new List<Soldier>();
-                    soldierInPlanetTo = new List<Soldier>();
                     break;
             }
             if (soldierNum > soldierInPlanetFrom.Count)

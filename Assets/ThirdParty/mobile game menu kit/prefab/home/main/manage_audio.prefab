@@ -1,0 +1,1232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400000}
+  - 81: {fileID: 8100000}
+  - 114: {fileID: 11400000}
+  - 114: {fileID: 11475222}
+  - 114: {fileID: 11449330}
+  m_Layer: 0
+  m_Name: manage_audio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &158136
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 458136}
+  - 82: {fileID: 8258136}
+  m_Layer: 0
+  m_Name: Menu_sfx_source
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &158138
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 458138}
+  - 82: {fileID: 8258138}
+  m_Layer: 0
+  m_Name: Music_source
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 458138}
+  - {fileID: 458136}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &458136
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158136}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400000}
+  m_RootOrder: 1
+--- !u!4 &458138
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158138}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400000}
+  m_RootOrder: 0
+--- !u!81 &8100000
+AudioListener:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+--- !u!82 &8258136
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158136}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &8258138
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158138}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40b795cb8fdef469e444020257c7af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  editor_show_worlds: 0
+  editor_show_lives: 0
+  editor_show_audio: 0
+  editor_show_debug: 1
+  show_debug_messages: 0
+  show_debug_warnings: 0
+  editor_show_pad: 0
+  editor_show_store: 1
+  editor_show_score: 0
+  allow_ESC: 1
+  store_enabled: 1
+  show_loading_screen: 1
+  home_scene_name: 
+  score_name: 506f696e74733a
+  what_say_if_new_stage_record: 4e6577207374616765207265636f726421
+  what_say_if_new_personal_record: 4e657720706572736f6e616c207265636f726421
+  what_say_if_new_device_record: 4e657720646576696365207265636f726421
+  show_star_score: 1
+  show_progres_bar: 1
+  show_int_score: 1
+  show_int_score_rank: 1
+  show_int_score_stage_record_in_game_stage: 1
+  show_score_in_lose_screen_too: 1
+  my_ads_master: {fileID: 0}
+  show_purchase_feedback: 1
+  show_lives_even_if_cap_reached: 1
+  show_continue_tokens_even_if_cap_reached: 1
+  show_consumable_item_even_if_cap_reached: 1
+  show_incremental_item_even_if_cap_reached: 1
+  show_virtual_money_even_if_cap_reached: 1
+  virtual_money_name: 436f696e73
+  use_pad: 0
+  normal_button_color:
+    r: 0.31617647
+    g: 0.31617647
+    b: 0.31617647
+    a: 0.7294118
+  highlighted_button_color:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  pad_start_button: 339
+  pad_ok_button: 330
+  pad_back_button: 331
+  pad_next_button: 335
+  pad_previous_button: 334
+  pad_pause_button: 338
+  infinite_lives: 0
+  lives_name: 4c69766573
+  start_lives: 3
+  live_cap: 5
+  current_lives: 
+  lose_lives_selected: 0
+  refresh_stage_and_world_screens: 0
+  start_continue_tokens: 1
+  current_continue_tokens: 
+  continue_tokens_cap: 3
+  continue_menu_have_countdown: 0
+  continue_menu_countdown_seconds: 30
+  continue_rule_selected: 2
+  continue_cost_virtual_money: 10
+  if_player_not_continue_selected: 2
+  when_restart_selected: 0
+  if_not_continue_restart_with_lives: 1
+  if_not_continue_lose_gained_stars: 1
+  wait_for_days: 0
+  wait_for_hours: 0
+  wait_for_minutes: 2
+  wait_for_seconds: 23
+  if_player_continue_selected: 2
+  continue_give_new_lives: 2
+  start_virtual_money: 0
+  virtual_money_cap: 200
+  current_virtual_money: 
+  can_buy_virtual_money_with_real_money: 1
+  buy_virtual_money_with_real_money_with_soomla: 1
+  my_Soomla_billing_script: {fileID: 0}
+  my_store_item_manager: {fileID: 0}
+  current_world: 
+  total_stages_in_world_n: 0200000002000000
+  total_number_of_stages_in_the_game: 0
+  total_number_of_stages_in_the_game_solved: 
+  world_name:
+  - 576f726c64202d2041
+  - 576f726c64202d2042
+  this_world_is_unlocked_after_selected: 0000000002000000
+  star_score_required_to_unlock_this_world: 0000000002000000
+  star_score_difference: 0
+  latest_stage_played_world: 
+  latest_stage_played_stage: 
+  play_this_stage_to_progress_in_the_game_world: 
+  play_this_stage_to_progress_in_the_game_stage: 
+  press_start_and_go_to_selected: 0
+  world_screen_generation_selected: 0
+  show_world_name_on_world_ico: 1
+  show_world_number_on_world_ico: 1
+  stage_screen_generation_selected: 0
+  use_world_screen_to_show_stages_too: 0
+  when_win_play_selected: 1
+  play_win_music_in_loop: 0
+  when_lose_play_selected: 1
+  play_lose_music_in_loop: 0
+  music_source: {fileID: 8258138}
+  fade_music: 1
+  music_menu: {fileID: 0}
+  music_stage_win: {fileID: 8300000, guid: c3b161b93962f1e478a6ce810e840cdb, type: 3}
+  music_stage_lose: {fileID: 8300000, guid: 1a6cbaebf95399341ba11c5d4bcab3b2, type: 3}
+  show_big_star_sfx:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  sfx_source: {fileID: 8258136}
+  tap_sfx: {fileID: 8300000, guid: 01a580a5a1a894240a7d49216355970f, type: 3}
+  tap_error_sfx: {fileID: 8300000, guid: 8bb4e3f1428a0894e97b0931f8d388a9, type: 3}
+  show_new_profile_window: 0
+  number_of_save_profile_slot_avaibles: 10
+  current_profile_selected: 0
+  this_profile_have_a_save_state_in_it: []
+  profile_name: []
+  require_a_name_for_profiles: 1
+  stars_total_score: 
+  best_int_score_for_current_player: 
+  best_int_score_on_this_device: 0
+  go_to_this_screen: 0
+  a_window_is_open: 0
+--- !u!114 &11449330
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3215a1213a8058d4ca1058bf65786762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rewardedVideoZone: 7265776172646564566964656f
+  enable_ads: 0
+  ads_test_mode: 0
+  iOS_ads_app_id: 
+  android_ads_app_id: 
+  app_id_selected: 
+  minimum_time_interval_between_ads: 0
+  time_of_latest_ad_showed: 0
+  reward_feedback_after_ad: 0
+  my_feedback_window: {fileID: 0}
+  target_checkpoint: {fileID: 0}
+  my_game_uGUI: {fileID: 0}
+  my_info_bar: {fileID: 0}
+  ads_typical_settings:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  editor_show_home_ads: 0
+  ads_just_after_logo_when_game_start_as_daily_reward:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ads_before_start_to_play_a_stage:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ads_when_return_to_home_scene_from_a_stage:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  editor_show_win_screen_ads: 0
+  ads_when_win_screen:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ads_when_you_have_gain_virtual_money_in_this_stage:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ads_when_win_screen_get_the_third_star:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  editor_show_lose_screen_ads: 0
+  ads_when_continue_screen_appear:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  editor_show_in_game_ads: 0
+  ads_when_stage_start:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ads_when_reach_a_check_point:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ads_when_player_open_a_gift_packet:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ask_if_double_int_score:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  ask_if_double_int_score_when_selected: 0
+  current_ad:
+    when_app_start: 0
+    start_app_ad_wait_for_days: 0
+    start_app_ad_wait_for_hours: 0
+    start_app_ad_wait_for_minutes: 0
+    this_ad_is_enabled: 0
+    use_typical_settings: 1
+    show_custom_settings_in_inspector: 0
+    chance_to_open_an_ad_here: 0
+    ask_to_player_if_he_want_to_watch_an_ad_before_start_it: 0
+    asking_text: 
+    ignore_minimum_time_interval_between_ads: 0
+    my_rule: 0
+    chance_to_reward_the_player_when_not_skip_a_skipable_ad: 0
+    randrom_reward: 0
+    random_slots: 0
+    chance_to_give_this_reward:
+    - 0
+    - 0
+    kind_of_randrom_reward: 0000000000000000
+    min_item_id_randrom_reward: 0000000000000000
+    max_item_id_randrom_reward: 0000000000000000
+    randrom_reward_quantity_for_random_reward:
+    - 0
+    - 0
+    min_reward_quantity_for_random_reward: 0000000000000000
+    max_reward_quantity_for_random_reward: 0000000000000000
+    reward_quantity_for_random_reward: 0000000000000000
+    my_ad_reward: 0
+    my_special_ad_reward: 0
+    randrom_reward_quantity: 0
+    min_reward_quantity: 0
+    max_reward_quantity: 0
+    reward_quantity: 0
+    consumable_item_id: 0
+    choose_a_random_consumable: 0
+    min_random_consumable_item_id: 0
+    max_random_consumable_item_id: 0
+    player_choices: 0
+    ad_reward_by_player_choice_selected: 00000000000000000000000000000000
+    player_choice_quantity: 00000000000000000000000000000000
+    player_choice_random_quantity:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_quantity_min: 00000000000000000000000000000000
+    player_choice_random_quantity_max: 00000000000000000000000000000000
+    player_choice_consumable_item_id: 00000000000000000000000000000000
+    player_choice_random_item_id:
+    - 0
+    - 0
+    - 0
+    - 0
+    player_choice_random_item_id_min: 00000000000000000000000000000000
+    player_choice_random_item_id_max: 00000000000000000000000000000000
+  current_reward_selected: 0
+  current_quantity_reward_selected: 0
+  current_item_id_reward_selected: -1
+  buy_button_cost: 0
+  my_gift_manager: {fileID: 0}
+  my_game_master: {fileID: 0}
+  show_debug_warnings: 0
+  show_debug_messages: 0
+--- !u!114 &11475222
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92b83a445394031429302b512910a2df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  incremental_item_list:
+  - name: 7265642d6f7262
+    icon:
+    - {fileID: 21300000, guid: ae4f85e456f31bd45b1a50a0f810ec1e, type: 3}
+    - {fileID: 21300002, guid: ae4f85e456f31bd45b1a50a0f810ec1e, type: 3}
+    price:
+    - 50
+    - 200
+    description:
+    - 6769766520706f776572
+    - 67697665206d6f726520706f776572
+    require_real_money: 0
+    avaible_from_world: 0
+    avaible_from_stage: 0
+    max_level: 2
+  - name: 677265656e2d6f7262
+    icon:
+    - {fileID: 21300004, guid: ae4f85e456f31bd45b1a50a0f810ec1e, type: 3}
+    - {fileID: 21300006, guid: ae4f85e456f31bd45b1a50a0f810ec1e, type: 3}
+    price:
+    - 25
+    - 80
+    description:
+    - 67697665207370656564
+    - 67697665206d6f7265207370656564
+    require_real_money: 0
+    avaible_from_world: 0
+    avaible_from_stage: 0
+    max_level: 2
+  consumable_item_list:
+  - name: 7265642d706f74696f6e
+    icon: {fileID: 21300006, guid: 186c459c6e1b3004490637ba8464577b, type: 3}
+    price: 10
+    description: 7468697320706f74696f6e207461737465206c696b6520746f6d61746f
+    require_real_money: 0
+    avaible_from_world: 0
+    avaible_from_stage: 0
+    quantity_cap: 5
+  - name: 626c75652d706f74696f6e
+    icon: {fileID: 21300000, guid: 186c459c6e1b3004490637ba8464577b, type: 3}
+    price: 20
+    description: 7468697320706f74696f6e207461737465206c696b652066697368
+    require_real_money: 0
+    avaible_from_world: 0
+    avaible_from_stage: 0
+    quantity_cap: 100
+  - name: 677265656e2d706f74696f6e
+    icon: {fileID: 21300004, guid: 186c459c6e1b3004490637ba8464577b, type: 3}
+    price: 30
+    description: 7468697320706f74696f6e207461737465206c696b6520766567657461626c65
+    require_real_money: 0
+    avaible_from_world: 0
+    avaible_from_stage: 1
+    quantity_cap: 1
+  - name: 677261792d706f74696f6e
+    icon: {fileID: 21300002, guid: 186c459c6e1b3004490637ba8464577b, type: 3}
+    price: 50
+    description: 7468697320706f74696f6e207461737465206c696b6520726174
+    require_real_money: 0
+    avaible_from_world: 1
+    avaible_from_stage: 0
+    quantity_cap: 20
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 100000}
+  m_IsPrefabParent: 1

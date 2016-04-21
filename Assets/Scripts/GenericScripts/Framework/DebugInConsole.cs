@@ -10,14 +10,14 @@ namespace Utilities
     {
         public static void LogFormat(string str, params object[] p)
         {
-            System.Console.WriteLine(str, p);
-            Debug.LogFormat(str, p);
+            //System.Console.WriteLine(str, p);
+            //Debug.LogFormat(str, p);
         }
 
         public static void Log(string str)
         {
-            System.Console.WriteLine(str);
-            Debug.Log(str);
+            //System.Console.WriteLine(str);
+            //Debug.Log(str);
         }
     }
 }

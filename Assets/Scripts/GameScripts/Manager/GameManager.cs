@@ -16,6 +16,8 @@ namespace Green
         Pause,
         GameOver
     }
+
+    //游戏管理类 相当于game_master 不删除，管理用户设定数据， 当前关卡   
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField, SetProperty("World")]
@@ -68,19 +70,22 @@ namespace Green
 
         public void OnChangeStatePlay()
         {
-
+            Time.timeScale = 1;
         }
 
         public void OnChangeStatePause()
         {
-
+            Time.timeScale = 0;
         }
+
         public void OnChangeStateGameOver()
         {
 
         }
+
         protected override void Awake()
         {
+            IsPersistent = true;
             base.Awake();
             var obj = GameObject.Find(GameplayManager.World);
             _world = obj.GetComponent<GameWorld>();

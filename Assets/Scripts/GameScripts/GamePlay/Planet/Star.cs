@@ -323,5 +323,12 @@ namespace Green
         {
             if (num <= min) num = min;
         }
+
+        #region AI Interface
+        public void SendAISoldiers(Star to, int soldierNum)
+        {
+            GameWorld.Instance.SendSoldier(this.Planet_, to.Planet_, soldierNum, SoldierType.Enemy);
+        }
+        #endregion
     }
 }
