@@ -400,6 +400,7 @@ namespace Green
             }
             transform.rotation = GetRotation();
         }
+
         Quaternion GetRotation()
         {
             Vector3 to = new Vector3(_heading.x, _heading.y, 0);
@@ -407,7 +408,14 @@ namespace Green
             return Quaternion.FromToRotation(from, to);
         }
 
-
+        public float TimeToDestination()
+        {
+            float vec = _velocity.magnitude;
+            var curPos = Position;
+            var seek = GetBehavior(SteeringBehavior.Type_.seek) as Seek;
+            var toPos = seek.ToPlanet.InCircle.CenterInWorldSpace;
+            return (toPos - curPos).magnitude / vec;
+        }
     }
 
 

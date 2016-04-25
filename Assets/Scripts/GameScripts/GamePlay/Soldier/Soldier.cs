@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 
 namespace Green
@@ -9,6 +10,19 @@ namespace Green
     {
         //在那个星球上
         public Planet InPlanet;
+
+        public int FromPlanetID
+        {
+            get { return GameWorld.Instance.GetPlanetID(_fromPlanet.GetStar()); }
+        }
+
+        public int ToPlanetID
+        {
+            get { return GameWorld.Instance.GetPlanetID(_toPlanet.GetStar()); }
+        }
+
+        Planet _fromPlanet;
+        Planet _toPlanet;
 
         public SoldierType Bloc = SoldierType.Player;
 
@@ -61,6 +75,7 @@ namespace Green
         {
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.seek);
             _movingEntity.BehaviorOn(SteeringBehavior.Type_.wander);
+            _fromPlanet = InPlanet;
             InPlanet = null;
             //_behaviors.SeekScale = 25f;
             //_behaviors.WanderScale = 2f;
@@ -74,6 +89,7 @@ namespace Green
         /// </param>
         public void SetSeekDestination(Planet p, Action onSeekEnded)
         {
+            _toPlanet = p;
             var seek = _movingEntity.GetBehavior(SteeringBehavior.Type_.seek) as Seek;
             seek.SetDistination(p,
                 () =>
@@ -113,6 +129,15 @@ namespace Green
         public void Destory()
         {
             GameObject.DestroyObject(gameObject);
+        }
+
+        public float TimeToDestination()
+        {
+            if (CurrentType == StateType.Move)
+            {
+                return _movingEntity.TimeToDestination();
+            }
+            return 0f;
         }
     }
 }

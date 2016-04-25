@@ -17,7 +17,12 @@ namespace Green
         Vector2 _seekTarget;
 
         Action _onSeekEnded;
-  
+
+        public Planet ToPlanet
+        {
+            get { return _seekToPlanet; }
+        }
+
         public Seek(MovingEntity movingEntity): base(movingEntity, "Seek", Type_.seek)
         {
         }
