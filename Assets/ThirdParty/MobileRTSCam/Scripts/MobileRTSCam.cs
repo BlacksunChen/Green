@@ -48,13 +48,17 @@ namespace BE {
 		public	bool 		BorderUse = true;
 		public 	float		XMin = -30.0f;		// Camera panning x limit
 		public 	float		XMax =  30.0f;		// Camera panning x limit
+	    public  float       YMax = 30f;
+	    public  float       YMin = -30f;
 		public 	float		ZMin = -30.0f;		// Camera panning z limit
 		public 	float		ZMax =  30.0f;		// Camera panning z limit
 		public 	float 		zoomMax = 50.0f;
 		public 	float 		zoomMin = 20.0f;
 		public 	float 		zoomCurrent = -34.0f;
 		public 	float 		zoomSpeed = 2.0f;
-		
+
+	    public bool InXYPlane = true;
+	    public bool Rotate = false;
 		private bool 		bInTouch = false;
 		private Vector3		vCamRootPosOld = Vector3.zero;
 		private Vector3		mousePosStart = Vector3.zero;
@@ -94,15 +98,28 @@ namespace BE {
 		private Vector2	[]	vTouchPosStart = new Vector2 [2];
 		private float   	ZoomStart = 0.0f;
 
+
 		// disable ui while camera is in dragging
 		private GraphicRaycaster	gr;
 		
 		void Awake () {
 			instance=this;
 			gr = GameObject.Find ("Canvas").GetComponent<GraphicRaycaster>();
-			xzPlane = new Plane(new Vector3(0f, 1f, 0f), 0f); // set base plane to xzplane with height zero
+            if(InXYPlane)
+                xzPlane = new Plane(new Vector3(0f, 0f, 1f), 0f);
+		    else
+                xzPlane = new Plane(new Vector3(0f, 1f, 0f), 0f); // set base plane to xzplane with height zero
 			camMain = trCamera.GetComponent<Camera>();
-			zoomCurrent = -trCamera.localPosition.z;
+		    if (InXYPlane)
+		    {
+		        camMain.orthographicSize = zoomMax;
+		        zoomCurrent = zoomMax;
+		    }
+		    else
+		    {
+		        zoomCurrent = -trCamera.localPosition.z;
+		    }
+
 		}
 
 		void Start () {
@@ -329,26 +346,32 @@ namespace BE {
 				}
 					
 				if(pinchType == PinchType.Up) {
-					//rotate x
-					float fDelta = touchZero.deltaPosition.y * Time.deltaTime * 10.0f;
-					vCamRootRot.x = Mathf.Clamp(vCamRootRot.x - fDelta, 10.0f, 90.0f);
-					trCameraRoot.localRotation = Quaternion.Euler(vCamRootRot);
+				    if (Rotate)
+				    {
+				        //rotate x
+				        float fDelta = touchZero.deltaPosition.y*Time.deltaTime*10.0f;
+				        vCamRootRot.x = Mathf.Clamp(vCamRootRot.x - fDelta, 10.0f, 90.0f);
+				        trCameraRoot.localRotation = Quaternion.Euler(vCamRootRot);
+				    }
 				} 
 				else { 
 					//zoom
 					float fDelta = fPinchDistance - fPinchDistanceStart;
 					SetCameraZoom(ZoomStart - fDelta * zoomSpeed * 0.05f);
 
-					// rotate y
-					Vector3 v1 = vPinchDirStart;
-					Vector3 v2 = vPinchDir;
-					float dot = v1.x*v2.x + v1.y*v2.y;    //# dot product
-					float det = v1.x*v2.y - v1.y*v2.x;    // # determinant
-					float angle = Mathf.Atan2(det, dot);  //# atan2(y, x) or atan2(sin, cos)
-					angle *= Mathf.Rad2Deg;
-							
-					vCamRootRot.y = vCamRootRotStart.y + angle;
-					trCameraRoot.localRotation = Quaternion.Euler(vCamRootRot);
+				    if (Rotate)
+				    {
+				        // rotate y
+				        Vector3 v1 = vPinchDirStart;
+				        Vector3 v2 = vPinchDir;
+				        float dot = v1.x*v2.x + v1.y*v2.y; //# dot product
+				        float det = v1.x*v2.y - v1.y*v2.x; // # determinant
+				        float angle = Mathf.Atan2(det, dot); //# atan2(y, x) or atan2(sin, cos)
+				        angle *= Mathf.Rad2Deg;
+
+				        vCamRootRot.y = vCamRootRotStart.y + angle;
+				        trCameraRoot.localRotation = Quaternion.Euler(vCamRootRot);
+				    }
 				}
 
 				if((pinchType == PinchType.Zoom) || (pinchType == PinchType.Rotate)) {
@@ -368,8 +391,17 @@ namespace BE {
 
 		public void SetCameraPosition(Vector3 vPos) {
 			if(BorderUse) {
-				vPos.x = Mathf.Clamp(vPos.x, XMin, XMax);
-				vPos.z = Mathf.Clamp(vPos.z, ZMin, ZMax);
+			    if (InXYPlane)
+			    {
+                    vPos.x = Mathf.Clamp(vPos.x, XMin, XMax);
+                    vPos.y = Mathf.Clamp(vPos.y, YMin, YMax);
+                }
+			    else
+			    {
+                    vPos.x = Mathf.Clamp(vPos.x, XMin, XMax);
+                    vPos.z = Mathf.Clamp(vPos.z, ZMin, ZMax);
+                }
+				
 			}
 			trCameraRoot.position = vPos;
 		}
@@ -394,10 +426,20 @@ namespace BE {
 			Gizmos.color = Color.red;
 
 			if(BorderUse) {
-				Gizmos.DrawLine(new Vector3(XMin,0,ZMin), new Vector3(ZMax,0,ZMin));
-				Gizmos.DrawLine(new Vector3(XMin,0,ZMax), new Vector3(ZMax,0,ZMax));
-				Gizmos.DrawLine(new Vector3(XMin,0,ZMin), new Vector3(XMin,0,ZMax));
-				Gizmos.DrawLine(new Vector3(ZMax,0,ZMin), new Vector3(ZMax,0,ZMax));
+			    if (InXYPlane)
+			    {
+			        Gizmos.DrawLine(new Vector3(XMin, YMin, 0f), new Vector3(XMin, YMax, 0f));
+			        Gizmos.DrawLine(new Vector3(XMin, YMin, 0f), new Vector3(XMax, YMin, 0f));
+			        Gizmos.DrawLine(new Vector3(XMax, YMin, 0f), new Vector3(XMax, YMax, 0f));
+			        Gizmos.DrawLine(new Vector3(XMin, YMax, 0f), new Vector3(XMax, YMax, 0f));
+			    }
+			    else
+			    {
+			        Gizmos.DrawLine(new Vector3(XMin, 0, ZMin), new Vector3(ZMax, 0, ZMin));
+			        Gizmos.DrawLine(new Vector3(XMin, 0, ZMax), new Vector3(ZMax, 0, ZMax));
+			        Gizmos.DrawLine(new Vector3(XMin, 0, ZMin), new Vector3(XMin, 0, ZMax));
+			        Gizmos.DrawLine(new Vector3(ZMax, 0, ZMin), new Vector3(ZMax, 0, ZMax));
+			    }
 			}
 		}
 	}

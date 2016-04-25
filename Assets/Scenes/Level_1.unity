@@ -470,12 +470,16 @@ MonoBehaviour:
   BorderUse: 1
   XMin: -30
   XMax: 30
+  YMax: 30
+  YMin: -30
   ZMin: -30
   ZMax: 30
   zoomMax: 50
   zoomMin: 20
   zoomCurrent: -34
   zoomSpeed: 2
+  InXYPlane: 1
+  Rotate: 0
   InertiaUse: 1
   LongTabPeriod: 0.5
 --- !u!1 &204439030
@@ -1516,6 +1520,34 @@ Prefab:
     - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
       propertyPath: orthographic
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: XMin
+      value: -57.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: XMax
+      value: 78.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: YMax
+      value: 32.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: YMin
+      value: -43.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: zoomCurrent
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: zoomMax
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: zoomMin
+      value: 7.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
