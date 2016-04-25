@@ -8,17 +8,21 @@ namespace Green
 {
     public class GameWorld : Singleton<GameWorld>
     {
-        //List<MovingEntity> _movingEntities;
-       // List<Base2DEntity> _obstacles;
+        List<Star> _planets;
 
-        Dictionary<string, Star> _planets;
-
-        public Dictionary<string, Star> Planets
+        public List<Star> Planets
         {
             get
             {
                 return _planets;
             }
+        }
+
+        Soldier[] _soldiers;
+
+        public Soldier[] Soldiers
+        {
+            get { return _soldiers; }
         }
 
         [SerializeField, SetProperty("PlayerPopulation")]
@@ -112,9 +116,9 @@ namespace Green
                 UpdatePopulation();
                 foreach (var p in _planets)
                 {
-                    DebugInConsole.LogFormat("*****星球: {0}*****", p.Value.name);
-                    p.Value.OnUpdateSituation();
-                    p.Value.OnUpdateSoldierAnimation();
+                    DebugInConsole.LogFormat("*****星球: {0}*****", p.name);
+                    p.OnUpdateSituation();
+                    p.OnUpdateSoldierAnimation();
                     DebugInConsole.Log      ("*******************");
                 }
                 DebugInConsole.LogFormat("*********************************************");
@@ -128,14 +132,14 @@ namespace Green
             DebugInConsole.Log("刷新星球内士兵...");
             var rootGo = GameObject.Find(GameplayManager.SoldierRoot);
             if (rootGo == null) Debug.LogFormat("Can not find {0} in Scene!", GameplayManager.SoldierRoot);
-            var soldiers = rootGo.GetComponentsInChildren<Soldier>();
-            DebugInConsole.LogFormat("敌我士兵总数: {0}", soldiers.Length);
+            _soldiers = rootGo.GetComponentsInChildren<Soldier>();
+            DebugInConsole.LogFormat("敌我士兵总数: {0}", _soldiers.Length);
             foreach (var p in Planets)
             {
-                p.Value.Planet_.PlayerSoldiers.Clear();
-                p.Value.Planet_.EnemySoldiers.Clear();
+                p.Planet_.PlayerSoldiers.Clear();
+                p.Planet_.EnemySoldiers.Clear();
             }
-            foreach(var s in soldiers)
+            foreach(var s in _soldiers)
             {
                 switch (s.Bloc)
                 {
@@ -164,16 +168,16 @@ namespace Green
             _enemyMaxPopulation = 0;
             foreach(var p in _planets)
             {
-                _enemyPopulation += p.Value.EnemyTroops;
-                _playerPopulation += p.Value.PlayerTroops;
+                _enemyPopulation += p.EnemyTroops;
+                _playerPopulation += p.PlayerTroops;
 
-                if (p.Value.State == Star.e_State.AI)
+                if (p.State == Star.e_State.AI)
                 {                  
-                    _enemyMaxPopulation += p.Value.Capacity;
+                    _enemyMaxPopulation += p.Capacity;
                 }
-                else if(p.Value.State == Star.e_State.Player)
+                else if(p.State == Star.e_State.Player)
                 {
-                    _playerMaxPopulation += p.Value.Capacity;
+                    _playerMaxPopulation += p.Capacity;
                 }
             }
             DebugInConsole.LogFormat("敌方总人口：{0} 目前人口: {1}", _enemyMaxPopulation, _enemyPopulation);
@@ -192,10 +196,10 @@ namespace Green
             var planetsRoot = GameObject.Find(GameplayManager.PlanetsRoot);
             var planets = planetsRoot.GetComponentsInChildren<Star>();
             Debug.LogFormat("Update Planets: {0}", planets.Length);
-            _planets = new Dictionary<string, Star>();
+            _planets = new List<Star>();
             foreach(var p in planets)
             {
-                _planets.Add(p.name, p);
+                _planets.Add(p);
             }
         }
         #region Test Send Soldier
@@ -255,6 +259,24 @@ namespace Green
                         to.SoldierArrive(s, s.Bloc);
                     });
             }
+        }
+
+        public int GetPlanetID(Star star)
+        {
+            if (star == null)
+            {
+                Debug.LogError("GetPlanetID Error: star == null");
+                return -1;
+            }
+            for (int i = 0; i < _planets.Count; ++i)
+            {
+                if (_planets[i] == star)
+                {
+                    return i;
+                }
+            }
+            Debug.LogError("GetPlanetID Error!");
+            return -1;
         }
         #endregion
     }

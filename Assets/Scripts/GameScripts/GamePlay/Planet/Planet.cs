@@ -16,6 +16,11 @@ namespace Green
 
         Star _star;
 
+        public Star GetStar()
+        {
+            return _star;
+        }
+
         public List<Soldier> PlayerSoldiers;
         public List<Soldier> EnemySoldiers;
 
