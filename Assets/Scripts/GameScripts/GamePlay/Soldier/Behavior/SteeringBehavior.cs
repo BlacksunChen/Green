@@ -6,7 +6,7 @@ namespace Green
     /// <summary>
     /// 行为抽象类
     /// </summary>
-    public abstract class SteeringBehavior
+    public abstract partial class SteeringBehavior
     {
 
         [Flags]
@@ -88,6 +88,7 @@ namespace Green
         public void ActiveOn() { _active = true; }
         public void ActiveOff() { _active = false; }
 
+#if UNITY_EDITOR
         /// <summary>
         /// 用于编辑脚本面板
         /// </summary>
@@ -95,6 +96,7 @@ namespace Green
         {
 
         }
+#endif
 
         protected SteeringBehavior(MovingEntity entity, string name, SteeringBehavior.Type_ type)
         {

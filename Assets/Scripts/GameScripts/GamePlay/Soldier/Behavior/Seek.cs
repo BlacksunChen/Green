@@ -1,7 +1,10 @@
 ﻿using System;
 using UnityEngine;
 using Utilities;
-using UnityEditor;
+
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 
 namespace Green
 {
@@ -63,6 +66,8 @@ namespace Green
             
         }
 
+#if UNITY_EDITOR
+        
         public override void OnDrawInspector()
         {
             base.OnDrawInspector();
@@ -73,5 +78,7 @@ namespace Green
             }
             GUILayout.EndVertical();
         }
+#endif
     }
+
 }

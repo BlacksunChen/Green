@@ -2,7 +2,7 @@
 using UnityEditor;
 using Green;
 
-namespace Green.Test
+namespace Green
 {
     [CustomEditor(typeof(Dithered))]
     [System.Serializable]

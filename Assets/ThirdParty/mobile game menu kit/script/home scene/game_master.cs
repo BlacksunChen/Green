@@ -65,11 +65,13 @@ public class game_master : MonoBehaviour
     public int start_lives;
     public int live_cap;
     public int[] current_lives;
+
     public enum lose_lives
     {
         in_game, //like platform games
         when_show_lose_screen //like puzzle games or 
     }
+
     public lose_lives lose_lives_selected;
 
 
@@ -80,6 +82,7 @@ public class game_master : MonoBehaviour
     public int continue_tokens_cap;
     public bool continue_menu_have_countdown;
     public int continue_menu_countdown_seconds;
+
     public enum continue_rule
     {
         never_continue,
@@ -88,6 +91,7 @@ public class game_master : MonoBehaviour
         //continue_cost_virtual_money
 
     }
+
     public continue_rule continue_rule_selected;
     public int continue_cost_virtual_money;
 
@@ -95,9 +99,10 @@ public class game_master : MonoBehaviour
     {
         restart_from_W1_Stage_1,
         restart_from_current_world_Stage_1,
-        restart_from_current_world_and_current_stage
-
+        restart_from_current_world_and_current_stage,
+        restart_from_level_select_screen
     }
+
     public if_player_not_continue if_player_not_continue_selected;
 
     public enum when_restart
@@ -106,6 +111,7 @@ public class game_master : MonoBehaviour
         give_lives_after_countdown
 
     }
+
     public when_restart when_restart_selected;
     public int if_not_continue_restart_with_lives;
 
@@ -114,16 +120,17 @@ public class game_master : MonoBehaviour
     public int wait_for_hours;
     public int wait_for_minutes;
     public int wait_for_seconds;
-    public DateTime[] target_time;//[profile]
-    bool[] recharge_live_countdown_active;//[profile]
+    public DateTime[] target_time; //[profile]
+    bool[] recharge_live_countdown_active; //[profile]
 
     public enum if_player_continue
     {
         restart_from_current_world_Stage_1,
         restart_from_current_world_and_current_stage,
-        continue_playing_this_stage
-
+        continue_playing_this_stage,
+        restart_from_level_select_screen
     }
+
     public if_player_continue if_player_continue_selected;
     public int continue_give_new_lives;
 
@@ -131,35 +138,34 @@ public class game_master : MonoBehaviour
 
     public int start_virtual_money;
     public int virtual_money_cap;
-    public int[] current_virtual_money;//[profile]
+    public int[] current_virtual_money; //[profile]
     public bool can_buy_virtual_money_with_real_money;
     public bool buy_virtual_money_with_real_money_with_soomla;
     public Soomla.Store.my_Soomla_billing my_Soomla_billing_script;
     public store_item_manager my_store_item_manager;
-    public int[][] incremental_item_current_level;//[profile][item_array_slot]
-    public int[][] consumable_item_current_quantity;//[profile][item_array_slot]
+    public int[][] incremental_item_current_level; //[profile][item_array_slot]
+    public int[][] consumable_item_current_quantity; //[profile][item_array_slot]
 
     //worlds and stages
-    int max_stages_in_a_world;//this set the array capacity (it is set automatically, don't touch this!)
-    public int[] current_world;//what is the last world played by the player 
-    [SerializeField]
-    public int[] total_stages_in_world_n;//how many game scenes has your game in every world
+    int max_stages_in_a_world; //this set the array capacity (it is set automatically, don't touch this!)
+    public int[] current_world; //what is the last world played by the player 
+    [SerializeField] public int[] total_stages_in_world_n; //how many game scenes has your game in every world
     public int total_number_of_stages_in_the_game;
     public int[] total_number_of_stages_in_the_game_solved;
     public string[] world_name;
+
     public enum this_world_is_unlocked_after
     {
         start,
         previous_world_is_finished,
         reach_this_star_score,
         buy_it
-
     }
+
     public this_world_is_unlocked_after[] this_world_is_unlocked_after_selected;
-    [SerializeField]
-    public int[] star_score_required_to_unlock_this_world;//[world]
-                                                          //for map
-    public bool[][,] dot_tail_turn_on;//[profile][w,s];
+    [SerializeField] public int[] star_score_required_to_unlock_this_world; //[world]
+    //for map
+    public bool[][,] dot_tail_turn_on; //[profile][w,s];
     public int star_score_difference;
     public int[] latest_stage_played_world;
     public int[] latest_stage_played_stage;
@@ -169,14 +175,30 @@ public class game_master : MonoBehaviour
     //allow manual personalization
     public enum press_start_and_go_to
     {
+        nested_world_stage_select_screen,
+        map,
+        single_screen_with_a_page_for_every_world,
+        straight_to_the_next_game_stage,
         level_select_screen
     }
+
     public press_start_and_go_to press_start_and_go_to_selected = press_start_and_go_to.level_select_screen;
 
+    public enum world_screen_generation
+    {
+        automatic,
+        manual
+    }
 
+    public world_screen_generation world_screen_generation_selected = world_screen_generation.automatic;
     public bool show_world_name_on_world_ico;
     public bool show_world_number_on_world_ico;
 
+    public enum stage_screen_generation
+    {
+        automatic,
+        manual
+    }
 
     public stage_screen_generation stage_screen_generation_selected = stage_screen_generation.automatic;
 
@@ -189,6 +211,7 @@ public class game_master : MonoBehaviour
         music,
         sfx
     }
+
     public when_win_play when_win_play_selected = when_win_play.music;
     public bool play_win_music_in_loop;
 
@@ -198,17 +221,18 @@ public class game_master : MonoBehaviour
         music,
         sfx
     }
+
     public when_lose_play when_lose_play_selected = when_lose_play.music;
     public bool play_lose_music_in_loop;
 
     public AudioSource music_source;
-    public static bool[] music_on;//[profile]
-    public static float[] music_volume;//[profile]
-    public static bool[] sfx_on;//[profile] if game play sound or not
-    public static float[] sfx_volume;//[profile]
-    public static bool[] voice_on;//[profile]
-    public static float[] voice_volume;//[profile]
-    public float fade_music = 0.5f;//music fade time
+    public static bool[] music_on; //[profile]
+    public static float[] music_volume; //[profile]
+    public static bool[] sfx_on; //[profile] if game play sound or not
+    public static float[] sfx_volume; //[profile]
+    public static bool[] voice_on; //[profile]
+    public static float[] voice_volume; //[profile]
+    public float fade_music = 0.5f; //music fade time
     public AudioClip music_menu;
     public AudioClip music_stage_win;
     public AudioClip music_stage_lose;
@@ -225,32 +249,37 @@ public class game_master : MonoBehaviour
     public int number_of_save_profile_slot_avaibles;
     public int current_profile_selected;
     public static bool exist_a_save_state;
-    public bool[] this_profile_have_a_save_state_in_it;//[profile]
+    public bool[] this_profile_have_a_save_state_in_it; //[profile]
     public string[] profile_name;
     public bool require_a_name_for_profiles;
-    public bool[][] world_playable;//[profile][world]
-    public bool[][] world_purchased;//[profile][world]
+    public bool[][] world_playable; //[profile][world]
+    public bool[][] world_purchased; //[profile][world]
     public bool[][,] stage_playable; //[profile][world,stage]
     public bool[][,] stage_solved; //[profile][world,stage]
-                                   //star score
+    //star score
     public int[][,] stage_stars_score; //[profile][world,stage]
-    public int[][] star_score_in_this_world;//[profile][world]
-    public int[] stars_total_score;//[profile] this can be helpful if you want to unlock worlds when player get enough stars 
-                                   //int score
+    public int[][] star_score_in_this_world; //[profile][world]
+
+    public int[] stars_total_score;
+        //[profile] this can be helpful if you want to unlock worlds when player get enough stars 
+
+    //int score
     public int[][,] best_int_score_in_this_stage; //[profile][world,stage]
     public int[] best_int_score_for_current_player; //[profile]
-    public int best_int_score_on_this_device;//the best score among all profiles
-    public static bool[] all_stages_solved;//[profile]
+    public int best_int_score_on_this_device; //the best score among all profiles
+    public static bool[] all_stages_solved; //[profile]
 
     public static GameObject game_master_obj;
 
     public static bool game_is_started = false;
     public static bool logo_already_show = false;
+
     public enum this_screen
     {
         home_screen,
-        level_select_screen
+        stage_screen
     }
+
     public this_screen go_to_this_screen = this_screen.home_screen;
     public bool a_window_is_open;
 
@@ -279,7 +308,8 @@ public class game_master : MonoBehaviour
         if (keep_me)
         {
             game_master_obj = this.gameObject;
-            DontDestroyOnLoad(game_master_obj);//this prefab will be used as reference from the others, so don't destry it when load a new scene
+            DontDestroyOnLoad(game_master_obj);
+                //this prefab will be used as reference from the others, so don't destry it when load a new scene
 
             //sum the stages in every world to know the total number of stages in the game
             for (int w = 0; w < total_stages_in_world_n.Length; w++)
@@ -289,7 +319,8 @@ public class game_master : MonoBehaviour
                     max_stages_in_a_world = total_stages_in_world_n[w];
             }
             if (show_debug_messages)
-                Debug.Log("total_number_of_stages_in_the_game = " + total_number_of_stages_in_the_game + " max_stages_in_a_world = " + max_stages_in_a_world);
+                Debug.Log("total_number_of_stages_in_the_game = " + total_number_of_stages_in_the_game +
+                          " max_stages_in_a_world = " + max_stages_in_a_world);
 
             //create multy arrays for multy profile saves
             this_profile_have_a_save_state_in_it = new bool[number_of_save_profile_slot_avaibles];
@@ -351,7 +382,8 @@ public class game_master : MonoBehaviour
                 best_int_score_in_this_stage[i] = new int[total_stages_in_world_n.Length, max_stages_in_a_world];
                 dot_tail_turn_on[i] = new bool[total_stages_in_world_n.Length, max_stages_in_a_world];
 
-                this_profile_have_a_save_state_in_it[i] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + i.ToString() + "_have_a_save_state_in_it"));
+                this_profile_have_a_save_state_in_it[i] =
+                    Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + i.ToString() + "_have_a_save_state_in_it"));
                 if (my_store_item_manager)
                 {
                     incremental_item_current_level[i] = new int[my_store_item_manager.incremental_item_list.Length];
@@ -370,9 +402,10 @@ public class game_master : MonoBehaviour
             voice_on[current_profile_selected] = true;
             voice_volume[current_profile_selected] = 1;
 
-            if (exist_a_save_state)//copy the saves in the arrays
+            if (exist_a_save_state) //copy the saves in the arrays
             {
-                if (PlayerPrefs.GetInt("total_number_of_stages_in_the_game") == total_number_of_stages_in_the_game) //if the _total_stages number not is the same of last time, erase save data to avoid broken array (the _total_stages don't cange in the game, so the player don't chance to lose his saves. This is useful when you decide to change the total stage number through the making of the game and avoid errors because previous save data refer to a old version)
+                if (PlayerPrefs.GetInt("total_number_of_stages_in_the_game") == total_number_of_stages_in_the_game)
+                    //if the _total_stages number not is the same of last time, erase save data to avoid broken array (the _total_stages don't cange in the game, so the player don't chance to lose his saves. This is useful when you decide to change the total stage number through the making of the game and avoid errors because previous save data refer to a old version)
                 {
                     if (show_debug_messages)
                     {
@@ -388,13 +421,16 @@ public class game_master : MonoBehaviour
                         show_new_profile_window = true;
                     }
                 }
-                else //you have changed the total_stages from the last time, sto the old save data have a different array_length. 
+                else
+                //you have changed the total_stages from the last time, sto the old save data have a different array_length. 
                 {
                     if (show_debug_messages)
                         Debug.Log("different total_stages from the last time");
                     if (this_profile_have_a_save_state_in_it[current_profile_selected])
                     {
-                        if (total_number_of_stages_in_the_game > PlayerPrefs.GetInt("total_number_of_stages_in_the_game")) //you have add stages from last time
+                        if (total_number_of_stages_in_the_game >
+                            PlayerPrefs.GetInt("total_number_of_stages_in_the_game"))
+                            //you have add stages from last time
                         {
                             if (show_debug_messages)
                                 Debug.Log("there are more stages that in the previous save data");
@@ -455,6 +491,7 @@ public class game_master : MonoBehaviour
 
 
     #region manage savestates
+
     public void Create_new_profile(string my_name)
     {
         show_new_profile_window = false;
@@ -499,8 +536,10 @@ public class game_master : MonoBehaviour
 
         if (my_store_item_manager)
         {
-            incremental_item_current_level[current_profile_selected] = new int[my_store_item_manager.incremental_item_list.Length];
-            consumable_item_current_quantity[current_profile_selected] = new int[my_store_item_manager.consumable_item_list.Length];
+            incremental_item_current_level[current_profile_selected] =
+                new int[my_store_item_manager.incremental_item_list.Length];
+            consumable_item_current_quantity[current_profile_selected] =
+                new int[my_store_item_manager.consumable_item_list.Length];
         }
 
         Save(current_profile_selected);
@@ -515,11 +554,14 @@ public class game_master : MonoBehaviour
 
         profile_name[profile_slot] = PlayerPrefs.GetString("profile_" + profile_slot.ToString() + "_name");
 
-        music_on[profile_slot] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_music_on_off"));
+        music_on[profile_slot] =
+            Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_music_on_off"));
         music_volume[profile_slot] = PlayerPrefs.GetFloat("profile_" + profile_slot.ToString() + "_music_volume");
-        sfx_on[profile_slot] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_sfx_on_off"));
+        sfx_on[profile_slot] =
+            Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_sfx_on_off"));
         sfx_volume[profile_slot] = PlayerPrefs.GetFloat("profile_" + profile_slot.ToString() + "_sfx_volume");
-        voice_on[profile_slot] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_voice_on_off"));
+        voice_on[profile_slot] =
+            Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_voice_on_off"));
         voice_volume[profile_slot] = PlayerPrefs.GetFloat("profile_" + profile_slot.ToString() + "_voice_volume");
 
         if (buy_virtual_money_with_real_money_with_soomla)
@@ -529,12 +571,15 @@ public class game_master : MonoBehaviour
 			*/ //DELETE THIS LINE FOR SOOMLA
         }
         else
-            current_virtual_money[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_virtual_money");
+            current_virtual_money[profile_slot] =
+                PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_virtual_money");
 
         if (!infinite_lives)
         {
             current_lives[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_current_lives");
-            recharge_live_countdown_active[profile_slot] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_" + "recharge_live_countdown_active"));
+            recharge_live_countdown_active[profile_slot] =
+                Convert.ToBoolean(
+                    PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_" + "recharge_live_countdown_active"));
             if (recharge_live_countdown_active[profile_slot])
             {
                 string temp_string = PlayerPrefs.GetString("profile_" + profile_slot.ToString() + "_target_time");
@@ -543,38 +588,66 @@ public class game_master : MonoBehaviour
             }
         }
         if (continue_rule_selected == continue_rule.continue_cost_a_continue_token)
-            current_continue_tokens[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_current_continue_tokens");
+            current_continue_tokens[profile_slot] =
+                PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_current_continue_tokens");
 
-        best_int_score_for_current_player[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_best_int_score_for_this_profile");
+        best_int_score_for_current_player[profile_slot] =
+            PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_best_int_score_for_this_profile");
 
         stars_total_score[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_total_stars");
-        total_number_of_stages_in_the_game_solved[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_total_number_of_stages_in_the_game_solved");
-        all_stages_solved[profile_slot] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_all_stages_solved"));
+        total_number_of_stages_in_the_game_solved[profile_slot] =
+            PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_total_number_of_stages_in_the_game_solved");
+        all_stages_solved[profile_slot] =
+            Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_all_stages_solved"));
 
 
-        play_this_stage_to_progress_in_the_game_world[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_play_this_world_to_progress");
-        play_this_stage_to_progress_in_the_game_stage[profile_slot] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_play_this_stage_to_progress");
+        play_this_stage_to_progress_in_the_game_world[profile_slot] =
+            PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_play_this_world_to_progress");
+        play_this_stage_to_progress_in_the_game_stage[profile_slot] =
+            PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_play_this_stage_to_progress");
 
         for (int world = 0; world < total_stages_in_world_n.Length; world++)
         {
 
-            world_purchased[profile_slot][world] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_purchased"));
-            star_score_in_this_world[profile_slot][world] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_star_score_in_this_world");
+            world_purchased[profile_slot][world] =
+                Convert.ToBoolean(
+                    PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" +
+                                       "world_purchased"));
+            star_score_in_this_world[profile_slot][world] =
+                PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_star_score_in_this_world");
 
             for (int stage = 0; stage < total_stages_in_world_n[world]; stage++)
             {
                 //array bool
-                stage_playable[profile_slot][world, stage] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stages_unlocked"));
-                stage_solved[profile_slot][world, stage] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_solved"));
-                dot_tail_turn_on[profile_slot][world, stage] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "dots"));
+                stage_playable[profile_slot][world, stage] =
+                    Convert.ToBoolean(
+                        PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                           stage.ToString() + "_" + "stages_unlocked"));
+                stage_solved[profile_slot][world, stage] =
+                    Convert.ToBoolean(
+                        PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                           stage.ToString() + "_" + "stage_solved"));
+                dot_tail_turn_on[profile_slot][world, stage] =
+                    Convert.ToBoolean(
+                        PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                           stage.ToString() + "_" + "dots"));
 
                 //array int
-                stage_stars_score[profile_slot][world, stage] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_stars_score");
-                best_int_score_in_this_stage[profile_slot][world, stage] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_int_score");
+                stage_stars_score[profile_slot][world, stage] =
+                    PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                       stage.ToString() + "_" + "stage_stars_score");
+                best_int_score_in_this_stage[profile_slot][world, stage] =
+                    PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                       stage.ToString() + "_" + "stage_int_score");
             }
 
-            if (PlayerPrefs.HasKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_unlocked"))
-                world_playable[profile_slot][world] = Convert.ToBoolean(PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_unlocked"));
+            if (
+                PlayerPrefs.HasKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" +
+                                   "world_unlocked"))
+                world_playable[profile_slot][world] =
+                    Convert.ToBoolean(
+                        PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" +
+                                           "world_unlocked"));
             else
             {
                 if (this_world_is_unlocked_after_selected[world] == this_world_is_unlocked_after.start)
@@ -599,7 +672,9 @@ public class game_master : MonoBehaviour
     {
         for (int i = 0; i < my_store_item_manager.incremental_item_list.Length; i++)
         {
-            incremental_item_current_level[profile_slot][i] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_incremental_item_" + i.ToString() + "_current_level");
+            incremental_item_current_level[profile_slot][i] =
+                PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_incremental_item_" + i.ToString() +
+                                   "_current_level");
         }
     }
 
@@ -607,7 +682,9 @@ public class game_master : MonoBehaviour
     {
         for (int i = 0; i < my_store_item_manager.consumable_item_list.Length; i++)
         {
-            consumable_item_current_quantity[profile_slot][i] = PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_consumable_item_" + i.ToString() + "_current_quantity");
+            consumable_item_current_quantity[profile_slot][i] =
+                PlayerPrefs.GetInt("profile_" + profile_slot.ToString() + "_consumable_item_" + i.ToString() +
+                                   "_current_quantity");
         }
     }
 
@@ -622,62 +699,88 @@ public class game_master : MonoBehaviour
 
         PlayerPrefs.SetString("profile_" + profile_slot.ToString() + "_name", profile_name[profile_slot]);
 
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_music_on_off", Convert.ToInt32(music_on[profile_slot]));
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_music_on_off",
+            Convert.ToInt32(music_on[profile_slot]));
         PlayerPrefs.SetFloat("profile_" + profile_slot.ToString() + "_music_volume", music_volume[profile_slot]);
         PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_sfx_on_off", Convert.ToInt32(sfx_on[profile_slot]));
         PlayerPrefs.SetFloat("profile_" + profile_slot.ToString() + "_sfx_volume", sfx_volume[profile_slot]);
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_voice_on_off", Convert.ToInt32(voice_on[profile_slot]));
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_voice_on_off",
+            Convert.ToInt32(voice_on[profile_slot]));
         PlayerPrefs.SetFloat("profile_" + profile_slot.ToString() + "_voice_volume", voice_volume[profile_slot]);
 
 
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_all_stages_solved", Convert.ToInt32(all_stages_solved[profile_slot]));
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_all_stages_solved",
+            Convert.ToInt32(all_stages_solved[profile_slot]));
 
         if (!infinite_lives)
         {
             PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_current_lives", current_lives[profile_slot]);
-            PlayerPrefs.SetInt(("profile_" + profile_slot.ToString() + "_" + "recharge_live_countdown_active"), Convert.ToInt32(recharge_live_countdown_active[profile_slot]));
+            PlayerPrefs.SetInt(("profile_" + profile_slot.ToString() + "_" + "recharge_live_countdown_active"),
+                Convert.ToInt32(recharge_live_countdown_active[profile_slot]));
             if (recharge_live_countdown_active[profile_slot])
             {
-                PlayerPrefs.SetString("profile_" + profile_slot.ToString() + "_target_time", target_time[current_profile_selected].ToString());
+                PlayerPrefs.SetString("profile_" + profile_slot.ToString() + "_target_time",
+                    target_time[current_profile_selected].ToString());
             }
         }
 
         if (continue_rule_selected == continue_rule.continue_cost_a_continue_token)
-            PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_current_continue_tokens", current_continue_tokens[profile_slot]);
+            PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_current_continue_tokens",
+                current_continue_tokens[profile_slot]);
 
         PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_virtual_money", current_virtual_money[profile_slot]);
 
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_total_number_of_stages_in_the_game_solved", total_number_of_stages_in_the_game_solved[profile_slot]);
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_total_number_of_stages_in_the_game_solved",
+            total_number_of_stages_in_the_game_solved[profile_slot]);
         PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_total_stars", stars_total_score[profile_slot]);
 
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_best_int_score_for_this_profile", best_int_score_for_current_player[profile_slot]);
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_best_int_score_for_this_profile",
+            best_int_score_for_current_player[profile_slot]);
 
 
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_play_this_world_to_progress", play_this_stage_to_progress_in_the_game_world[profile_slot]);
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_play_this_stage_to_progress", play_this_stage_to_progress_in_the_game_stage[profile_slot]);
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_play_this_world_to_progress",
+            play_this_stage_to_progress_in_the_game_world[profile_slot]);
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_play_this_stage_to_progress",
+            play_this_stage_to_progress_in_the_game_stage[profile_slot]);
 
         //PlayerPrefs.SetInt("profile_"+profile_slot.ToString()+"_savestate",Convert.ToInt32(exist_a_save_state[profile_slot]));
         PlayerPrefs.SetInt("savestate", Convert.ToInt32(exist_a_save_state));
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_have_a_save_state_in_it", Convert.ToInt32(this_profile_have_a_save_state_in_it[profile_slot]));
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_have_a_save_state_in_it",
+            Convert.ToInt32(this_profile_have_a_save_state_in_it[profile_slot]));
         PlayerPrefs.SetInt("last_profile_used", current_profile_selected);
 
 
         for (int world = 0; world < total_stages_in_world_n.Length; world++)
         {
-            PlayerPrefs.SetInt(("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_unlocked"), Convert.ToInt32(world_playable[profile_slot][world]));
-            PlayerPrefs.SetInt(("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_purchased"), Convert.ToInt32(world_purchased[profile_slot][world]));
-            PlayerPrefs.SetInt(("profile_" + profile_slot.ToString() + "_star_score_in_this_world"), star_score_in_this_world[profile_slot][world]);
+            PlayerPrefs.SetInt(
+                ("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_unlocked"),
+                Convert.ToInt32(world_playable[profile_slot][world]));
+            PlayerPrefs.SetInt(
+                ("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_purchased"),
+                Convert.ToInt32(world_purchased[profile_slot][world]));
+            PlayerPrefs.SetInt(("profile_" + profile_slot.ToString() + "_star_score_in_this_world"),
+                star_score_in_this_world[profile_slot][world]);
 
             for (int stage = 0; stage < total_stages_in_world_n[world]; stage++)
             {
                 //bool arrays
-                PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stages_unlocked", Convert.ToInt32(stage_playable[profile_slot][world, stage]));
-                PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_solved", Convert.ToInt32(stage_solved[profile_slot][world, stage]));
-                PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "dots", Convert.ToInt32(dot_tail_turn_on[profile_slot][world, stage]));
+                PlayerPrefs.SetInt(
+                    "profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" +
+                    "stages_unlocked", Convert.ToInt32(stage_playable[profile_slot][world, stage]));
+                PlayerPrefs.SetInt(
+                    "profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" +
+                    "stage_solved", Convert.ToInt32(stage_solved[profile_slot][world, stage]));
+                PlayerPrefs.SetInt(
+                    "profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" +
+                    "dots", Convert.ToInt32(dot_tail_turn_on[profile_slot][world, stage]));
 
                 //in array
-                PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_stars_score", stage_stars_score[profile_slot][world, stage]);
-                PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_int_score", best_int_score_in_this_stage[profile_slot][world, stage]);
+                PlayerPrefs.SetInt(
+                    "profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" +
+                    "stage_stars_score", stage_stars_score[profile_slot][world, stage]);
+                PlayerPrefs.SetInt(
+                    "profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" +
+                    "stage_int_score", best_int_score_in_this_stage[profile_slot][world, stage]);
             }
         }
 
@@ -695,7 +798,9 @@ public class game_master : MonoBehaviour
     {
         for (int i = 0; i < my_store_item_manager.incremental_item_list.Length; i++)
         {
-            PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_incremental_item_" + i.ToString() + "_current_level", incremental_item_current_level[profile_slot][i]);
+            PlayerPrefs.SetInt(
+                "profile_" + profile_slot.ToString() + "_incremental_item_" + i.ToString() + "_current_level",
+                incremental_item_current_level[profile_slot][i]);
         }
     }
 
@@ -703,7 +808,9 @@ public class game_master : MonoBehaviour
     {
         for (int i = 0; i < my_store_item_manager.consumable_item_list.Length; i++)
         {
-            PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_consumable_item_" + i.ToString() + "_current_quantity", consumable_item_current_quantity[profile_slot][i]);
+            PlayerPrefs.SetInt(
+                "profile_" + profile_slot.ToString() + "_consumable_item_" + i.ToString() + "_current_quantity",
+                consumable_item_current_quantity[profile_slot][i]);
         }
     }
 
@@ -816,27 +923,32 @@ public class game_master : MonoBehaviour
 
         for (int world = 0; world < total_stages_in_world_n.Length; world++)
         {
-            PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" + "world_unlocked");
+            PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "_" +
+                                  "world_unlocked");
             world_playable[profile_slot][world] = false;
             for (int stage = 0; stage < total_stages_in_world_n[world]; stage++)
             {
                 //array bool
-                PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stages_unlocked");
+                PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                      stage.ToString() + "_" + "stages_unlocked");
                 stage_playable[profile_slot][world, stage] = false;
-                PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_solved");
+                PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                      stage.ToString() + "_" + "stage_solved");
                 stage_solved[profile_slot][world, stage] = false;
 
                 dot_tail_turn_on[profile_slot][world, stage] = false;
 
 
                 //array int
-                PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" + stage.ToString() + "_" + "stage_stars_score");
+                PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_array_W" + world.ToString() + "S" +
+                                      stage.ToString() + "_" + "stage_stars_score");
                 stage_stars_score[profile_slot][world, stage] = 0;
             }
         }
 
         this_profile_have_a_save_state_in_it[profile_slot] = false;
-        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_have_a_save_state_in_it", Convert.ToInt32(this_profile_have_a_save_state_in_it[profile_slot]));
+        PlayerPrefs.SetInt("profile_" + profile_slot.ToString() + "_have_a_save_state_in_it",
+            Convert.ToInt32(this_profile_have_a_save_state_in_it[profile_slot]));
 
         if (my_store_item_manager)
         {
@@ -849,7 +961,8 @@ public class game_master : MonoBehaviour
     {
         for (int i = 0; i < my_store_item_manager.incremental_item_list.Length; i++)
         {
-            PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_incremental_item_" + i.ToString() + "_current_level");
+            PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_incremental_item_" + i.ToString() +
+                                  "_current_level");
             incremental_item_current_level[profile_slot][i] = 0;
         }
     }
@@ -858,12 +971,13 @@ public class game_master : MonoBehaviour
     {
         for (int i = 0; i < my_store_item_manager.consumable_item_list.Length; i++)
         {
-            PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_consumable_item_" + i.ToString() + "_current_quantity");
+            PlayerPrefs.DeleteKey("profile_" + profile_slot.ToString() + "_consumable_item_" + i.ToString() +
+                                  "_current_quantity");
             consumable_item_current_quantity[profile_slot][i] = 0;
         }
     }
 
-    public void All_stages_solved()//what happen when the player finish the game
+    public void All_stages_solved() //what happen when the player finish the game
     {
         all_stages_solved[current_profile_selected] = true;
         if (show_debug_messages)
@@ -877,6 +991,7 @@ public class game_master : MonoBehaviour
 
 
     #region countdown
+
     public void Set_date_countdown()
     {
         recharge_live_countdown_active[current_profile_selected] = true;
@@ -885,10 +1000,12 @@ public class game_master : MonoBehaviour
         if (show_debug_messages)
             Debug.Log("now: " + target_time[current_profile_selected]);
 
-        target_time[current_profile_selected] = target_time[current_profile_selected].AddDays((double)wait_for_days);
-        target_time[current_profile_selected] = target_time[current_profile_selected].AddHours((double)wait_for_hours);
-        target_time[current_profile_selected] = target_time[current_profile_selected].AddMinutes((double)wait_for_minutes);
-        target_time[current_profile_selected] = target_time[current_profile_selected].AddSeconds((double)wait_for_seconds);
+        target_time[current_profile_selected] = target_time[current_profile_selected].AddDays((double) wait_for_days);
+        target_time[current_profile_selected] = target_time[current_profile_selected].AddHours((double) wait_for_hours);
+        target_time[current_profile_selected] =
+            target_time[current_profile_selected].AddMinutes((double) wait_for_minutes);
+        target_time[current_profile_selected] =
+            target_time[current_profile_selected].AddSeconds((double) wait_for_seconds);
 
         if (show_debug_messages)
             Debug.Log("target time: " + target_time[current_profile_selected]);
@@ -909,11 +1026,11 @@ public class game_master : MonoBehaviour
 
         int total_seconds_to_wait = 0;
         if (days > 0)
-            total_seconds_to_wait += days * 86400;
+            total_seconds_to_wait += days*86400;
         if (hours > 0)
-            total_seconds_to_wait += hours * 3600;
+            total_seconds_to_wait += hours*3600;
         if (minutes > 0)
-            total_seconds_to_wait += minutes * 60;
+            total_seconds_to_wait += minutes*60;
         if (seconds > 0)
             total_seconds_to_wait += seconds;
 
@@ -992,9 +1109,11 @@ public class game_master : MonoBehaviour
             Debug.LogWarning("Countdown_end");
         Save(current_profile_selected);
     }
+
     #endregion
 
     #region manage cameras
+
     /*
 	public static void Link_me_to_camera(Camera camera_target)
 		{
@@ -1016,6 +1135,7 @@ public class game_master : MonoBehaviour
 		game_master_obj.transform.parent = null;
 		}
 		*/
+
     #endregion
 
     #region manage music
@@ -1030,8 +1150,10 @@ public class game_master : MonoBehaviour
         else
             music_source.volume = 0;
 
-        PlayerPrefs.SetInt("profile_" + current_profile_selected.ToString() + "_music_on_off", Convert.ToInt32(music_on[current_profile_selected]));
-        PlayerPrefs.SetFloat("profile_" + current_profile_selected.ToString() + "_music_volume", music_volume[current_profile_selected]);
+        PlayerPrefs.SetInt("profile_" + current_profile_selected.ToString() + "_music_on_off",
+            Convert.ToInt32(music_on[current_profile_selected]));
+        PlayerPrefs.SetFloat("profile_" + current_profile_selected.ToString() + "_music_volume",
+            music_volume[current_profile_selected]);
     }
 
     public void Sfx_on_off(bool enabled)
@@ -1042,8 +1164,10 @@ public class game_master : MonoBehaviour
         else
             sfx_source.volume = 0;
 
-        PlayerPrefs.SetInt("profile_" + current_profile_selected.ToString() + "_sfx_on_off", Convert.ToInt32(sfx_on[current_profile_selected]));
-        PlayerPrefs.SetFloat("profile_" + current_profile_selected.ToString() + "_sfx_volume", sfx_volume[current_profile_selected]);
+        PlayerPrefs.SetInt("profile_" + current_profile_selected.ToString() + "_sfx_on_off",
+            Convert.ToInt32(sfx_on[current_profile_selected]));
+        PlayerPrefs.SetFloat("profile_" + current_profile_selected.ToString() + "_sfx_volume",
+            sfx_volume[current_profile_selected]);
     }
 
     public void Voice_on_off(bool enabled)
@@ -1057,8 +1181,10 @@ public class game_master : MonoBehaviour
 			voice_source.volume = 0;
 		 */
 
-        PlayerPrefs.SetInt("profile_" + current_profile_selected.ToString() + "_voice_on_off", Convert.ToInt32(voice_on[current_profile_selected]));
-        PlayerPrefs.SetFloat("profile_" + current_profile_selected.ToString() + "_voice_volume", voice_volume[current_profile_selected]);
+        PlayerPrefs.SetInt("profile_" + current_profile_selected.ToString() + "_voice_on_off",
+            Convert.ToInt32(voice_on[current_profile_selected]));
+        PlayerPrefs.SetFloat("profile_" + current_profile_selected.ToString() + "_voice_volume",
+            voice_volume[current_profile_selected]);
     }
 
 
@@ -1087,13 +1213,13 @@ public class game_master : MonoBehaviour
     {
         if (show_debug_messages)
             Debug.Log("call music");
-        if (music_source)//if there is an AudioSource
+        if (music_source) //if there is an AudioSource
         {
-            music_source.clip = music_playing_now;//what music play
+            music_source.clip = music_playing_now; //what music play
 
-            if (!music_source.isPlaying)//if you don't play the music yet, play it!
+            if (!music_source.isPlaying) //if you don't play the music yet, play it!
             {
-                if (music_on[current_profile_selected])//if music is on
+                if (music_on[current_profile_selected]) //if music is on
                     music_source.volume = music_volume[current_profile_selected];
                 else
                     music_source.volume = 0;
@@ -1109,7 +1235,7 @@ public class game_master : MonoBehaviour
     IEnumerator Change_music(AudioClip new_music, bool loop)
     {
 
-        float fade_duration = fade_music * 0.5f;
+        float fade_duration = fade_music*0.5f;
 
         if (music_on[current_profile_selected])
         {
@@ -1119,13 +1245,14 @@ public class game_master : MonoBehaviour
 
             while (passed_fade_down_time < fade_duration)
             {
-                music_source.volume = Mathf.Lerp(music_volume[current_profile_selected], 0, (passed_fade_down_time / fade_duration));
+                music_source.volume = Mathf.Lerp(music_volume[current_profile_selected], 0,
+                    (passed_fade_down_time/fade_duration));
                 passed_fade_down_time += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
         }
 
-        music_playing_now = new_music;//change music
+        music_playing_now = new_music; //change music
         Music(loop);
 
         if (music_on[current_profile_selected])
@@ -1135,7 +1262,8 @@ public class game_master : MonoBehaviour
             float passed_fade_up_time = 0;
             while (passed_fade_up_time < fade_duration)
             {
-                music_source.volume = Mathf.Lerp(0, music_volume[current_profile_selected], (passed_fade_up_time / fade_duration));
+                music_source.volume = Mathf.Lerp(0, music_volume[current_profile_selected],
+                    (passed_fade_up_time/fade_duration));
                 passed_fade_up_time += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
@@ -1160,6 +1288,7 @@ public class game_master : MonoBehaviour
             }
         }
     }
+
     #endregion
 
 

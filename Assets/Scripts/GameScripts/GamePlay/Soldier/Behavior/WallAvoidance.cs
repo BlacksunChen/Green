@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Utilities;
-using UnityEditor;
+
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 
 namespace Green
 {
@@ -188,7 +188,7 @@ namespace Green
             // 恢复默认矩阵
             Gizmos.matrix = defaultMatrix;
         }
-
+#if UNITY_EDITOR
         public override void OnDrawInspector()
         {
             base.OnDrawInspector();
@@ -200,5 +200,7 @@ namespace Green
             }
             GUILayout.EndVertical();
         }
+#endif
     }
+
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Utilities;
-using Green;
-using UnityEditor;
+
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 
 namespace Green
 {
@@ -108,7 +108,7 @@ namespace Green
             OnGizmosDrawCircleInWorldSpace(center, _wanderRadius);
             OnGizmosDrawCircleInLocalSpace(WanderTargetToDraw, 0.025f);
         }
-
+#if UNITY_EDITOR
         public override void OnDrawInspector()
         {
             base.OnDrawInspector();
@@ -120,5 +120,7 @@ namespace Green
             }
             GUILayout.EndVertical();
         }
+#endif
     }
+
 }

@@ -87,41 +87,41 @@ public class options_menu : MonoBehaviour {
 		my_game_master.Gui_sfx(my_game_master.tap_sfx);
 	}
 
-    void Update_sound_icons()
-    {
-        if (game_master.music_on[my_game_master.current_profile_selected])
-        {
-            music_ico.fillAmount = 1;
-            music_slider.interactable = true;
-        }
-        else
-        {
-            music_ico.fillAmount = 0.5f;
-            music_slider.interactable = false;
-        }
-
-        if (game_master.sfx_on[my_game_master.current_profile_selected])
-        {
-            sfx_ico.fillAmount = 1;
-            sfx_slider.interactable = true;
-        }
-        else
-        {
-            sfx_ico.fillAmount = 0.5f;
-            sfx_slider.interactable = false;
-        }
-
-        if (game_master.voice_on[my_game_master.current_profile_selected])
-        {
-            voice_ico.fillAmount = 1;
-            voice_slider.interactable = true;
-        }
-        else
-        {
-            voice_ico.fillAmount = 0.5f;
-            voice_slider.interactable = false;
-        }
-    }
+	void Update_sound_icons()
+	{
+		if (game_master.music_on[my_game_master.current_profile_selected])
+			{
+			music_ico.fillAmount = 1;
+			music_slider.interactable = true;
+			}
+		else
+			{
+			music_ico.fillAmount = 0.5f;
+			music_slider.interactable = false;
+			}
+		
+		if (game_master.sfx_on[my_game_master.current_profile_selected])
+			{
+			sfx_ico.fillAmount = 1;
+			sfx_slider.interactable = true;
+			}
+		else
+			{
+			sfx_ico.fillAmount = 0.5f;
+			sfx_slider.interactable = false;
+			}
+		
+		if (game_master.voice_on[my_game_master.current_profile_selected])
+			{
+			voice_ico.fillAmount = 1;
+			voice_slider.interactable = true;
+			}
+		else
+			{
+			voice_ico.fillAmount = 0.5f;
+			voice_slider.interactable = false;
+			}
+	}
 
 	public void Update_music_volume()
 	{

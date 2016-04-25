@@ -85,7 +85,7 @@ namespace Green
 
         protected override void Awake()
         {
-            IsPersistent = true;
+          //  IsPersistent = true;
             base.Awake();
             var obj = GameObject.Find(GameplayManager.World);
             _world = obj.GetComponent<GameWorld>();

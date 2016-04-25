@@ -169,9 +169,10 @@ namespace Green
 
         private void Start()
         {
-            m_Transform = transform;
-            AutoSetHeight();
-            SetCenter();
+            m_Transform = transform;            
+           // AutoSetHeight();
+            //SetCenter();
+            SetMaxHeight();
         }
 
         private void Update()
@@ -192,34 +193,46 @@ namespace Green
         private float GroundZ = 0f;
         void SetCenter()
         {
-            var background = GameObject.Find("Background");
+            var background = GameObject.Find("GameBackground");
             var posXY = background.transform.position;
             var z = transform.position.z;
             GroundZ = background.transform.position.z;
             m_Transform.position = new Vector3(posXY.x, posXY.y, z);
         }
 
+        void SetMaxHeight()
+        {
+            var posXY = m_Transform.position;
+            m_Transform.position = new Vector3(posXY.x, posXY.y, maxHeight);
+        }
         void AutoSetHeight()
         {
-            var curHeight = DistanceToGround();
-            minHeight = curHeight - heightRange;
-            maxHeight = curHeight + heightRange;
+            //var curHeight = DistanceToGround();
+            minHeight = -8.6f;
+            maxHeight = -31f;
         }
+
         /// <summary>
         /// update camera movement and rotation
         /// </summary>
         private void CameraUpdate()
         {
-            if (FollowingTarget)
-                FollowTarget();
-            else
-                Move();
+            //if (FollowingTarget)
+            //    FollowTarget();
+            //else
+            Move();
 
             HeightCalculation();
-            Rotation();
+            //Rotation();
             LimitPosition();
         }
 
+        Vector2?[] oldTouchPositions = {
+        null,
+        null
+        };
+
+        public const float TouchScale = 0.05f;
         /// <summary>
         /// move camera with keyboard or with screen edge
         /// </summary>
@@ -259,16 +272,29 @@ namespace Green
 
             if (useTouchInput)
             {
-                if (Input.touchCount == 1)
+                if (Input.touchCount == 0)
                 {
-                    //触摸类型为移动触摸
-                    if (Input.GetTouch(0).phase == TouchPhase.Moved)
+                    oldTouchPositions[0] = null;
+                    oldTouchPositions[1] = null;
+                }
+                else if (Input.touchCount == 1)
+                {
+                    if (oldTouchPositions[0] == null || oldTouchPositions[1] != null)
                     {
-                        Vector3 desiredMove = new Vector3();
-                        //根据触摸点计算X与Y位置
-                        desiredMove.x += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
-                        desiredMove.y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
-                        m_Transform.Translate(desiredMove);
+                        oldTouchPositions[0] = Input.GetTouch(0).position;
+                        oldTouchPositions[1] = null;
+                    }
+                    else
+                    {
+                        Vector2 newTouchPosition = Input.GetTouch(0).position;
+
+                        m_Transform.position +=
+                            m_Transform.TransformDirection(
+                                (Vector3)
+                                    ((oldTouchPositions[0] - newTouchPosition)*GetComponent<Camera>().orthographicSize/
+                                     GetComponent<Camera>().pixelHeight*2f));
+
+                        oldTouchPositions[0] = newTouchPosition;
                     }
                 }
             }
@@ -303,11 +329,11 @@ namespace Green
                     //函数返回真为放大，返回假为缩小
                     if (IsEnlarge(oldPosition1, oldPosition2, tempPosition1, tempPosition2))
                     {
-                        zoomPos = Vector2.Distance(tempPosition2, tempPosition1) - Vector2.Distance(oldPosition1, oldPosition2);
+                        zoomPos += Vector2.Distance(tempPosition2, tempPosition1) - Vector2.Distance(oldPosition1, oldPosition2);
                     }
                     else
                     {
-                        zoomPos = -Vector2.Distance(tempPosition2, tempPosition1) + Vector2.Distance(oldPosition1, oldPosition2);
+                        zoomPos += -Vector2.Distance(tempPosition2, tempPosition1) + Vector2.Distance(oldPosition1, oldPosition2);
                     }
                     //备份上一次触摸点的位置，用于对比
                     oldPosition1 = tempPosition1;
@@ -330,7 +356,7 @@ namespace Green
                 difference = targetHeight - distanceToGround;
 
             var position = Vector3.Lerp(m_Transform.position,
-                new Vector3(m_Transform.position.x, m_Transform.position.y, GroundZ - targetHeight), Time.deltaTime * heightDampening);
+                new Vector3(m_Transform.position.x, m_Transform.position.y, targetHeight), Time.deltaTime * heightDampening);
             m_Transform.position = position;
         }
 
