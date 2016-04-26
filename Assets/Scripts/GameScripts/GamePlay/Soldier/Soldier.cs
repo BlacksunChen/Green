@@ -102,6 +102,7 @@ namespace Green
         public void SetPlanet(Planet p)
         {
             InPlanet = p;
+            
         }
 
         public void OnSeekEnded(Action onSeekEnded)

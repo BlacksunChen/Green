@@ -8,8 +8,8 @@ namespace Green
     public enum Soldier_Style
     {
         None,
-        A,
-        B
+        Player_1,
+        Enemy_1
     }
 
     public class SoldierStyle
@@ -28,11 +28,20 @@ namespace Green
             string path = Settings.SOLDIER_PREFAB_PATH;
             if (style == Soldier_Style.None)
                 path += "plane";
+            else if (style == Soldier_Style.Player_1)
+            {
+                path += "player_1";
+            }
+            else if (style == Soldier_Style.Enemy_1)
+            {
+                path += "enemy_1";
+            }
             return path;
         }
 
         public SoldierStyle(Planet inPlanet, Soldier_Style style, SoldierType type)
         {
+
             _go = Resources.Load<GameObject>(GetPrefabPath(style, type));
             var go = _go;
             go = GameObject.Instantiate(go);

@@ -1,503 +1,436 @@
-//using System;
-//using System.Collections.Generic;
-//using Utilities.Tuples;
-
-//namespace Green
-//{
-//    public class AI
-//    {
-        
-//		private double[,] _needs;//若玩家不再操作，此时星球A派往星球B多少时确保胜利
-//		private double[] _needed;//若双方不再操作，到最后星球剩下多少玩家军队
-//		private double[] _fimportance;//星球重要程度的f函数
-
-//        private static AI _instance = null;
-//        private AI() { }
-//        public static AI GetInstance()
-//        {
-//            if (_instance == null)
-//            {
-//                _instance = new AI();
-//            }
-//            return _instance;
-//        }
-
-//        public void Run()
-//        {
-//            //执行策略方法返回的策略
-//            List<Tuple3<int,int,int>> strategyList = Strategy();
-
-//            //获取星球信息
-//            List<Star> starList = Situation.GetInstance().Stars;
-
-//            foreach (var strategy in strategyList)
-//            {
-//                //打印策略信息
-//                Console.WriteLine("星球{0}派{1}个人到星球{2}", strategy.Item1, strategy.Item3, strategy.Item2);
-                
-//                //source star
-//                Star ss = starList[strategy.Item1];
-//                //terminal star
-//                Star ts = starList[strategy.Item2];
-//                //派遣人数
-//                int num = strategy.Item3;
-                
-//                num = num > ss.Troops.Item2 ? (int)ss.Troops.Item2 : num;
-
-//                //从起点减去对应的人数
-//                ss.Troops = new Tuple<double,double>(ss.Troops.Item1, ss.Troops.Item2 - num);
-               
-//                //将人数加到路上
-//                Situation.GetInstance().AIOnTheWay
-//                    .Add(new ArmySituation(strategy.Item1,strategy.Item2,num,0));
-//            }
-            
-//        }
-
-        
-
-//		//模拟某一星球一个周期后的状态，第一个参数是星球，第二个是AI开往这个星球的军队，第三个是玩家开往这个星球的军队
-//		public static void ChangeOnStar(ref Star star,ref List<ArmySituation> AIToHere,
-//			ref List<ArmySituation> playerToHere)
-//		{
-//			//占领中立星球进度
-//			if (star.State == Star.e_State.NeutralityToPlayer && star.Troops.Item1>0&&star.Troops.Item2==0) 
-//			{
-//				star.Schedule += (double)(50 * star.Troops.Item1 + 13) / (150 * star.Troops.Item1 + 3630);
-//			}
-//			if (star.State == Star.e_State.NeutralityToAI && star.Troops.Item1==0&&star.Troops.Item2>0) 
-//			{
-//				star.Schedule += (double)(50 * star.Troops.Item2 + 13) / (150 * star.Troops.Item2 + 3630);
-//			}
-//			if (star.Schedule >= 1) 
-//			{
-//				if (star.State == Star.e_State.NeutralityToPlayer)
-//					star.State = Star.e_State.Player;
-//				if (star.State == Star.e_State.NeutralityToAI)
-//					star.State = Star.e_State.AI;
-//				star.Schedule = 0;
-//			}
-//			//战斗中的消耗
-//			Random random=new Random();
-//			double playerLoss = star.Troops.Item1 > 0 ? 0.4 * star.Troops.Item2 / (star.Troops.Item1 + star.Troops.Item2 ) * random.Next (8, 12) : 0;
-//			double AILoss = star.Troops.Item2 > 0 ? 0.4 * star.Troops.Item1 / (star.Troops.Item1 + star.Troops.Item2 ) * random.Next (8, 12) : 0;
-//			if (star.Troops.Item1 < Math.Exp (-2) && star.Troops.Item2 < Math.Exp (-2)) 
-//			{
-//				playerLoss = 0;
-//				AILoss = 0;
-//			}
-
-//			if(star.State ==Star.e_State.Player)
-//				playerLoss = playerLoss * (1.1 - (double)star.DEF / 50);
-//			if (star.State == Star.e_State.AI)
-//				AILoss = AILoss * (1.1 - (double)star.DEF / 50);
-//			star.Troops=new Tuple<double, double>(//减去双方损失
-//				star.Troops.Item1>playerLoss?star.Troops.Item1-playerLoss:0
-//				,star.Troops.Item2>AILoss?star.Troops.Item2-AILoss:0);
-
-//			//战斗结束后转换状态
-//			if (star.Troops.Item1 == 0 && star.Troops.Item2 > 0) 
-//			{//AI获胜
-//				switch (star.State) 
-//				{
-//				case Star.e_State.NeutralityToPlayer:
-//					star.State = Star.e_State.NeutralityToAI;
-//					star.Schedule = 0;
-//					break;
-//				case Star.e_State.Player:
-//					star.State = Star.e_State.NeutralityToAI;
-//					star.Schedule = 0;
-//					break;
-//				}
-//			}
-//			if (star.Troops.Item1 > 0 && star.Troops.Item2 == 0) 
-//			{//玩家获胜
-//				switch (star.State) 
-//				{
-//				case Star.e_State.NeutralityToAI:
-//					star.State = Star.e_State.NeutralityToPlayer;
-//					star.Schedule = 0;
-//					break;
-//				case Star.e_State.AI:
-//					star.State = Star.e_State.NeutralityToPlayer;
-//					star.Schedule = 0;
-//					break;
-//				}
-//			}
-
-
-//			//行军的军队
-//			for(int i=0;i<AIToHere.Count;++i)
-//			{
-//				AIToHere [i] = new ArmySituation(AIToHere [i].Item1, AIToHere [i].Item2,
-//					AIToHere [i].Item3, AIToHere [i].Item4 + Situation.Speed);
-//				if(Situation.GetInstance().Distance[AIToHere[i].Item1,AIToHere[i].Item2]<=AIToHere[i].Item4)//已经抵达了
-//				{
-//					star.Troops = new Tuple<double, double> (star.Troops.Item1, star.Troops.Item2 + AIToHere [i].Item3);
-//					AIToHere.RemoveAt (i);
-//					--i;
-//				}
-//			}
-//			for(int i=0;i<playerToHere.Count;++i)
-//			{
-//				playerToHere [i] = new ArmySituation(playerToHere [i].Item1, playerToHere [i].Item2,
-//					playerToHere [i].Item3, playerToHere [i].Item4 + Situation.Speed);
-//				if(Situation.GetInstance().Distance[playerToHere[i].Item1,playerToHere[i].Item2]<=playerToHere[i].Item4)//已经抵达了
-//				{
-//					star.Troops = new Tuple<double, double> (star.Troops.Item1 + playerToHere [i].Item3, star.Troops.Item2 );
-//					playerToHere.RemoveAt (i);
-//					--i;
-//				}
-//			}
-//			//中立星球军队到达后会有状态的转换
-//			if (star.State == Star.e_State.NeutralityPeace && star.Troops.Item1 > 0 && star.Troops.Item2 == 0)
-//				star.State = Star.e_State.NeutralityToPlayer;
-//			if (star.State == Star.e_State.NeutralityPeace && star.Troops.Item1 == 0 && star.Troops.Item2 > 0)
-//				star.State = Star.e_State.NeutralityToAI;
-//			//增加星球上的兵力
-//			if (star.State == Star.e_State.AI) 
-//			{//电脑星球
-//				star.Troops=new Tuple<double, double>(star.Troops.Item1,star.Troops.Item2+(double)star.Vigour/10);
-//			}
-//			if (star.State == Star.e_State.Player) 
-//			{//玩家星球
-//				star.Troops=new Tuple<double, double>(star.Troops.Item1+(double)star.Vigour/10,star.Troops.Item2);
-//			}
-//		}
-
-//		//模拟某星球最后的状态,兵力
-//		public Star GetResult(int starIndex)
-//		{
-//			return GetResult (starIndex,99999);
-//		}
-//		public Star GetResult(int starIndex, int terminalTime)//参数二代表多少秒后终止
-//		{
-//			Star ref_star = Situation.GetInstance ().Stars [starIndex];
-//			Star star = new Star (ref_star);
-//			//得到所有开往此地的兵力
-//			List<ArmySituation> AIToHere=new List<ArmySituation>();
-//			List<ArmySituation> playerToHere=new List<ArmySituation>();
-//			for (int i = 0; i < Situation.GetInstance ().AIOnTheWay.Count; ++i) 
-//			{
-//				if (Situation.GetInstance ().AIOnTheWay [i].Item2 == starIndex) {
-//					AIToHere.Add (Situation.GetInstance ().AIOnTheWay [i]);
-//				}
-//			}
-//			for (int i = 0; i < Situation.GetInstance ().PlayerOnTheWay.Count; ++i) 
-//			{
-//				if (Situation.GetInstance ().PlayerOnTheWay [i].Item2 == starIndex) 
-//				{
-//					playerToHere.Add (Situation.GetInstance ().PlayerOnTheWay [i]);
-//				}
-//			}
-
-//			int count = 1;
-//			while (((AIToHere.Count > 0 || playerToHere.Count > 0 || star.Troops.Item1 * star.Troops.Item2 > 0) && terminalTime>1000)
-//				|| (count <= terminalTime && terminalTime<=1000)) 
-//			{//战斗还没结束或是还有兵没到
-//				//每一次变化
-//				AI.ChangeOnStar(ref star,ref AIToHere,ref playerToHere);
-//				count++;
-//				/*
-//				Console.WriteLine ("第{0}秒:", count);
-//				Console.WriteLine ("此时星球上的兵力{0}:{1}",star.Troops.Item1,star.Troops.Item2);
-//				Console.WriteLine ("此时路上玩家的兵力:");
-//				if (star.State == Star.e_State.NeutralityToAI || star.State == Star.e_State.NeutralityToPlayer)
-//					Console.WriteLine ("中立星球 占领进度:{0}",star.Schedule);
-//				foreach (Tuple<int,int,int,int> troop in playerToHere) 
-//				{
-//					Console.WriteLine ("从{0}到{1}，人数{2}，已经走了{3}距离",troop.Item1,troop.Item2,troop.Item3,troop.Item4);
-//				}
-//				Console.WriteLine ("此时路上电脑的兵力:");
-//				foreach (Tuple<int,int,int,int> troop in AIToHere) 
-//				{
-//					Console.WriteLine ("从{0}到{1}，人数{2}，已经走了{3}距离",troop.Item1,troop.Item2,troop.Item3,troop.Item4);
-//				}
-//				Console.WriteLine ();
-//				*/
-//			}
-//			return star;
-
-
-//		}
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 
 
-//        //策略
-//        private List<Tuple3<int,int,int>> Strategy()
-//        {
-//			//统计指标值
-//			Tuple<double,double> total_troops = Situation.GetInstance().GetTotalFight();//双方总兵力
-//			Tuple<int,int> total_vigour = Situation.GetInstance().GetTotalVigour();//双方总活力
-//			Tuple<double,double> real_rise = Situation.GetInstance().GetRealLose();//双方净增长
+/**
+ * 
+ * AI类 实现AI的相关功能
+ * 为了以后的扩展（分AI难度什么的），以后的AI都可以继承自这个AI
+ * 推荐将它注入到GameWorld的实例
+ * 
+ * 作者：康康（有问题了找我就好）
+ */
+
+namespace Green
+{
+	public class AI
+	{
+		public static void CopyValue(object origin,object target)
+		{
+			System.Reflection.PropertyInfo[] properties = (target.GetType()).GetProperties();
+			System.Reflection.FieldInfo[] fields = (origin.GetType()).GetFields();
+			for ( int i=0; i< fields.Length; i++)
+			{
+				for ( int j=0; j< properties.Length; j++)
+				{
+					if (fields[i].Name == properties[j].Name && properties[j].CanWrite)
+					{
+						properties[j].SetValue(target,fields[i].GetValue(origin),null);
+					}
+				}
+			}
+		}
 
 
-//			Console.WriteLine ("双方总兵力({0}:{1})", total_troops.Item1, total_troops.Item2);
-//			Console.WriteLine ("双方总活力({0}:{1})", total_vigour.Item1, total_vigour.Item2);
-//			Console.WriteLine ("双方净增长({0}:{1})", real_rise.Item1, real_rise.Item2);
+		//单例类
+		private AI()
+		{
+			//统计situation里面士兵的分布情况
+			StatistDistribution();
+			//计算双方的属性和
+			caculateTotalProperty ();
+		}
+		//实例
+		private static AI _instance;
 
-//			//计算每个星球的需求
-//			int num_stars = Situation.GetInstance ().Stars.Count;
+		//获取实例
+		public static AI GetInstance()
+		{
+			if (_instance == null)
+			{
+				_instance = new AI ();
+			}
 
-//			_needs = Situation.GetInstance().GetNeeds();//若玩家不再操作，此时星球A派往星球B多少时确保胜利
-//			_needed = Situation.GetInstance().GetNeeded();//若双方不再操作，到最后星球剩下多少玩家军队
+			//统计situation里面士兵的分布情况
+			StatistDistribution();
+			//计算双方的属性和
+			caculateTotalProperty ();
+			return _instance;
+		}
 
+		/**
+		 * 接口设定
+		 * 在GameWorld里Planets获取所有星球
+		 * 在Planet类里GetProperty返回star star里面有双方兵力以及各属性
+		 * star里面PlayerTroops和EnemyTroops表示双方兵力
+		 * 每个Solidier里面TimeToDestination是他到目的地所需时间，如果他的状态是在路上的话
+		 */
+		public void runAI()
+		{
+			//获取目标星球下标
+			int desIndex = getDestination ();
+			if (desIndex == -1)
+				return;//若没有符合条件的星球 什么也不做
+			//获取起点星球和派兵数量 从最近的有己方兵力的星球 过剩兵力为正数的星球 过剩兵力全派过来 
+			int minDistance = int.MaxValue;
+			int sourceIndex = desIndex;//起点星球
+			int troops = 0;//派遣兵力
+			float sumExcess = 0;//总过剩兵力
+			for (int index = 0; index < _starCopys.Count; ++index) 
+			{
+				float excess = CaculateExcessForceCoefficient (index);//过剩兵力
+				if (getDistance (_starCopys [desIndex].Location, _starCopys [index].Location) < minDistance//距离最小
+				   && _starCopys [index].EnemyTroops > 0//有AI兵力
+					&& excess > 0) 
+				{
+					sourceIndex = index;
+					troops = int.Parse(Math.Floor (excess).ToString());
+				}
+				if (_starCopys [index].EnemyTroops > 0//有AI兵力
+				   && excess > 0) 
+				{
+					sumExcess += excess;
+				}
+			}
 
-//			//选择策略
-//			if (total_troops.Item2 > total_troops.Item1 && total_vigour.Item2 > total_vigour.Item1) {//绝对优势
-//				if (real_rise.Item2 > real_rise.Item1) {
-//					return Strategy1 ();
-//				} else {
-//					return Strategy2 ();
-//				}
-//			} else if (total_troops.Item2 <= total_troops.Item1 && total_vigour.Item2 > total_vigour.Item1) {//相对优势
-//				if (total_troops.Item2 >= total_troops.Item1 * 0.8 || real_rise.Item2 > real_rise.Item1) {//当AI战力大于等于玩家战力乘0.8或电脑总净增长大于等于玩家总净增长时，AI此时应该采取以静制动策略（策略3）
-//					return Strategy3 ();
-					
-//				} else {
-//					return Strategy4 ();
-//				}
-//			} else if (total_troops.Item2 > total_troops.Item1 && total_vigour.Item2 <= total_vigour.Item1) {
-//				if (real_rise.Item2 > real_rise.Item1) {
-//					return Strategy5 ();
-//				} else {
-//					return Strategy6 ();
-//				}
-//			} else {
-//				if (real_rise.Item2 > real_rise.Item1) {
-//					return Strategy3 ();
-//				} else{
-//					return Strategy6 ();
-//				}
-//			}		
-//		}
+			Star star = star = CalculateFuture (desIndex,-1);
 
-//		private double f(double x)
-//		{
-//			return 800.0/(15*x+800);
-//		}
+			if (sourceIndex != desIndex && sumExcess * 0.8 > star.PlayerTroops-star.EnemyTroops) 
+			{
+				GameWorld.Instance.Planets [sourceIndex].SendAISoldiers (GameWorld.Instance.Planets [desIndex], troops);
+			}
 
-//		//策略1
-//		private List<Tuple3<int,int,int>> Strategy1()
-//		{
-//			Console.WriteLine ("策略1");
-//			int sourceIndex=-1, terminalIndex=-1;
-//			double obj = 999999;
+		}
 
-//			_fimportance = new double[Situation.GetInstance().Stars.Count];
+		struct SoldierOnTheWay
+		{
+			public int m_origin;//起点ID
+			public int m_terminal;//终点ID
+			public float m_needTime;//还剩几秒到达目的地;
+		}
 
-//			for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//			{
-//				if (_needed [i] >= 0) continue;
-//				_fimportance [i] = f (Situation.GetInstance ().GetImportance (i));
-//				for (int j = 0; j < Situation.GetInstance ().Stars.Count; ++j) 
-//				{
-//					if (i == j || _needs[i,j] < 0) continue;
-//					if(_needed[i]+_needs[i,j]*2 < obj) 
-//					{
-//						obj = _needed [i] * _fimportance[i] + _needs [i, j] * 2;
-//						sourceIndex = i;
-//						terminalIndex = j;
-//					}
-//				}
-//			}
+		//玩家在路上的兵力及还有多少秒到达目的地
+		private static List<SoldierOnTheWay> _playerOnTheWay;
+
+		//AI在路上的兵力及还有多少秒到达目的地
+		private static List<SoldierOnTheWay> _aiOnTheWay;
+
+		//所有星球的情况 复制过来 因为会模拟导致会改动
+		private static List<Star> _starCopys;
+
+		//玩家总活力
+		private static int _playerTotalVigour;
+
+		//AI总活力
+		private static int _aiTotalVigour;
+
+		//玩家总容量
+		private static int _playerTotalCapacity;
+
+		//AI总容量
+		private static int _aiTotalCapacity;
+
+		//获取situation里面的双方兵力分布情况
+		private static void StatistDistribution()
+		{
+			_starCopys = new List<Star> ();
+			//获取GameWorld里面Star的list
+			foreach(Star star in GameWorld.Instance.Planets)
+			{
+				_starCopys.Add (star);
+			}
+			//获取在路上的士兵信息
+			_playerOnTheWay = new List<SoldierOnTheWay>();
+			_aiOnTheWay = new List<SoldierOnTheWay> ();
+			foreach(Soldier soldier in GameWorld.Instance.Soldiers)
+			{
+				if (soldier.CurrentType == Soldier.StateType.Move) 
+				{//若士兵的状态是正在移动的状态
+					SoldierOnTheWay soldierOnTheWay = new SoldierOnTheWay();
+					soldierOnTheWay.m_needTime = soldier.TimeToDestination();//还有多少秒到达目的地
+					soldierOnTheWay.m_origin = soldier.FromPlanetID;
+					soldierOnTheWay.m_terminal = soldier.ToPlanetID;
+
+					//判断这个士兵是哪一方的就加到对应的list
+					if (soldier.Bloc == SoldierType.Player) 
+					{
+						_playerOnTheWay.Add (soldierOnTheWay);
+					} else if(soldier.Bloc == SoldierType.Enemy)
+					{
+						_aiOnTheWay.Add (soldierOnTheWay);
+					}
+				}
+			}
+		}
+
+		//获取双方属性和（容量和and活力和）
+		private static void caculateTotalProperty()
+		{
+			//双方容量和
+			_aiTotalCapacity = (int)GameWorld.Instance.EnemyMaxPopulation;
+			_playerTotalCapacity = (int)GameWorld.Instance.PlayerMaxPopulation;
+			//双方活力和
+			_aiTotalVigour = 0;
+			_playerTotalVigour = 0;
+			foreach(Star star in _starCopys) 
+			{
+				//加到对应里面
+				if (star.State == Star.e_State.AI) 
+				{
+					_aiTotalVigour += star.Vigour;
+				} else if (star.State == Star.e_State.Player) 
+				{
+					_playerTotalVigour += star.Vigour;
+				}
+			}
+
+		}
+
+		/*
+		 * 模拟双方都不派兵的情况下某个星球t秒后状态 t=-1时为无穷时间
+		 * 公式都放在Formula里面
+		 * 
+		 */
+		private Star CalculateFuture(int planetId,int t)
+		{
+			Star star = new Star();//复制一份 因为会变
+			CopyValue (_starCopys [planetId], star);
+
+			int nowTime = 0;
+
+			//复制一份 因为会变
+			List<SoldierOnTheWay> playerOnTheWay = new List<SoldierOnTheWay>(_playerOnTheWay);
+			List<SoldierOnTheWay> aiOnTheWay = new List<SoldierOnTheWay> (_aiOnTheWay);
+			//统计现在双方各有多少兵力是派往这个星球的
+			//int playerTroopCountToPlanet = TroopCountToPlanet(planetId,playerOnTheWay);
+			//int aiTroopCountToPlanet = TroopCountToPlanet(planetId,aiOnTheWay);
+
+			while (true) 
+			{
 				
-//			List<Tuple3<int,int,int>> res= new List<Tuple3<int,int,int>>();
-//			if(sourceIndex!=-1) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//				(int)Math.Min(Math.Abs(_needed[sourceIndex]),_needs[sourceIndex,terminalIndex])));
-//			return res;
-//		}
-
-//		//策略2
-//		private List<Tuple3<int,int,int>> Strategy2()
-//		{
-//			Console.WriteLine ("策略2");
-//			int sourceIndex=-1, terminalIndex=-1;
-//			double obj = 999999;
-
-//			_fimportance = new double[Situation.GetInstance().Stars.Count];
-
-//			for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//			{
-//				if (_needed [i] >= 0) continue;
-//				_fimportance [i] = f (Situation.GetInstance ().GetImportance (i));
-//				for (int j = 0; j < Situation.GetInstance ().Stars.Count; ++j) 
-//				{
-//					if (i == j || _needs[i,j] < 0) continue;
-//					Star sourceStar = AI.GetInstance ().GetResult (i);//i星球若不采取行动，最后的状态
-//					if(sourceStar.State != Star.e_State.AI) continue;
-//					Star finalStar = AI.GetInstance().GetResult(j,
-//						(int)(Situation.GetInstance().Distance[i,j]/Situation.Speed));//i的部队到达j时的星球
-//					if(finalStar.State==Star.e_State.Player) continue;//不扩大战争了
-//					if(_needed[i]+_needs[i,j]*2 < obj) 
-//					{
-//						obj = _needed [i] * _fimportance[i] + _needs [i, j] * 2;
-//						sourceIndex = i;
-//						terminalIndex = j;
-//					}
-//				}
-//			}
-
-//			List<Tuple3<int,int,int>> res= new List<Tuple3<int,int,int>>();
-//			if(sourceIndex!=-1) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//				(int)Math.Min(Math.Abs(_needed[sourceIndex]),_needs[sourceIndex,terminalIndex])));
-//			return res;
+				//函数出口
+				if(t != -1 && nowTime >= t) break;
+				//当这个星球上只有AI的兵力且路上木有到这里来的玩家兵力 或 只有玩家兵力且路上木有到这里来的AI兵力 时结束 =。=
+				if (t == -1 && ((Math.Floor (star.PlayerTroops) == 0 && playerOnTheWay.Count == 0)
+					|| (Math.Floor (star.EnemyTroops) == 0 && aiOnTheWay.Count == 0)))
+					break;
 
 
+				//若双方在上面都有兵力 战斗过程
+				if((Math.Floor (star.PlayerTroops) > 0) && (Math.Floor (star.EnemyTroops) > 0))
+				{
+					if (star.State == Star.e_State.AI) 
+					{//这个星球是AI的
+						float damageForAttackOnePerTime = Formula.CalculateDamageForAttackOnePerTime(star.EnemyTroops,star.PlayerTroops,(float)star.DEF,(float)1);
+						float damageForDefOnePerTime = Formula.CalculateDamageForDefOnePerTime (star.EnemyTroops, star.PlayerTroops, star.DEF, (float)1);
+						star.PlayerTroops += damageForAttackOnePerTime;
+						star.EnemyTroops += damageForDefOnePerTime;
+					} else if (star.State == Star.e_State.Player) 
+					{//这个星球是玩家的
+						float damageForAttackOnePerTime = Formula.CalculateDamageForAttackOnePerTime(star.PlayerTroops,star.EnemyTroops,star.DEF,(float)1);
+						float damageForDefOnePerTime = Formula.CalculateDamageForDefOnePerTime (star.PlayerTroops, star.EnemyTroops, star.DEF, (float)1);
+						star.PlayerTroops += damageForDefOnePerTime;
+						star.EnemyTroops += damageForAttackOnePerTime;
+					}else
+					{//这个星球是中立的
+						float damageForPlayerOnePerTime = Formula.CalculateDamageForNeutralOnePerTime(star.PlayerTroops,star.EnemyTroops,(float)1);
+						float damageForEnemyOnePerTime = Formula.CalculateDamageForNeutralOnePerTime(star.EnemyTroops,star.PlayerTroops,(float)1);
+						star.PlayerTroops += damageForPlayerOnePerTime;
+						star.EnemyTroops += damageForEnemyOnePerTime;
+					}
+				}
 
+
+				//更新时间
+				++nowTime;
+				//更新各自的onTheWay
+				playerOnTheWay.ForEach(delegate(SoldierOnTheWay soldier) {
+					--soldier.m_needTime;
+					if (soldier.m_needTime < 0) 
+					{
+						playerOnTheWay.Remove (soldier);
+						++star.PlayerTroops;
+					}
+				});
+				aiOnTheWay.ForEach(delegate(SoldierOnTheWay soldier) {
+					--soldier.m_needTime;
+					if (soldier.m_needTime < 0) 
+					{
+						playerOnTheWay.Remove (soldier);
+						++star.EnemyTroops;
+					}
+				});
+			}
+			return star;
+		}
+			
+		//统计有多少赶往此星球的玩家或AI士兵 传入_playerOnTheWay和_aiOnTheWay
+		int TroopCountToPlanet(int planetIndex,List<SoldierOnTheWay> soldiersOnTheWay)
+		{
+			int count = 0;
+			foreach (SoldierOnTheWay soldierOnTheWay in soldiersOnTheWay) 
+			{
+				if (soldierOnTheWay.m_terminal == planetIndex) 
+				{
+					++count;
+				}
+			}
+			return count;
+		}
+
+		/**
+		 * 
+		 * 选取目的地
+		 * 获取攻击指数为正且最小的星球
+		 * 若无目的地则为-1
+		 */
+		private int getDestination()
+		{
+			int minIndex = -1;
+			float minValue = float.MaxValue;
+			for (int index = 0; index < _starCopys.Count; ++index) 
+			{
+				float starAttackValue = getAttackValue (index);//星球重要程度
+				if (starAttackValue > 0 && starAttackValue < minValue) 
+				{
+					minIndex = index;
+					minValue = starAttackValue;
+				}
+			}
+
+			return minIndex;
+		}
+
+
+
+
+		/**
+		 * 
+		 * AI相关计算公式
+		 * 
+		 * 
+		 */
+
+
+		/**
+		 * 2 to 0.5递减的缓和公式
+		 * 输入是AI和玩家某属性的比值
+		 * 输出是属性的权值（也就是属性的重要程度）
+		 * 此函数是为了使AI越在某个属性上占劣势，这个属性越重要
+		 */
+		float AttributeImportanceFormula(float attributeRate)
+		{
+			return (attributeRate + 2) / (2 * attributeRate + 1);
+		}
+
+		/**
+		 * 0.5 to 1递增的缓和公式
+		 * 输入是星球三个属性的加权求和
+		 * 输出是星球的最终重要程度（没有算上地理位置和实际情况我很抱歉）
+		 * 此函数是为了使最重要的星球也不会比最不重要的差别太大
+		 */
+		float StarImportanceFormula(float attributeSum)
+		{
+			return (2 * attributeSum + 1) / (2 * attributeSum + 2);
+		}
+
+		/**
+		 * 过剩兵力系数公式
+		 * 1 to 0.5递减的缓和公式
+		 * 输入是星球重要程度
+		 * 输出是过剩兵力系数
+		 * 此函数是为了重要的星球留较多的人 不怎么重要的星球留较少的人
+		 */
+		float ExcessForceCoefficientFormula(float starImportance)
+		{
+			return (float)(1.5 - starImportance);
+		}
+
+		//计算某星球过剩兵力
+		private int CaculateExcessForceCoefficient(int starIndex)
+		{
+			//获取星球最后情况
+			Star finalStar = CalculateFuture(starIndex,-1);
+			return (int)(Math.Floor(finalStar.EnemyTroops - finalStar.PlayerTroops) //剩下的兵力
+				* ExcessForceCoefficientFormula (StarImportance (starIndex))); //过剩兵力系数
+		}
+
+		//计算某星球的重要程度
+		private float StarImportance(Star star)
+		{
+			//f(g(双方总容量比)*星球容量+g(双方总活力比)*星球活力+星球防御力)
+			return StarImportanceFormula (AttributeImportanceFormula ((float)_aiTotalCapacity / _playerTotalCapacity) * star.Capacity
+			+ AttributeImportanceFormula ((float)_aiTotalVigour / _playerTotalVigour) * star.Vigour
+			+ star.DEF);
+		}
+
+		private float  StarImportance(int starIndex)
+		{
+			return StarImportance (_starCopys[starIndex]);
+		}
+
+		//获取某星球攻占难易程度
+		private float getAttackDifficulty(int planetIndex)
+		{
+			return getAttackDifficulty (_starCopys[planetIndex]);
+		}
+
+		private float getAttackDifficulty(Star star)
+		{
+			//复制一份
+			Star theStar = new Star ();
+			CopyValue (star, theStar);
+			//获取离这个星球最远的上有AI士兵的星球
+			float maxDistance = 0;
+			int starIndex = FindStarIndex (star); 
+			for (int index = 0; index < _starCopys.Count; ++index) 
+			{
+				if (getDistance (theStar.Location, _starCopys [index].Location) > maxDistance && 
+					_starCopys[index].EnemyTroops >= 1) 
+				{
+					maxDistance = getDistance (theStar.Location, _starCopys [index].Location);
+				}
+			}
+
+			Star finalStar = CalculateFuture (starIndex,(int)Math.Floor (maxDistance / new MovingEntity().MaxSpeed));
+
+			return finalStar.PlayerTroops - finalStar.EnemyTroops; 
+
+		}
+
+		//获取星球攻击目标指数（决定进不进攻或是派不派兵支援）
+		private float getAttackValue(int planetIndex)
+		{
+			return getAttackDifficulty (planetIndex) / StarImportance (planetIndex);
+		}
+		float getAttackValue(Star star)
+		{
+			return getAttackDifficulty (star) / StarImportance (star);
+		}
+
+
+
+		//两点之间的距离
+		private float getDistance(Vector2 aLocation,Vector2 otherLocation)
+		{
+			return (aLocation - otherLocation).sqrMagnitude;
+		}
+
+
+		//获取星球下标
+		int FindStarIndex(Star star)
+		{
+			int index = 0;
+			for (; index < _starCopys.Count; index++) 
+			{
+				if (_starCopys [index] == star)
+					break;
+			}
+			return index == _starCopys.Count ? -1 : index;
+		}
 	
-//		}
+	}
+}
 
-//		//策略3,选取出发点_needed[i]为负且最小(弱目标)，_needs[i,j]为正且最小（强目标），派遣MIN(_needed[i],_needs[i,j])
-//		private List<Tuple3<int,int,int>> Strategy3()
-//		{
-//			Console.WriteLine ("策略3");
-//			int sourceIndex=-1, terminalIndex=-1;
-//			double obj = 999999;
-//			for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//			{
-//				if (_needed [i] >= 0) continue;
-//				for (int j = 0; j < Situation.GetInstance ().Stars.Count; ++j) 
-//				{
-//					if (i == j || _needs[i,j] <0) continue;
-//					Star finalStar = AI.GetInstance().GetResult(j,
-//						(int)(Situation.GetInstance().Distance[i,j]/Situation.Speed));//i的部队到达j时的星球
-//					if(finalStar.State==Star.e_State.Player) continue;//不扩大战争了
-//					if(_needed[i]+_needs[i,j]*2 < obj) 
-//					{
-//						obj = _needed [i] + _needs [i, j] * 2;
-//						sourceIndex = i;
-//						terminalIndex = j;
-//					}
-//				}
-//			}
-
-
-//			List<Tuple3<int,int,int>> res= new List<Tuple3<int,int,int>>();
-//			if(sourceIndex!=-1) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//				(int)Math.Min(Math.Abs(_needed[sourceIndex]),_needs[sourceIndex,terminalIndex])));
-//			return res;
-//		}
-
-//		//策略4
-//		private List<Tuple3<int,int,int>> Strategy4()
-//		{
-//			Console.WriteLine ("策略4");
-//			int sourceIndex=-1, terminalIndex=-1;
-//			double obj = 999999;
-//			for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//			{
-//				if (_needed [i] >= 0) continue;
-//				for (int j = 0; j < Situation.GetInstance ().Stars.Count; ++j) 
-//				{
-//					if (i == j || _needs[i,j] <0) continue;
-//					Star finalStar = AI.GetInstance().GetResult(j,
-//                        (int)(Situation.GetInstance().Distance[i,j]/Situation.Speed));//i的部队到达j时的星球
-//					if(finalStar.State==Star.e_State.Player) continue;//不扩大战争了
-//					if(_needed[i]+_needs[i,j]*2 < obj) 
-//					{
-//						obj = _needed [i] + _needs [i, j] * 2;
-//						sourceIndex = i;
-//						terminalIndex = j;
-//					}
-//				}
-//			}
-
-
-//			List<Tuple3<int,int,int>> res= new List<Tuple3<int,int,int>>();
-//			if(sourceIndex!=-1) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//				(int)Math.Min(Math.Abs(_needed[sourceIndex]),_needs[sourceIndex,terminalIndex])));
-//			return res;
-//		}
-
-//		//策略5
-//		private List<Tuple3<int,int,int>> Strategy5()
-//		{
-//			Console.WriteLine ("策略5");
-//			int sourceIndex=-1, terminalIndex=-1;
-//			double obj = 999999;
-//			double sum_needed = 0;
-//			for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//			{
-//				if (_needed [i] >= 0) sum_needed+=_needed[i];
-//			}
-//			for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//			{
-//				if (_needed [i] >= 0 && _needed[i]<1.5*sum_needed/Situation.GetInstance().Stars.Count) continue;
-//				if (Situation.GetInstance().Stars[i].Troops.Item2 == 0 && _needed [i] >= 0) continue;
-//				for (int j = 0; j < Situation.GetInstance ().Stars.Count; ++j) 
-//				{
-//					if (i == j || _needs[i,j] <0) continue;
-//					Star finalStar = AI.GetInstance().GetResult(j,
-//                        (int)(Situation.GetInstance().Distance[i,j]/Situation.Speed));//i的部队到达j时的星球
-//					if(finalStar.State==Star.e_State.Player) continue;//不扩大战争了
-//					if((_needed[i]>0?(0-_needed[i]*_fimportance[terminalIndex]):(_needed[i]+_needs[i,j]*2*_fimportance[terminalIndex])) < obj) 
-//					{
-//						obj = _needed [i] > 0 ? -_needed [i] * _fimportance [terminalIndex] : _needed [i] + _needs [i, j] * 2 *_fimportance [terminalIndex];
-//						sourceIndex = i;
-//						terminalIndex = j;
-//					}
-//				}
-//			}
-
-
-//			List<Tuple3<int,int,int>> res= new List<Tuple3<int,int,int>>();
-//			if(_needed[sourceIndex]>=0) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//				(int)Math.Floor(Situation.GetInstance().Stars[sourceIndex].Troops.Item2)));
-//			else if(sourceIndex!=-1) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//				(int)Math.Min(Math.Abs(_needed[sourceIndex]),_needs[sourceIndex,terminalIndex])));
-//			return res;
-//		}
-
-//		//策略6
-//		private List<Tuple3<int,int,int>> Strategy6()
-//		{
-//			Console.WriteLine ("策略6");
-//					int sourceIndex=-1, terminalIndex=-1;
-//					double obj = 999999;
-//					double sum_needed = 0;
-//					for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//					{
-//						if (_needed [i] >= 0) sum_needed+=_needed[i];
-//					}
-//					for (int i = 0; i < Situation.GetInstance ().Stars.Count; ++i) 
-//					{
-//						if (_needed [i] >= 0 && _needed[i]<1.5*sum_needed/Situation.GetInstance().Stars.Count) continue;
-//						if (Situation.GetInstance().Stars[i].Troops.Item2 == 0 && _needed [i] >= 0) continue;
-//						for (int j = 0; j < Situation.GetInstance ().Stars.Count; ++j) 
-//						{
-//							if (i == j || _needs[i,j] <0) continue;
-//							Star finalStar = AI.GetInstance().GetResult(j,
-//                                (int)(Situation.GetInstance().Distance[i,j]/Situation.Speed));//i的部队到达j时的星球
-//							if(finalStar.State==Star.e_State.Player) continue;//不扩大战争了
-//					if((_needed[i]>0?-_needed[i]*_fimportance[terminalIndex]:_needed[i]+_needs[i,j]*2*_fimportance[terminalIndex]) < obj) 
-//							{
-//								obj = _needed [i] > 0 ? -_needed [i] * _fimportance [terminalIndex] : _needed [i] + _needs [i, j] * 2 *_fimportance [terminalIndex];
-//								sourceIndex = i;
-//								terminalIndex = j;
-//							}
-//						}
-//					}
-
-
-//					List<Tuple3<int,int,int>> res= new List<Tuple3<int,int,int>>();
-//					if(_needed[sourceIndex]>=0) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//				(int)Math.Floor(Situation.GetInstance().Stars[sourceIndex].Troops.Item2)));
-//						else if(sourceIndex!=-1) res.Add (new Tuple3<int,int,int> (sourceIndex, terminalIndex, 
-//							(int)Math.Min(Math.Abs(_needed[sourceIndex]),_needs[sourceIndex,terminalIndex])));
-//						return res;
-//		}
-
-//		//若玩家不再操作，此时星球A派往星球B多少时确保胜利
-//		public Tuple<double,double> GetNeeded(int srouceIndex,int terminalIndex)
-//		{
-//			int counts = (int)(Situation.GetInstance ().Distance [srouceIndex, terminalIndex] / Situation.Speed);
-//			return AI.GetInstance ().GetResult (terminalIndex, counts).Troops;
-//		}
-
-
-
-
-//    }
-
-//}

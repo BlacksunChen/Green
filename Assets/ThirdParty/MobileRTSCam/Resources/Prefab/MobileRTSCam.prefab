@@ -41,8 +41,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140286}
-  m_LocalRotation: {x: 0.31598544, y: 0.3596048, z: -0.13088547, w: 0.86816275}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 440288}
@@ -55,7 +55,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140288}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -60}
+  m_LocalPosition: {x: -6.22, y: -17.24, z: -58.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 440286}
@@ -79,8 +79,8 @@ Camera:
   near clip plane: 0.01
   far clip plane: 1000
   field of view: 30
-  orthographic: 0
-  orthographic size: 12
+  orthographic: 1
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -123,14 +123,18 @@ MonoBehaviour:
   trCameraRoot: {fileID: 440286}
   camPanningUse: 1
   BorderUse: 1
-  XMin: -30
-  XMax: 30
+  XMin: -27.21
+  XMax: 29.6
+  YMax: 16
+  YMin: -30.4
   ZMin: -30
   ZMax: 30
-  zoomMax: 60
-  zoomMin: 20
-  zoomCurrent: -34
+  zoomMax: 11
+  zoomMin: 2.34
+  zoomCurrent: 0
   zoomSpeed: 2
+  InXYPlane: 1
+  Rotate: 0
   InertiaUse: 1
   LongTabPeriod: 0.5
 --- !u!124 &12440286

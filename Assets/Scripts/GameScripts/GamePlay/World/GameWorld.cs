@@ -18,11 +18,17 @@ namespace Green
             }
         }
 
-        Soldier[] _soldiers;
+       // Soldier[] _soldiers;
 
         public Soldier[] Soldiers
         {
-            get { return _soldiers; }
+            get
+            {
+                var rootGo = GameObject.Find(GameplayManager.SoldierRoot);
+                if (rootGo == null) Debug.LogFormat("Can not find {0} in Scene!", GameplayManager.SoldierRoot);
+                return rootGo.GetComponentsInChildren<Soldier>();
+                //return _soldiers;
+            }
         }
 
         [SerializeField, SetProperty("PlayerPopulation")]
@@ -95,21 +101,37 @@ namespace Green
             */
         }
 
-        Timer _timer;
+        //战斗计算的定时器
+        Timer _situationUpdateTimer;
+
+        //ai计算的定时器
+        Timer _aiUpdateTimer;
 
         void Update()
         {
             if(GameManager.Instance.State == GameState.Playing)
             {          
+                //UpdateAI();
                 UpdateSituationInEachPlanet();
             }
         }
+
+        void UpdateAI()
+        {
+            _aiUpdateTimer.Resume();
+            _aiUpdateTimer.Update();
+            if (_aiUpdateTimer.CurrentState == TimerState.FINISHED)
+            {
+                AI.GetInstance().runAI();
+            }
+        }
         int _updateCountIndex = 0;
+
         void UpdateSituationInEachPlanet()
         {
-            _timer.Resume();
-            _timer.Update();
-            if (_timer.CurrentState == TimerState.FINISHED)
+            _situationUpdateTimer.Resume();
+            _situationUpdateTimer.Update();
+            if (_situationUpdateTimer.CurrentState == TimerState.FINISHED)
             {
                 DebugInConsole.LogFormat("*******************第{0}秒*******************", _updateCountIndex++);
                 UpdateSoldiersInPlanets();
@@ -130,16 +152,14 @@ namespace Green
         void UpdateSoldiersInPlanets()
         {
             DebugInConsole.Log("刷新星球内士兵...");
-            var rootGo = GameObject.Find(GameplayManager.SoldierRoot);
-            if (rootGo == null) Debug.LogFormat("Can not find {0} in Scene!", GameplayManager.SoldierRoot);
-            _soldiers = rootGo.GetComponentsInChildren<Soldier>();
-            DebugInConsole.LogFormat("敌我士兵总数: {0}", _soldiers.Length);
+            
+            DebugInConsole.LogFormat("敌我士兵总数: {0}", Soldiers.Length);
             foreach (var p in Planets)
             {
                 p.Planet_.PlayerSoldiers.Clear();
                 p.Planet_.EnemySoldiers.Clear();
             }
-            foreach(var s in _soldiers)
+            foreach(var s in Soldiers)
             {
                 switch (s.Bloc)
                 {
@@ -186,7 +206,8 @@ namespace Green
 
         void Start()
         {
-            _timer = new Timer(Formula.CalculatePerTime, true, true);
+            _situationUpdateTimer = new Timer(Formula.CalculatePerTime, true, true);
+            _aiUpdateTimer = new Timer(0.5f, true, true);
             //UpdateSoldiersInfo();
             UpdatePlanetsInfo();
         }

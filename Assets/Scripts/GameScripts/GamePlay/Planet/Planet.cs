@@ -220,7 +220,19 @@ namespace Green
         {
             for(int i = 0; i < count; ++i)
             {
-                var soldier = new SoldierStyle(this, Soldier_Style.None, type);
+                Soldier_Style style;
+                switch (type)
+                {
+                    case SoldierType.Enemy:
+                        style = Soldier_Style.Enemy_1;
+                        break;
+                    case SoldierType.Player:
+                    default:
+                        style = Soldier_Style.Player_1;
+                        break;
+                    
+                }
+                var soldier = new SoldierStyle(this, style, type);
                 if (soldier == null)
                     Debug.LogErrorFormat("CreateSoldier Failed in Planet: {0}", name);
                 AddSolider(soldier.GetSoldier(), type);
