@@ -7,7 +7,10 @@ using UnityEngine;
 /**
  * 
  * AI类 实现AI的相关功能
+ * 为了以后的扩展（分AI难度什么的），以后的AI都可以继承自这个AI
+ * 推荐将它注入到GameWorld的实例
  * 
+ * 作者：康康（有问题了找我就好）
  */
 
 namespace Green
@@ -364,7 +367,7 @@ namespace Green
 				}
 			}
 
-			Star finalStar = CalculateFuture (starIndex, Math.Floor (maxDistance / v));
+			Star finalStar = CalculateFuture (starIndex, Math.Floor (maxDistance / MovingEntity.MaxSpeed));
 
 			return finalStar.PlayerTroops - finalStar.EnemyTroops; 
 

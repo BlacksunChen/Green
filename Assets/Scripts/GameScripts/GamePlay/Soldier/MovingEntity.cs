@@ -147,7 +147,7 @@ namespace Green
             }
         }
 
-        public float MaxSpeed
+		public static  float MaxSpeed
         {
             get
             {
