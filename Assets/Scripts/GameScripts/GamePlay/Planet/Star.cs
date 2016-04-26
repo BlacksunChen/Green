@@ -11,6 +11,7 @@ namespace Green
     [RequireComponent(typeof(Planet))]
     public class Star : MonoBehaviour
     {
+		
         void SetProperty(
             e_State state,
             int def,

@@ -17,6 +17,23 @@ namespace Green
 {
 	public class AI
 	{
+		public static void CopyValue(object origin,object target)
+		{
+			System.Reflection.PropertyInfo[] properties = (target.GetType()).GetProperties();
+			System.Reflection.FieldInfo[] fields = (origin.GetType()).GetFields();
+			for ( int i=0; i< fields.Length; i++)
+			{
+				for ( int j=0; j< properties.Length; j++)
+				{
+					if (fields[i].Name == properties[j].Name && properties[j].CanWrite)
+					{
+						properties[j].SetValue(target,fields[i].GetValue(origin),null);
+					}
+				}
+			}
+		}
+
+
 		//单例类
 		private AI()
 		{
@@ -26,7 +43,7 @@ namespace Green
 			caculateTotalProperty ();
 		}
 		//实例
-		private AI _instance;
+		private static AI _instance;
 
 		//获取实例
 		public static AI GetInstance()
@@ -68,7 +85,7 @@ namespace Green
 					&& excess > 0) 
 				{
 					sourceIndex = index;
-					troops = Math.Floor (excess);
+					troops = int.Parse(Math.Floor (excess).ToString());
 				}
 			}
 
@@ -87,28 +104,28 @@ namespace Green
 		}
 
 		//玩家在路上的兵力及还有多少秒到达目的地
-		private List<SoldierOnTheWay> _playerOnTheWay;
+		private static List<SoldierOnTheWay> _playerOnTheWay;
 
 		//AI在路上的兵力及还有多少秒到达目的地
-		private List<SoldierOnTheWay> _aiOnTheWay;
+		private static List<SoldierOnTheWay> _aiOnTheWay;
 
 		//所有星球的情况 复制过来 因为会模拟导致会改动
-		private List<Star> _starCopys;
+		private static List<Star> _starCopys;
 
 		//玩家总活力
-		private int _playerTotalVigour;
+		private static int _playerTotalVigour;
 
 		//AI总活力
-		private int _aiTotalVigour;
+		private static int _aiTotalVigour;
 
 		//玩家总容量
-		private int _playerTotalCapacity;
+		private static int _playerTotalCapacity;
 
 		//AI总容量
-		private int _aiTotalCapacity;
+		private static int _aiTotalCapacity;
 
 		//获取situation里面的双方兵力分布情况
-		private void StatistDistribution()
+		private static void StatistDistribution()
 		{
 			_starCopys = new List<Star> ();
 			//获取GameWorld里面Star的list
@@ -124,7 +141,7 @@ namespace Green
 				if (soldier.CurrentType == Soldier.StateType.Move) 
 				{//若士兵的状态是正在移动的状态
 					SoldierOnTheWay soldierOnTheWay = new SoldierOnTheWay();
-					soldierOnTheWay.m_needTime = soldier.TimeToDestination;//还有多少秒到达目的地
+					soldierOnTheWay.m_needTime = soldier.TimeToDestination();//还有多少秒到达目的地
 					soldierOnTheWay.m_origin = soldier.FromPlanetID;
 					soldierOnTheWay.m_terminal = soldier.ToPlanetID;
 
@@ -141,11 +158,11 @@ namespace Green
 		}
 
 		//获取双方属性和（容量和and活力和）
-		private void caculateTotalProperty()
+		private static void caculateTotalProperty()
 		{
 			//双方容量和
-			_aiTotalCapacity = GameWorld.Instance.EnemyMaxPopulation;
-			_playerTotalCapacity = GameWorld.Instance.PlayerMaxPopulation;
+			_aiTotalCapacity = (int)GameWorld.Instance.EnemyMaxPopulation;
+			_playerTotalCapacity = (int)GameWorld.Instance.PlayerMaxPopulation;
 			//双方活力和
 			_aiTotalVigour = 0;
 			_playerTotalVigour = 0;
@@ -170,8 +187,9 @@ namespace Green
 		 */
 		private Star CalculateFuture(int planetId,int t)
 		{
-			
-			Star star = new Star(_starCopys [planetId]);//复制一份 因为会变
+			Star star = new Star();//复制一份 因为会变
+			CopyValue (_starCopys [planetId], star);
+
 			int nowTime = 0;
 
 			//复制一份 因为会变
@@ -197,20 +215,20 @@ namespace Green
 				{
 					if (star.State == Star.e_State.AI) 
 					{//这个星球是AI的
-						float damageForAttackOnePerTime = Formula.CalculateDamageForAttackOnePerTime(star.EnemyTroops,star.PlayerTroops,star.DEF,1.0);
-						float damageForDefOnePerTime = Formula.CalculateDamageForDefOnePerTime (star.EnemyTroops, star.PlayerTroops, star.DEF, 1.0);
+						float damageForAttackOnePerTime = Formula.CalculateDamageForAttackOnePerTime(star.EnemyTroops,star.PlayerTroops,(float)star.DEF,(float)1);
+						float damageForDefOnePerTime = Formula.CalculateDamageForDefOnePerTime (star.EnemyTroops, star.PlayerTroops, star.DEF, (float)1);
 						star.PlayerTroops += damageForAttackOnePerTime;
 						star.EnemyTroops += damageForDefOnePerTime;
 					} else if (star.State == Star.e_State.Player) 
 					{//这个星球是玩家的
-						float damageForAttackOnePerTime = Formula.CalculateDamageForAttackOnePerTime(star.PlayerTroops,star.EnemyTroops,star.DEF,1.0);
-						float damageForDefOnePerTime = Formula.CalculateDamageForDefOnePerTime (star.PlayerTroops, star.EnemyTroops, star.DEF, 1.0);
+						float damageForAttackOnePerTime = Formula.CalculateDamageForAttackOnePerTime(star.PlayerTroops,star.EnemyTroops,star.DEF,(float)1);
+						float damageForDefOnePerTime = Formula.CalculateDamageForDefOnePerTime (star.PlayerTroops, star.EnemyTroops, star.DEF, (float)1);
 						star.PlayerTroops += damageForDefOnePerTime;
 						star.EnemyTroops += damageForAttackOnePerTime;
 					}else
 					{//这个星球是中立的
-						float damageForPlayerOnePerTime = Formula.CalculateDamageForNeutralOnePerTime(star.PlayerTroops,star.EnemyTroops,1);
-						float damageForEnemyOnePerTime = Formula.CalculateDamageForNeutralOnePerTime(star.EnemyTroops,star.PlayerTroops,1);
+						float damageForPlayerOnePerTime = Formula.CalculateDamageForNeutralOnePerTime(star.PlayerTroops,star.EnemyTroops,(float)1);
+						float damageForEnemyOnePerTime = Formula.CalculateDamageForNeutralOnePerTime(star.EnemyTroops,star.PlayerTroops,(float)1);
 						star.PlayerTroops += damageForPlayerOnePerTime;
 						star.EnemyTroops += damageForEnemyOnePerTime;
 					}
@@ -220,7 +238,7 @@ namespace Green
 				//更新时间
 				++nowTime;
 				//更新各自的onTheWay
-				playerOnTheWay.ForEach(async delegate(SoldierOnTheWay soldier) {
+				playerOnTheWay.ForEach(delegate(SoldierOnTheWay soldier) {
 					--soldier.m_needTime;
 					if (soldier.m_needTime < 0) 
 					{
@@ -228,7 +246,7 @@ namespace Green
 						++star.PlayerTroops;
 					}
 				});
-				aiOnTheWay.ForEach(async delegate(SoldierOnTheWay soldier) {
+				aiOnTheWay.ForEach(delegate(SoldierOnTheWay soldier) {
 					--soldier.m_needTime;
 					if (soldier.m_needTime < 0) 
 					{
@@ -237,6 +255,7 @@ namespace Green
 					}
 				});
 			}
+			return star;
 		}
 			
 		//统计有多少赶往此星球的玩家或AI士兵 传入_playerOnTheWay和_aiOnTheWay
@@ -318,7 +337,7 @@ namespace Green
 		 */
 		float ExcessForceCoefficientFormula(float starImportance)
 		{
-			return 1.5 - starImportance;
+			return (float)(1.5 - starImportance);
 		}
 
 		//计算某星球过剩兵力
@@ -326,8 +345,8 @@ namespace Green
 		{
 			//获取星球最后情况
 			Star finalStar = CalculateFuture(starIndex,-1);
-			return Math.Floor(finalStar.EnemyTroops - finalStar.PlayerTroops) //剩下的兵力
-				* ExcessForceCoefficientFormula (StarImportance (starIndex)); //过剩兵力系数
+			return (int)(Math.Floor(finalStar.EnemyTroops - finalStar.PlayerTroops) //剩下的兵力
+				* ExcessForceCoefficientFormula (StarImportance (starIndex))); //过剩兵力系数
 		}
 
 		//计算某星球的重要程度
@@ -353,11 +372,11 @@ namespace Green
 		private float getAttackDifficulty(Star star)
 		{
 			//复制一份
-			Star theStar = new Star (star);
-
+			Star theStar = new Star ();
+			CopyValue (star, theStar);
 			//获取离这个星球最远的上有AI士兵的星球
-			int maxDistance = 0;
-			int starIndex = _starCopys.FindIndex (star);
+			float maxDistance = 0;
+			int starIndex = FindStarIndex (star); 
 			for (int index = 0; index < _starCopys.Count; ++index) 
 			{
 				if (getDistance (theStar.Location, _starCopys [index].Location) > maxDistance && 
@@ -367,7 +386,7 @@ namespace Green
 				}
 			}
 
-			Star finalStar = CalculateFuture (starIndex, Math.Floor (maxDistance / MovingEntity.MaxSpeed));
+			Star finalStar = CalculateFuture (starIndex,(int)Math.Floor (maxDistance / new MovingEntity().MaxSpeed));
 
 			return finalStar.PlayerTroops - finalStar.EnemyTroops; 
 
@@ -389,6 +408,19 @@ namespace Green
 		private float getDistance(Vector2 aLocation,Vector2 otherLocation)
 		{
 			return (aLocation - otherLocation).sqrMagnitude;
+		}
+
+
+		//获取星球下标
+		int FindStarIndex(Star star)
+		{
+			int index = 0;
+			for (; index < _starCopys.Count; index++) 
+			{
+				if (_starCopys [index] == star)
+					break;
+			}
+			return index == _starCopys.Count ? -1 : index;
 		}
 	
 	}
