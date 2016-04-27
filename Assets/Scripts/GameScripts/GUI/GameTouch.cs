@@ -100,13 +100,16 @@ namespace  Green
 
         public void OnTouchDown(Ray ray)
         {
-            /*
+          
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 // if raycasted object was founded, keep it to thr trPreClicked
                 var planet = hit.collider.GetComponent<Planet>();
-                if(planet == null) Debug.LogError("OnTouchDown() Planet == null");
+                if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
+
+                ShowPanel(planet);
+                /*
                 if (_destinationSelected)
                 {
                     _destinationSelected = false;                    
@@ -117,16 +120,18 @@ namespace  Green
                     _planetClickState = PlanetClickState.ShowProperty;
                     SelectPlanet(planet);
                 }
+                */
             }
             else
             {
-                UnselectPlanet();
-                _curSelectedPlanet = null;
-                _destinationPlanet = null;
-                _planetClickState = PlanetClickState.Nothing;
-                _preparedToSendSoldier = false;
+                // UnselectPlanet();
+                UnshowPanel();
+                // _curSelectedPlanet = null;
+                //_destinationPlanet = null;
+                // _planetClickState = PlanetClickState.Nothing;
+                // _preparedToSendSoldier = false;
             }
-            */
+
             _destinationSelected = false;
             ClearDragArrow();
         }
@@ -232,6 +237,25 @@ namespace  Green
             {
                 _soldierCount.text = "";
             }
+        }
+
+        public PlanetPropertyPanel PropertyPanel;
+
+        void ShowPanel(Planet planet)
+        {
+            var pos = planet.transform.position;
+            var star = planet.GetComponent<Star>();
+            PropertyPanel.gameObject.SetActive(true);
+            var camera = CameraTransform.GetComponent<Camera>();
+            var screenPos = camera.WorldToScreenPoint(pos);
+            var tran = PropertyPanel.GetComponent<RectTransform>();
+            tran.anchoredPosition = screenPos;
+            PropertyPanel.Show(star);
+        }
+
+        void UnshowPanel()
+        {
+            PropertyPanel.gameObject.SetActive(false);
         }
     }
 
