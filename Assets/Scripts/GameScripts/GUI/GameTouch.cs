@@ -7,6 +7,10 @@ namespace  Green
 {
     public class GameTouch : MonoBehaviour, MobileRTSCamListner
     {
+        void Awake()
+        {
+            MobileRTSCam.instance.Listner = this;
+        }
         public void OnDrag(Ray ray)
         {
         }
@@ -53,9 +57,17 @@ namespace  Green
                 }
                 else if(_planetClickState == PlanetClickState.ClickOnePlanet)
                 {
-                    _destinationPlanet = planet;
-                    _planetClickState = PlanetClickState.WaitToClickDestinationPlanet;
-
+                    if (_preparedToSendSoldier)
+                    {
+                        _destinationPlanet = planet;
+                        _planetClickState = PlanetClickState.WaitToClickDestinationPlanet;
+                    }
+                    else
+                    {
+                        UnselectPlanet();
+                        SelectPlanet(planet);
+                        _preparedToSendSoldier = false;
+                    }
                 }
             }
             else
@@ -68,8 +80,8 @@ namespace  Green
             }
         }
 
-        Color _selectedColor = new Color(174f, 174f, 174f, 255f);
-        Color _defaultColor = new Color(255f, 255f, 255f, 255f);
+        Color _selectedColor = new Color(173f/255f, 173f/255f, 173f/255f, 1f);
+        Color _defaultColor = Color.white;
 
         void SelectPlanet(Planet p)
         {

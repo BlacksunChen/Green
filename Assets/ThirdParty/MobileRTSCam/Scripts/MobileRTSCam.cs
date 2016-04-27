@@ -125,8 +125,9 @@ namespace BE {
 		void Start () {
 		}
 
-		void Update () {
-
+		void Update ()
+		{
+		    if (EventSystem.current.currentSelectedGameObject != null) return;
 			//inertia camera panning
 			if(InertiaUse) {
 				if(InertiaActive && (InertiaSpeed.magnitude > 0.01f)) {

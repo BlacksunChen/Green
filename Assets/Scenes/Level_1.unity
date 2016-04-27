@@ -533,6 +533,18 @@ Prefab:
       propertyPath: m_Name
       value: planet_6
       objectReference: {fileID: 0}
+    - target: {fileID: 102358, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 162182, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 176132, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
   m_IsPrefabParent: 0
@@ -657,7 +669,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 264329940}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Planets
   m_TagString: Planet
   m_Icon: {fileID: 0}
@@ -724,6 +736,18 @@ Prefab:
     - target: {fileID: 176132, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
       propertyPath: m_Name
       value: planet_5
+      objectReference: {fileID: 0}
+    - target: {fileID: 102358, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 162182, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 176132, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
@@ -843,6 +867,18 @@ Prefab:
     - target: {fileID: 21247920, guid: 66c427f919e57354982b0fb7835a2ccf, type: 2}
       propertyPath: m_Color.b
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 185208, guid: 66c427f919e57354982b0fb7835a2ccf, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 131156, guid: 66c427f919e57354982b0fb7835a2ccf, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 188090, guid: 66c427f919e57354982b0fb7835a2ccf, type: 2}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 66c427f919e57354982b0fb7835a2ccf, type: 2}
@@ -978,7 +1014,6 @@ GameObject:
   - 4: {fileID: 508762160}
   - 33: {fileID: 508762159}
   - 23: {fileID: 508762158}
-  - 65: {fileID: 508762161}
   m_Layer: 8
   m_Name: GameBackground
   m_TagString: Untagged
@@ -1026,23 +1061,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 508762157}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -1, y: -5.9, z: -0}
-  m_LocalScale: {x: 6.63, y: 1, z: 4.88}
+  m_LocalPosition: {x: -1.0000154, y: -11.7, z: 0}
+  m_LocalScale: {x: 6.6300006, y: 1, z: 4.88}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
---- !u!65 &508762161
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 508762157}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10, y: 2.2204458e-16, z: 9.999998}
-  m_Center: {x: 0, y: 0, z: 0.000000029802322}
+  m_RootOrder: 7
 --- !u!1 &550579106
 GameObject:
   m_ObjectHideFlags: 0
@@ -1073,6 +1096,84 @@ Transform:
   - {fileID: 204439031}
   m_Father: {fileID: 0}
   m_RootOrder: 4
+--- !u!1 &573952325
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 573952330}
+  - 20: {fileID: 573952329}
+  - 124: {fileID: 573952328}
+  - 92: {fileID: 573952327}
+  m_Layer: 8
+  m_Name: Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!92 &573952327
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 573952325}
+  m_Enabled: 1
+--- !u!124 &573952328
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 573952325}
+  m_Enabled: 1
+--- !u!20 &573952329
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 573952325}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 1
+  orthographic size: 17.17
+  m_Depth: -0.92
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 256
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
+--- !u!4 &573952330
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 573952325}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.6, y: -12.9, z: -37.1}
+  m_LocalScale: {x: 6.6300006, y: 1, z: 4.88}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
 --- !u!1 &678987145
 GameObject:
   m_ObjectHideFlags: 0
@@ -1081,7 +1182,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 678987146}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemies
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1187,7 +1288,7 @@ RectTransform:
   - {fileID: 26985393}
   - {fileID: 2133198782}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -1272,7 +1373,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 922130975}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Players
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1332,7 +1433,7 @@ GameObject:
   - 4: {fileID: 1100795172}
   - 114: {fileID: 1100795173}
   - 114: {fileID: 1100795174}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Gameplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1464,6 +1565,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: m_CullingMask.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: m_Depth
+      value: -0.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: m_ClearFlags
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
   m_IsPrefabParent: 0
@@ -1509,6 +1622,18 @@ Prefab:
     - target: {fileID: 176132, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
       propertyPath: m_Name
       value: planet_4
+      objectReference: {fileID: 0}
+    - target: {fileID: 102358, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 162182, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 176132, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
@@ -1708,6 +1833,18 @@ Prefab:
       propertyPath: m_Name
       value: planet_2
       objectReference: {fileID: 0}
+    - target: {fileID: 102358, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 162182, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 176132, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 99096ea8f0dbd094b8114b2f8457f681, type: 2}
   m_IsPrefabParent: 0
@@ -1758,6 +1895,26 @@ Prefab:
       propertyPath: m_Name
       value: planet_3
       objectReference: {fileID: 0}
+    - target: {fileID: 11421378, guid: 3f22c3ffa34dab5408d48b781b48c12c, type: 2}
+      propertyPath: _capacity
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11421378, guid: 3f22c3ffa34dab5408d48b781b48c12c, type: 2}
+      propertyPath: _DEF
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 140580, guid: 3f22c3ffa34dab5408d48b781b48c12c, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 180116, guid: 3f22c3ffa34dab5408d48b781b48c12c, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 162896, guid: 3f22c3ffa34dab5408d48b781b48c12c, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3f22c3ffa34dab5408d48b781b48c12c, type: 2}
   m_IsPrefabParent: 0
@@ -1769,7 +1926,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1747308212}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Soldiers
   m_TagString: Untagged
   m_Icon: {fileID: 0}

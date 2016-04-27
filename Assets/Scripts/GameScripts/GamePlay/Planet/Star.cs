@@ -218,12 +218,9 @@ namespace Green
         public bool IsBattleInPlanet()
         {
             //被占领 和平
-            if (State == e_State.AI || State == e_State.Player || State == e_State.NeutralityPeace)
+            if (_enemyTroops > 0 && _playerTroops > 0)
             {
-                if (_enemyTroops > 0 && _playerTroops > 0)
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }

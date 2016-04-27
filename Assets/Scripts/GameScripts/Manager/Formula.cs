@@ -68,10 +68,10 @@ namespace Green
 
         public static float CalculateCaptureProgress(float soldierCount)
         {
-            return soldierCount / (120f + 3f * soldierCount);
+            return (5*soldierCount+11f) / (310 + 10f * soldierCount);
         }
 
-        public const float TimeSoldierIncreasePer = 20f;
+        public const float TimeSoldierIncreasePer = 40f;
 
         public static float CalculateSoldierIncreasePerTime(float vigour)
         {

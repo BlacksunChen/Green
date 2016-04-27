@@ -111,7 +111,7 @@ namespace Green
         {
             if(GameManager.Instance.State == GameState.Playing)
             {          
-                //UpdateAI();
+                UpdateAI();
                 UpdateSituationInEachPlanet();
             }
         }
@@ -227,9 +227,9 @@ namespace Green
         public void OnSendSoldier()
         {
             var from = GameObject.Find("planet_1").GetComponent<Planet>();
-            var to = GameObject.Find("planet_2").GetComponent<Planet>();
+            var to = GameObject.Find("planet_3").GetComponent<Planet>();
 
-            SendSoldier(from, to, 5, SoldierType.Enemy);
+            SendSoldier(from, to, 5, SoldierType.Player);
         }
 
         public void OnSendSoldier2To3()
