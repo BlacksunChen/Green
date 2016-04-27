@@ -7,22 +7,79 @@ namespace  Green
 {
     public class GameTouch : MonoBehaviour, MobileRTSCamListner
     {
+        public Plane xzPlane;
+        public Transform CameraTransform;
+        ArrowRenderer _arrowRenderer;
         void Awake()
         {
             MobileRTSCam.instance.Listner = this;
+            xzPlane = new Plane(new Vector3(0f, 0f, 1f), 0f);
+            _arrowRenderer = GetComponent<ArrowRenderer>();
+            if(_arrowRenderer == null)
+                Debug.LogError("Need Script: ArrowRender on GmaeWorld!");
         }
         public void OnDrag(Ray ray)
         {
+            if (!_dragStart) return;
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                var planet = hit.collider.GetComponent<Planet>();
+                if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
+                _arrowRenderer.Draw(_curSelectedPlanet.transform.position,
+                    planet.transform.position);
+            }
+            else
+            {
+                Vector3 vTouch = Input.mousePosition;
+                ray = Camera.main.ScreenPointToRay(vTouch);
+                float enter;
+                xzPlane.Raycast(ray, out enter);
+
+                var vPickStart = ray.GetPoint(enter);
+                _arrowRenderer.Draw(_curSelectedPlanet.transform.position,
+                                   vPickStart);
+            }
+            
+            
         }
 
+        bool _dragStart = false;
+        bool _destinationSelected = false;
         public void OnDragEnd(Ray ray)
         {
-
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                var planet = hit.collider.GetComponent<Planet>();
+                if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
+                _destinationPlanet = planet;
+                _arrowRenderer.Draw(_curSelectedPlanet.transform.position,
+                    planet.transform.position);
+                _destinationSelected = true;
+            }
+            else
+            {
+                _destinationSelected = false;
+                ClearDragArrow();
+            }
+            _dragStart = false;
         }
 
+        void ClearDragArrow()
+        {
+            _arrowRenderer.Clear();
+        }
         public void OnDragStart(Ray ray)
         {
-
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                var planet = hit.collider.GetComponent<Planet>();
+                if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
+                _curSelectedPlanet = planet;
+                _dragStart = true;
+            }
         }
 
         public void OnLongPress(Ray ray)
@@ -43,31 +100,22 @@ namespace  Green
 
         public void OnTouchDown(Ray ray)
         {
+            /*
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 // if raycasted object was founded, keep it to thr trPreClicked
                 var planet = hit.collider.GetComponent<Planet>();
                 if(planet == null) Debug.LogError("OnTouchDown() Planet == null");
+                if (_destinationSelected)
+                {
+                    _destinationSelected = false;                    
+                }
                 if (_planetClickState == PlanetClickState.Nothing)
                 {
                     _curSelectedPlanet = planet;
-                    _planetClickState = PlanetClickState.ClickOnePlanet;
+                    _planetClickState = PlanetClickState.ShowProperty;
                     SelectPlanet(planet);
-                }
-                else if(_planetClickState == PlanetClickState.ClickOnePlanet)
-                {
-                    if (_preparedToSendSoldier)
-                    {
-                        _destinationPlanet = planet;
-                        _planetClickState = PlanetClickState.WaitToClickDestinationPlanet;
-                    }
-                    else
-                    {
-                        UnselectPlanet();
-                        SelectPlanet(planet);
-                        _preparedToSendSoldier = false;
-                    }
                 }
             }
             else
@@ -78,6 +126,9 @@ namespace  Green
                 _planetClickState = PlanetClickState.Nothing;
                 _preparedToSendSoldier = false;
             }
+            */
+            _destinationSelected = false;
+            ClearDragArrow();
         }
 
         Color _selectedColor = new Color(173f/255f, 173f/255f, 173f/255f, 1f);
@@ -102,11 +153,12 @@ namespace  Green
         //按下OK确认派兵
         public void OnClickOK()
         {
-            if (_preparedToSendSoldier)
+            if (_destinationSelected)
             {
-                int count = (int)(_soldierSelectBar.value *_curSelectedPlanet.PlayerSoldiers.Count);
+                int count = (int) (_soldierSelectBar.value*_curSelectedPlanet.PlayerSoldiers.Count);
                 GameWorld.Instance.SendSoldier(_curSelectedPlanet, _destinationPlanet, count, SoldierType.Player);
-                _preparedToSendSoldier = false;
+                _destinationSelected = false;
+                ClearDragArrow();
             }
         }
 
@@ -145,10 +197,8 @@ namespace  Green
         {
             //什么都没点
             Nothing,
-            //点了一个星球
-            ClickOnePlanet,
-            //等待点击到达的星球
-            WaitToClickDestinationPlanet,
+            
+            ShowProperty
             
         }
 
@@ -158,12 +208,30 @@ namespace  Green
         // Update is called once per frame
         void Update()
         {
+            if (_destinationSelected)
+            {
+                _arrowRenderer.Draw(_curSelectedPlanet.transform.position,
+                    _destinationPlanet.transform.position);
+            }
+            if (_destinationSelected)
+            {
+                var count = (int) (_curSelectedPlanet.PlayerSoldiers.Count * _soldierSelectBar.value);
+                _soldierCount.text = count.ToString();
+            }
+            else
+            {
+                _soldierCount.text = "";
+            }
         }
 
         void OnSelectSoliderBarScrollChanged(float dt)
         {
-            if (_preparedToSendSoldier)
+            if (_destinationSelected)
                 _soldierCount.text = (dt*_curSelectedPlanet.PlayerSoldiers.Count).ToString();
+            else
+            {
+                _soldierCount.text = "";
+            }
         }
     }
 

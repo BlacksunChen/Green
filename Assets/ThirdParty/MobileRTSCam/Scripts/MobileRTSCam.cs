@@ -64,7 +64,7 @@ namespace BE {
 		private Vector3		mousePosStart = Vector3.zero;
 		private Camera		camMain;
 		private	bool 		Dragged = false;
-		
+	    private bool DraggedAndSelectedObj = false;
 		public	Plane 		xzPlane;
 		public  Ray 		ray;
 
@@ -128,6 +128,7 @@ namespace BE {
 		void Update ()
 		{
 		    if (EventSystem.current.currentSelectedGameObject != null) return;
+		    
 			//inertia camera panning
 			if(InertiaUse) {
 				if(InertiaActive && (InertiaSpeed.magnitude > 0.01f)) {
@@ -201,12 +202,19 @@ namespace BE {
 							// set drag flag on
 							if(!Dragged) {
 								Dragged = true;
+                                RaycastHit hit;
+							    if (Physics.Raycast(ray, out hit))
+							    {
+							        DraggedAndSelectedObj = true;
+                                    if (Listner != null) Listner.OnDragStart(ray);
 
-								if(Listner != null) Listner.OnDragStart(ray);
-							}
+							        camPanningUse = false;
+							    }                      
+                            }
 							
 							if(Listner != null) Listner.OnDrag(ray);
 
+                            
 							if(camPanningUse) {
 								Vector3 vPickNew = ray.GetPoint(enter)-trCameraRoot.position;
 								if(InertiaUse) {
@@ -222,8 +230,11 @@ namespace BE {
 						else {
 
 							if(Dragged) {
+							    if (DraggedAndSelectedObj)
+							    {
+                                    if (Listner != null) Listner.OnDrag(ray);
 
-								if(Listner != null) Listner.OnDrag(ray);
+                                }							
 
 								if(camPanningUse) {
 									Vector3 vPickNew = ray.GetPoint(enter)-trCameraRoot.position;
@@ -261,8 +272,12 @@ namespace BE {
 
 						if(InertiaUse && (InertiaSpeed.magnitude > 0.01f)) 
 							InertiaActive = true;
-
-						if(Listner != null) Listner.OnDragEnd(ray);
+					    if (DraggedAndSelectedObj)
+					    {
+					        if (Listner != null) Listner.OnDragEnd(ray);
+					        DraggedAndSelectedObj = false;
+					        camPanningUse = true;
+					    }
 					}
 					else {
 						if(Listner != null) Listner.OnTouch(ray);
@@ -271,8 +286,8 @@ namespace BE {
 			}
 			
 			if (!EventSystem.current.IsPointerOverGameObject()) {
-				//zoom with mouse wheel
-				float fInputValue = Input.GetAxis("Mouse ScrollWheel");
+                //zoom with mouse wheel
+                float fInputValue = Input.GetAxis("Mouse ScrollWheel");
 				if(Listner != null) Listner.OnMouseWheel(fInputValue);
 				if(fInputValue != 0.0f) {
 					
