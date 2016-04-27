@@ -77,7 +77,6 @@ namespace Green
 			int minDistance = int.MaxValue;
 			int sourceIndex = desIndex;//起点星球
 			int troops = 0;//派遣兵力
-			float sumExcess = 0;//总过剩兵力
 			for (int index = 0; index < _starCopys.Count; ++index) 
 			{
 				float excess = CaculateExcessForceCoefficient (index);//过剩兵力
@@ -88,16 +87,9 @@ namespace Green
 					sourceIndex = index;
 					troops = int.Parse(Math.Floor (excess).ToString());
 				}
-				if (_starCopys [index].EnemyTroops > 0//有AI兵力
-				   && excess > 0) 
-				{
-					sumExcess += excess;
-				}
 			}
 
-			Star star = star = CalculateFuture (desIndex,-1);
-
-			if (sourceIndex != desIndex && sumExcess * 0.8 > star.PlayerTroops-star.EnemyTroops) 
+			if (sourceIndex != desIndex) 
 			{
 				GameWorld.Instance.Planets [sourceIndex].SendAISoldiers (GameWorld.Instance.Planets [desIndex], troops);
 			}
@@ -432,5 +424,9 @@ namespace Green
 		}
 	
 	}
+
+
+
+
 }
 
