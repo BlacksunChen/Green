@@ -1,0 +1,169 @@
+fileFormatVersion: 2
+guid: 67b472f0669f1c34889b697aebc5e09b
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: hex_sprites_0
+    21300002: hex_sprites_1
+    21300004: hex_sprites_2
+    21300006: hex_sprites_3
+    21300008: hex_sprites_4
+    21300010: hex_sprites_5
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 512
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: hex_sprites_0
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 343
+        width: 249
+        height: 283
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -47.033333, y: 61.346664}
+        - {x: -53.033333, y: 38.346664}
+        - {x: -53.033333, y: -44.653336}
+        - {x: -18.033333, y: -60.653336}
+        - {x: 17.966667, y: -60.653336}
+        - {x: 53.966667, y: -33.653336}
+        - {x: 53.966667, y: 32.346664}
+        - {x: 21.966667, y: 61.346664}
+    - name: hex_sprites_1
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 343
+        width: 250
+        height: 283
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -53.346664, y: -36.653336}
+        - {x: -17.346664, y: -60.653336}
+        - {x: 13.653336, y: -60.653336}
+        - {x: 54.653336, y: -41.653336}
+        - {x: 54.653336, y: 38.346664}
+        - {x: 21.653336, y: 61.346664}
+        - {x: -9.346664, y: 61.346664}
+        - {x: -53.346664, y: 46.346664}
+    - name: hex_sprites_2
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 343
+        width: 250
+        height: 283
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -16.306671, y: 61.346664}
+        - {x: -53.30667, y: 39.346664}
+        - {x: -53.30667, y: -32.653336}
+        - {x: -9.306671, y: -60.653336}
+        - {x: 7.693329, y: -60.653336}
+        - {x: 54.69333, y: -42.653336}
+        - {x: 54.69333, y: 42.346664}
+        - {x: 25.693329, y: 61.346664}
+    - name: hex_sprites_3
+      rect:
+        serializedVersion: 2
+        x: 889
+        y: 343
+        width: 251
+        height: 283
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -29.693329, y: 61.346664}
+        - {x: -51.69333, y: 48.346664}
+        - {x: -53.69333, y: 38.346664}
+        - {x: -53.69333, y: -43.653336}
+        - {x: -22.693329, y: -60.653336}
+        - {x: 13.306671, y: -60.653336}
+        - {x: 54.30667, y: -36.653336}
+        - {x: 54.30667, y: 42.346664}
+        - {x: 21.306671, y: 61.346664}
+    - name: hex_sprites_4
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 29
+        width: 249
+        height: 284
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -5.033333, y: 61.373333}
+        - {x: -15.033333, y: 57.373333}
+        - {x: -53.033333, y: 39.373333}
+        - {x: -53.033333, y: -34.626667}
+        - {x: -16.033333, y: -60.626667}
+        - {x: 9.966667, y: -60.626667}
+        - {x: 53.966667, y: -38.626667}
+        - {x: 53.966667, y: 34.373333}
+        - {x: 11.966667, y: 61.373333}
+    - name: hex_sprites_5
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 99
+        width: 852
+        height: 66
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

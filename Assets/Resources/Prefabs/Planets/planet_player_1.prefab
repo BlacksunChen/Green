@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 451860}
   - 114: {fileID: 11495590}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: In
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 430080}
   - 114: {fileID: 11487336}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,8 @@ GameObject:
   - 114: {fileID: 11438388}
   - 114: {fileID: 11402082}
   - 135: {fileID: 13556462}
-  m_Layer: 0
+  - 95: {fileID: 9591064}
+  m_Layer: 9
   m_Name: planet_player_1
   m_TagString: Planet
   m_Icon: {fileID: 0}
@@ -89,6 +90,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 439150}
   m_RootOrder: 0
+--- !u!95 &9591064
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188090}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3e5e6e5cd5525bd43aa8473c5110be98, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &11402082
 MonoBehaviour:
   m_ObjectHideFlags: 1

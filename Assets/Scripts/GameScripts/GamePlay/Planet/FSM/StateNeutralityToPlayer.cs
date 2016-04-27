@@ -22,7 +22,7 @@ namespace Green
 
             FSMTransition.CheckCondition neutral = () =>
             {
-                if (star.PlayerTroops <= 0f)
+                if (star.PlayerTroops < 1f)
                     return true;
                 else
                     return false;
@@ -34,6 +34,7 @@ namespace Green
         public override void OnEnter()
         {
             //改变星球动画
+            animator.SetTrigger(AnimatorState.中立_玩家.ToString());
             _star.StartCapture();
             return;
         }

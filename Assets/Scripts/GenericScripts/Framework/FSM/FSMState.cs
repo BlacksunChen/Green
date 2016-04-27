@@ -1,12 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Green;
 
 namespace Utilities
 {
     public abstract class FSMState
     {
+        Animator _animator;
+
+        protected enum AnimatorState
+        {
+            中立,
+            中立_玩家,
+            中立_敌人,
+            玩家,
+            敌人
+        }
+        protected Animator animator
+        {
+            get
+            {
+                if (_animator == null)
+                {
+                    _animator = _star.GetComponent<Animator>();
+                }
+                return _animator;
+            }
+        }
         #region Variables
 
         protected FSM _fsm;

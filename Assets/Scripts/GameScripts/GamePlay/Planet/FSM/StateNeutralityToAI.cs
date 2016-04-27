@@ -22,7 +22,7 @@ namespace Green
 
             FSMTransition.CheckCondition neutral = () =>
             {
-                if (star.EnemyTroops <= 0f)
+                if (star.EnemyTroops < 1f)
                     return true;
                 else
                     return false;
@@ -33,6 +33,7 @@ namespace Green
 
         public override void OnEnter()
         {
+            animator.SetTrigger(AnimatorState.中立_敌人.ToString());
             _star.StartCapture();
             return;
         }

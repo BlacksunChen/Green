@@ -222,6 +222,57 @@ namespace Green
 					|| (Math.Floor (star.EnemyTroops) < 1 && aiOnTheWay.Count < 1)))
 					break;
 
+				//中立星球的转换
+				if (star.SelectedState == Star.e_State.AI) {
+					if (star.EnemyTroops < 1 && star.PlayerTroops >= 1) {
+						star.SelectedState = Star.e_State.NeutralityToPlayer;
+						star.Schedule = 0;
+					}
+				} else if (star.SelectedState == Star.e_State.Player) {
+					if (star.EnemyTroops >= 1 && star.PlayerTroops < 1) {
+						star.SelectedState = Star.e_State.NeutralityToAI;
+						star.Schedule = 0;
+					}
+				} else if (star.SelectedState == Star.e_State.NeutralityPeace) {//中立星球转换
+					if (star.EnemyTroops >= 1 && star.PlayerTroops < 1) {
+						star.SelectedState = Star.e_State.NeutralityToAI;
+						star.Schedule = 0;
+					}
+					if (star.EnemyTroops < 1 && star.PlayerTroops >= 1) {
+						star.SelectedState = Star.e_State.NeutralityToPlayer;
+						star.Schedule = 0;
+					}
+				} else if (star.SelectedState == Star.e_State.NeutralityToAI) {
+					if (star.EnemyTroops < 1) {
+						star.SelectedState = Star.e_State.NeutralityPeace;
+						star.Schedule = 0;
+					} else if (star.Schedule >= 1) {
+						star.SelectedState = Star.e_State.AI;
+					}
+				} else if (star.SelectedState == Star.e_State.NeutralityToPlayer) {
+					if (star.PlayerTroops < 1) {
+						star.SelectedState = Star.e_State.NeutralityPeace;
+						star.Schedule = 0;
+					} else if (star.Schedule >= 1) {
+						star.SelectedState = Star.e_State.Player;
+					}
+				}
+
+				//占领进度
+				if (star.SelectedState == Star.e_State.NeutralityToAI) {
+					star.Schedule += Formula.CalculateCaptureProgress (star.EnemyTroops);
+				} else if (star.SelectedState == Star.e_State.NeutralityToPlayer) {
+					star.Schedule += Formula.CalculateCaptureProgress (star.PlayerTroops);
+				}
+
+				//星球上增加兵力
+				if(star.SelectedState == Star.e_State.AI){
+					star.EnemyTroops += Formula.CalculateSoldierIncreasePerTime (star.Vigour);
+				}else if(star.SelectedState == Star.e_State.Player){
+					star.PlayerTroops += Formula.CalculateSoldierIncreasePerTime (star.Vigour);
+				}
+
+
 				//若双方在上面都有兵力 战斗过程
 				if((Math.Floor (star.PlayerTroops) > 0) && (Math.Floor (star.EnemyTroops) > 0))
 				{
@@ -245,8 +296,6 @@ namespace Green
 						star.EnemyTroops += damageForEnemyOnePerTime;
 					}
 				}
-
-				//TODO 星球上增加兵力
 
 
 				//更新时间

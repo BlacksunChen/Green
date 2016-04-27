@@ -13,7 +13,7 @@ namespace Green
             //_fsm.AddState(this);
             FSMTransition.CheckCondition neutralToAI = () =>
             {
-                if (star.EnemyTroops > 0f && star.PlayerTroops <= 0f)
+                if (star.EnemyTroops >= 1f && star.PlayerTroops < 1f)
                     return true;
                 else
                     return false;
@@ -21,7 +21,7 @@ namespace Green
 
             FSMTransition.CheckCondition neutralToPlayer = () =>
             {
-                if (star.EnemyTroops <= 0f && star.PlayerTroops > 0f)
+                if (star.EnemyTroops < 1f && star.PlayerTroops >= 1f)
                     return true;
                 else
                     return false;
@@ -33,6 +33,7 @@ namespace Green
         public override void OnEnter()
         {
             //改变星球动画
+            animator.SetTrigger(AnimatorState.中立.ToString());
             return;
         }
 
