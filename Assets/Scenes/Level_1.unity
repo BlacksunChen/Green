@@ -2815,6 +2815,22 @@ Prefab:
       propertyPath: zoomSpeed
       value: 0.95
       objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: XMin
+      value: 1.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: XMax
+      value: 1.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: YMax
+      value: 5.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
+      propertyPath: YMin
+      value: 5.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
   m_IsPrefabParent: 0
