@@ -8,6 +8,7 @@ TagManager:
   - target
   - Soldier
   - _gui_
+  - level
   layers:
   - Default
   - TransparentFX

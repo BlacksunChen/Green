@@ -29,7 +29,7 @@ public class HorizontalDemoClicker : MonoBehaviour
 		//Debug.Log ("Clicked");
 		iTween.FadeTo(itemObject, 0f, 0.5f);
 		iTween.FadeTo(itemObject, iTween.Hash("alpha", 1f, "delay", 0.5f, "time", 0.5f));
-	    if (itemObject.name == "level_1")
+	    if (itemObject.name == "已解锁关卡选择")
 	    {
 	        gui.loading_screen.gameObject.SetActive(true);
 	        SceneManager.LoadScene("Level_1");

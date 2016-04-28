@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Utilities;
-
+using UnityEngine.UI;
 /// <summary>
 /// LevelMenu2D is a singleton class for the Level Menus. 
 /// Use <c>LevelMenu2D.Instance</c> to get the instance of class for the method calls.
@@ -177,7 +177,8 @@ public class LevelMenu2D : Singleton<LevelMenu2D>
         createMenu();
         gotoItem(initialItemNumber);
         isMenuCreating = false;
-
+        LevelName = GameObject.Find("LevelName").GetComponent<Image>();
+        //LevelName.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -269,6 +270,7 @@ public class LevelMenu2D : Singleton<LevelMenu2D>
                     itemsList[i].GetComponent<Renderer>().sortingOrder = itemsList[i - 1].GetComponent<Renderer>().sortingOrder - 1;
             }
         }
+        ShowLevelName();
     }
 
     /// <summary>
@@ -370,20 +372,26 @@ public class LevelMenu2D : Singleton<LevelMenu2D>
             // If percentChange is negative, then newSize will be larger.
             if (percentChange < 0f)
             {
-                originalScaleOfCenterItem = itemsList[_currentItemIndex].transform.localScale;
-                iTween.ScaleAdd(itemsList[_currentItemIndex],
-                           new Vector3(itemsList[_currentItemIndex].transform.localScale.x * (-percentChange),
-                                        itemsList[_currentItemIndex].transform.localScale.y * (-percentChange),
+                var item = getCenterScaleItem(itemsList[_currentItemIndex]);
+                originalScaleOfCenterItem = item.transform.localScale;
+                
+                
+                iTween.ScaleAdd(item,
+                           new Vector3(item.transform.localScale.x * (-percentChange),
+                                        item.transform.localScale.y * (-percentChange),
                                         0f),
                            animationTime);
+                           
             }
             // Else newSize will be smaller.
             else
             {
-                originalScaleOfCenterItem = itemsList[_currentItemIndex].transform.localScale;
-                iTween.ScaleAdd(itemsList[_currentItemIndex],
-                           new Vector3(itemsList[_currentItemIndex].transform.localScale.x * (-percentChange),
-                                        itemsList[_currentItemIndex].transform.localScale.y * (-percentChange),
+                var item = getCenterScaleItem(itemsList[_currentItemIndex]);
+                originalScaleOfCenterItem = item.transform.localScale;
+                
+                iTween.ScaleAdd(item,
+                           new Vector3(item.transform.localScale.x * (-percentChange),
+                                        item.transform.localScale.y * (-percentChange),
                                         0f),
                            animationTime);
             }
@@ -391,10 +399,23 @@ public class LevelMenu2D : Singleton<LevelMenu2D>
         }
         else if (isUp == false)
         {
-            iTween.ScaleTo(itemsList[_currentItemIndex],
+            var item = getCenterScaleItem(itemsList[_currentItemIndex]);
+            iTween.ScaleTo(item,
                            originalScaleOfCenterItem,
                            animationTime);
         }
+    }
+
+    GameObject getCenterScaleItem(GameObject go)
+    {
+        foreach (Transform t in go.transform)
+        {
+            if (t.tag == "level")
+            {
+                return t.gameObject;
+            }
+        }
+        return null;
     }
 
     /// <summary>
@@ -420,17 +441,41 @@ public class LevelMenu2D : Singleton<LevelMenu2D>
         {
             _isMoving = true;
             if (orientation == MenuOrientation.Horizontal)
-                iTween.MoveTo(itemsList[i], iTween.Hash("time", animationTime, "x", itemsList[i].transform.position.x - itemOffset.x, "easeType", easeType, "oncomplete", "moveComplete", "onCompleteTarget", gameObject));
+            {
+                iTween.MoveTo(itemsList[i],
+                    iTween.Hash("time", animationTime, "x", itemsList[i].transform.position.x - itemOffset.x, "easeType",
+                        easeType, "oncomplete", "moveComplete", "onCompleteTarget", gameObject));
+            }
             else if (orientation == MenuOrientation.Vertical)
-                iTween.MoveTo(itemsList[i], iTween.Hash("time", animationTime, "y", itemsList[i].transform.position.y - itemOffset.y, "easeType", easeType, "oncomplete", "moveComplete", "onCompleteTarget", gameObject));
+            {
+                iTween.MoveTo(itemsList[i],
+                    iTween.Hash("time", animationTime, "y", itemsList[i].transform.position.y - itemOffset.y, "easeType",
+                        easeType, "oncomplete", "moveComplete", "onCompleteTarget", gameObject));
+            }
             else if (orientation == MenuOrientation.Custom)
-                iTween.MoveTo(itemsList[i], iTween.Hash("time", animationTime, "x", itemsList[i].transform.position.x - itemOffset.x, "y", itemsList[i].transform.position.y - itemOffset.y, "easeType", easeType, "oncomplete", "moveComplete", "onCompleteTarget", gameObject));
+                iTween.MoveTo(itemsList[i],
+                    iTween.Hash("time", animationTime, "x", itemsList[i].transform.position.x - itemOffset.x, "y",
+                        itemsList[i].transform.position.y - itemOffset.y, "easeType", easeType, "oncomplete",
+                        "moveComplete", "onCompleteTarget", gameObject));
         }
         _currentItemIndex++;
         sortOrderOfItems();
         //doScaleTheCenterItem(true);
+        ShowLevelName();
     }
 
+    public Image LevelName;
+    void ShowLevelName()
+    {
+        if (itemsList[_currentItemIndex].name == "已解锁关卡选择")
+        {
+            LevelName.gameObject.SetActive(true);
+        }
+        else
+        {
+            LevelName.gameObject.SetActive(false);
+        }
+    }
     /// <summary>
     /// Navigates to Back Item
     /// </summary>
@@ -455,6 +500,7 @@ public class LevelMenu2D : Singleton<LevelMenu2D>
         _currentItemIndex--;
         sortOrderOfItems();
         //doScaleTheCenterItem(true);
+        ShowLevelName();
     }
 
     /// <summary>
