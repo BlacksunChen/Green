@@ -213,6 +213,7 @@ namespace Green
         void SetInitState(e_State state)
         {
             _fsmState = _fsm.GetState(state);
+            _fsmState.OnEnter();
         }
 
         public bool IsBattleInPlanet()

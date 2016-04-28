@@ -99,6 +99,16 @@ namespace Green
             //setup the spatial subdivision class
             //_cellSpace = new CellSpacePartition<MovingEntity>(leftButtom, _cxClient, _cyClient, SteeringParams.Instance.NumCellsX, SteeringParams.Instance.NumCellsY, SteeringParams.Instance.NumAgents);
             */
+            _progressBar = GameObject.FindObjectOfType<my_progress_bar>();
+            if (_progressBar == null)
+            {
+                Debug.LogError("Need Progress Bar");
+            }
+            _game_UGui = GameObject.FindObjectOfType<game_uGUI>();
+            if (_game_UGui == null)
+            {
+                Debug.LogError("Need game_uGUI");
+            }
         }
 
         //战斗计算的定时器
@@ -113,9 +123,34 @@ namespace Green
             {          
                 UpdateAI();
                 UpdateSituationInEachPlanet();
+                UpdateGameProgress();
             }
         }
 
+        my_progress_bar _progressBar;
+        void UpdateGameProgress()
+        {
+            int playerCapture = 0;
+            foreach (var p in _planets)
+            {
+                if (p.State == Star.e_State.Player)
+                {
+                    ++playerCapture;
+                }
+            }
+            if (playerCapture == _planets.Count)
+            {
+                Victory();
+            }
+            _progressBar.Update_fill(playerCapture);
+        }
+
+        game_uGUI _game_UGui;
+        void Victory()
+        {
+
+            GameManager.instance.Win();
+        }
         void UpdateAI()
         {
             _aiUpdateTimer.Resume();

@@ -453,7 +453,7 @@ public class game_uGUI : MonoBehaviour {
 					Debug.Log("there are more stage in this world, so go to " + "W"+next_world.ToString()+"_Stage_" + next_stage.ToString());
 				if (my_game_master.show_loading_screen)
 					loading_screen.gameObject.SetActive(true);
-				Application.LoadLevel ("W"+next_world.ToString()+"_Stage_" + next_stage.ToString()); 
+				Application.LoadLevel ("W"+next_world.ToString()+"_Stage_" + next_stage.ToString());
 				}
 			else //go to next word if exist
 				{

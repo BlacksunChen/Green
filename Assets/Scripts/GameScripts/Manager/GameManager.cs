@@ -91,6 +91,10 @@ namespace Green
             _world = obj.GetComponent<GameWorld>();
         }
 
+        
+        public void Win()
+        {
+        }
 
     }
 }

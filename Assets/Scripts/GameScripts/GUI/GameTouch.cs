@@ -23,6 +23,11 @@ namespace  Green
                 Debug.LogError("Need PlanetPropertyPanel in canvas!");
             }
             PropertyPanel.gameObject.SetActive(false);
+            canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogError("Need Canvas in canvas!");
+            }
         }
         public void OnDrag(Ray ray)
         {
@@ -103,10 +108,9 @@ namespace  Green
 
         }
 
-
+       
         public void OnTouchDown(Ray ray)
-        {
-          
+        {        
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
@@ -247,6 +251,9 @@ namespace  Green
 
         public PlanetPropertyPanel PropertyPanel;
         public Camera GameSceneCamera;
+        public Canvas canvas;
+        public float PanelOffsetX = 0f;
+        public float PanelOffsetY = 0f;
         void ShowPanel(Planet planet)
         {
             var pos = planet.transform.position;
@@ -254,7 +261,8 @@ namespace  Green
             PropertyPanel.gameObject.SetActive(true);
             var screenPos = GameSceneCamera.WorldToScreenPoint(pos);
             var tran = PropertyPanel.GetComponent<RectTransform>();
-            tran.anchoredPosition = screenPos;
+            //RectTransformUtility.WorldToScreenPoint(canvas.)
+            tran.position = new Vector3(screenPos.x + PanelOffsetX, screenPos.y + PanelOffsetY, screenPos.z);
             PropertyPanel.Show(star);
         }
 
