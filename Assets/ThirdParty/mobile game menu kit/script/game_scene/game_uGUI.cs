@@ -487,9 +487,10 @@ public class game_uGUI : MonoBehaviour {
 		if (my_game_master)
 			{
 			my_game_master.Gui_sfx(my_game_master.tap_sfx);
-			//my_game_master.Unlink_me_to_camera();
-			my_game_master.go_to_this_screen = game_master.this_screen.stage_screen;
-			Time.timeScale = 1;
+            //my_game_master.Unlink_me_to_camera();
+            //my_game_master.go_to_this_screen = game_master.this_screen.stage_screen;
+            my_game_master.go_to_this_screen = game_master.this_screen.stage_screen;
+            Time.timeScale = 1;
 			if (my_game_master.show_loading_screen)
 				loading_screen.gameObject.SetActive(true);
 			Application.LoadLevel (my_game_master.home_scene_name); 

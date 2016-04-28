@@ -142,14 +142,24 @@ namespace Green
             {
                 Victory();
             }
+            else if(playerCapture == 0)
+            {
+                GameOver();
+            }
             _progressBar.Update_fill(playerCapture);
         }
 
         game_uGUI _game_UGui;
-        void Victory()
+        public void Victory()
         {
+            _game_UGui.Victory();
+            GameManager.Instance.ChangeState(GameState.GameOver);
+        }
 
-            GameManager.instance.Win();
+        public void GameOver()
+        {
+            _game_UGui.Defeat();
+            GameManager.Instance.ChangeState(GameState.GameOver);
         }
         void UpdateAI()
         {

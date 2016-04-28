@@ -277,7 +277,7 @@ public class game_master : MonoBehaviour
     public enum this_screen
     {
         home_screen,
-        stage_screen
+        stage_screen,
     }
 
     public this_screen go_to_this_screen = this_screen.home_screen;

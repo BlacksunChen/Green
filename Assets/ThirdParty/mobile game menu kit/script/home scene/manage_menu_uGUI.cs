@@ -269,6 +269,13 @@ public class manage_menu_uGUI : MonoBehaviour
             {
                 Mark_current_screen(home_screen);
             }
+            else if (my_game_master.press_start_and_go_to_selected == game_master.press_start_and_go_to.level_select_screen)
+            {
+                if (my_game_master.show_debug_messages)
+                    Debug.Log("return to home stage from a game stage");
+
+                Mark_current_screen(level_sclect_screen);
+            }
 
             Update_profile_name(true);
 
@@ -279,15 +286,7 @@ public class manage_menu_uGUI : MonoBehaviour
             my_game_master.Start_music(my_game_master.music_menu, true);
 
         }
-        else if (my_game_master.press_start_and_go_to_selected == game_master.press_start_and_go_to.level_select_screen)
-        {
-            if (my_game_master.show_debug_messages)
-                Debug.Log("return to home stage from a game stage");
-
-            home_screen.gameObject.SetActive(false);
-
-            Mark_current_screen(level_sclect_screen);
-        }
+        
     }
 
     public void Close_logo()

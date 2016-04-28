@@ -92,9 +92,5 @@ namespace Green
         }
 
         
-        public void Win()
-        {
-        }
-
     }
 }
