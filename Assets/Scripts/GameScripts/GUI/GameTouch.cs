@@ -17,6 +17,12 @@ namespace  Green
             _arrowRenderer = GetComponent<ArrowRenderer>();
             if(_arrowRenderer == null)
                 Debug.LogError("Need Script: ArrowRender on GmaeWorld!");
+            PropertyPanel = GameObject.FindObjectOfType<PlanetPropertyPanel>();
+            if (PropertyPanel == null)
+            {
+                Debug.LogError("Need PlanetPropertyPanel in canvas!");
+            }
+            PropertyPanel.gameObject.SetActive(false);
         }
         public void OnDrag(Ray ray)
         {
@@ -240,14 +246,13 @@ namespace  Green
         }
 
         public PlanetPropertyPanel PropertyPanel;
-
+        public Camera GameSceneCamera;
         void ShowPanel(Planet planet)
         {
             var pos = planet.transform.position;
             var star = planet.GetComponent<Star>();
             PropertyPanel.gameObject.SetActive(true);
-            var camera = CameraTransform.GetComponent<Camera>();
-            var screenPos = camera.WorldToScreenPoint(pos);
+            var screenPos = GameSceneCamera.WorldToScreenPoint(pos);
             var tran = PropertyPanel.GetComponent<RectTransform>();
             tran.anchoredPosition = screenPos;
             PropertyPanel.Show(star);
