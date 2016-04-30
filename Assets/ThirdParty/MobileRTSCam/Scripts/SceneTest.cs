@@ -153,5 +153,10 @@ namespace BE {
 
 		public void OnMouseWheel(float fValue) {
 		}
-	}
+
+        public void OnTouchZoom(float value)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

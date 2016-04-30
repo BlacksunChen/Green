@@ -25,6 +25,7 @@ namespace BE {
 		void OnDrag(Ray ray);
 		void OnLongPress(Ray ray);
 		void OnMouseWheel(float fValue);
+	    void OnTouchZoom(float value);
 	}
 
 	public enum PinchType {
@@ -200,19 +201,13 @@ namespace BE {
 						if(Vector3.Distance (vTouch, mousePosStart) > 0.01f) {
 							
 							// set drag flag on
-							if(!Dragged) {
-								Dragged = true;
-                                RaycastHit hit;
-							    if (Physics.Raycast(ray, out hit))
-							    {
-							        DraggedAndSelectedObj = true;
-                                    if (Listner != null) Listner.OnDragStart(ray);
+						    if (!Dragged)
+						    {
+						        Dragged = true;
+						        if (Listner != null) Listner.OnDragStart(ray);                  
+						    }
 
-							        camPanningUse = false;
-							    }                      
-                            }
-							
-							if(Listner != null) Listner.OnDrag(ray);
+						    if(Listner != null) Listner.OnDrag(ray);
 
                             
 							if(camPanningUse) {
@@ -230,11 +225,7 @@ namespace BE {
 						else {
 
 							if(Dragged) {
-							    if (DraggedAndSelectedObj)
-							    {
-                                    if (Listner != null) Listner.OnDrag(ray);
-
-                                }							
+                                    if (Listner != null) Listner.OnDrag(ray);						
 
 								if(camPanningUse) {
 									Vector3 vPickNew = ray.GetPoint(enter)-trCameraRoot.position;
@@ -268,20 +259,21 @@ namespace BE {
 					if(Listner != null) Listner.OnTouchUp(ray);
 
 					// if in drag state
-					if(Dragged) {
-
-						if(InertiaUse && (InertiaSpeed.magnitude > 0.01f)) 
-							InertiaActive = true;
-					    if (DraggedAndSelectedObj)
-					    {
-					        if (Listner != null) Listner.OnDragEnd(ray);
-					        DraggedAndSelectedObj = false;
-					        camPanningUse = true;
-					    }
-					}
-					else {
-						if(Listner != null) Listner.OnTouch(ray);
-					}
+				    if (Dragged)
+				    {
+				        if (InertiaUse && (InertiaSpeed.magnitude > 0.01f))
+				            InertiaActive = true;
+				        // if (DraggedAndSelectedObj)
+				        // {
+				        if (Listner != null) Listner.OnDragEnd(ray);
+				        DraggedAndSelectedObj = false;
+				        camPanningUse = true;
+				        //}
+				    }
+				    else
+				    {
+				        if (Listner != null) Listner.OnTouch(ray);
+				    }
 				}
 			}
 			
@@ -300,8 +292,8 @@ namespace BE {
 					}
 					
 					float zoomDelta = fInputValue * zoomSpeed;
-					SetCameraZoom(zoomCurrent-zoomDelta);
-					UpjustPickPos(vTouch, vPickStart);
+					SetOrthographicMouseScrollZoom(zoomCurrent-zoomDelta);
+					//UpjustPickPos(vTouch, vPickStart);
 				}
 				else {
 					if(InZoom)
@@ -373,7 +365,12 @@ namespace BE {
 				else { 
 					//zoom
 					float fDelta = fPinchDistance - fPinchDistanceStart;
-					SetCameraZoom(ZoomStart - fDelta * zoomSpeed * 0.05f);
+				    {
+				        var value = ZoomStart - fDelta*zoomSpeed*0.05f;
+                        zoomCurrent = Mathf.Clamp(value, zoomMin, zoomMax);
+
+                        Listner.OnTouchZoom(zoomCurrent);
+                    }
 
 				    if (Rotate)
 				    {
@@ -421,19 +418,64 @@ namespace BE {
 			}
 			trCameraRoot.position = vPos;
 		}
-
+        
 		public void SetCameraZoom(float value) {
 			zoomCurrent = Mathf.Clamp(value, zoomMin, zoomMax);
 			if(camMain.orthographic) {
-				camMain.orthographicSize = zoomCurrent;
+                Vector3 vTouch = Input.mousePosition;
+                camMain.orthographicSize = zoomCurrent;
 			} 
 			else {
 				trCamera.localPosition = new Vector3(0,0,-zoomCurrent);
 			}
 		}
+        /*
+        public void SetCameraZoom(Ray ray, float value)
+        {
+            zoomCurrent = Mathf.Clamp(value, zoomMin, zoomMax);
+            if (camMain.orthographic)
+            {
+                //camMain.orthographicSize = zoomCurrent;
+                SetOrthographicZoom(zoomCurrent);
 
-		// Set Zoom value with 0.0 ~ 1.0 ratio of min to max value
-		public void SetCameraZoomRatio(float fRatio) {
+            }
+            else
+            {
+                trCamera.localPosition = new Vector3(0, 0, -zoomCurrent);
+            }
+        }
+        */
+	    void SetOrthographicZoom(Ray ray_, float value)
+	    {
+            zoomCurrent = Mathf.Clamp(value, zoomMin, zoomMax);
+            RaycastHit hit;
+            if (Physics.Raycast(ray_, out hit))
+            {
+                var oldSize = camMain.orthographicSize;
+                var oldObjScreenPos = camMain.WorldToScreenPoint(hit.collider.transform.position);
+                camMain.orthographicSize = zoomCurrent;
+                var newObjScreenPos = camMain.WorldToScreenPoint(hit.collider.transform.position);
+                camMain.orthographicSize = oldSize;
+                var newObjWorldPos = camMain.ScreenToWorldPoint(newObjScreenPos);
+                trCameraRoot.transform.Translate(-hit.collider.transform.position + newObjWorldPos);
+                camMain.orthographicSize = zoomCurrent;
+            }
+            else
+            {
+                camMain.orthographicSize = zoomCurrent;
+            }
+        }
+        void SetOrthographicMouseScrollZoom(float value)
+	    {
+	        SetOrthographicZoom(ray, value);
+        }
+
+        public void SetOrthographicTouchZoom(Ray ray_, float value)
+        {
+            SetOrthographicZoom(ray, value);
+        }
+        // Set Zoom value with 0.0 ~ 1.0 ratio of min to max value
+        public void SetCameraZoomRatio(float fRatio) {
 			float fRealValue = (zoomMax-zoomMin)*fRatio+zoomMin;
 			SetCameraZoom(fRealValue);
 		}

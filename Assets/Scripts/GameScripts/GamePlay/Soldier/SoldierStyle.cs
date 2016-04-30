@@ -66,7 +66,7 @@ namespace Green
             var pos = inPlanet.GetRandomPositionInPlanet();
             transform.position = new Vector3(pos.x, pos.y, z);
             //set parent
-            transform.SetParent(GameObject.Find(GetParentName(type)).transform, false);
+            transform.SetParent(GameObject.Find(GetParentName(type)).transform, true);
 
             go.SetActive(true);     
         }

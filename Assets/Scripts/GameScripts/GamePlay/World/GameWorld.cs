@@ -131,18 +131,23 @@ namespace Green
         void UpdateGameProgress()
         {
             int playerCapture = 0;
+            int enemyCapture = 0;
             foreach (var p in _planets)
             {
                 if (p.State == Star.e_State.Player)
                 {
                     ++playerCapture;
                 }
+                else if (p.State == Star.e_State.Player)
+                {
+                    ++enemyCapture;
+                }
             }
             if (playerCapture == _planets.Count)
             {
                 Victory();
             }
-            else if(playerCapture == 0)
+            else if(enemyCapture == _planets.Count)
             {
                 GameOver();
             }

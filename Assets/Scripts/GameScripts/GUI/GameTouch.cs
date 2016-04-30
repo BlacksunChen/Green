@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using BE;
-using System;
 using UnityEngine.UI;
+using Utilities;
+using System;
+
 namespace  Green
 {
     public class GameTouch : MonoBehaviour, MobileRTSCamListner
@@ -28,9 +29,35 @@ namespace  Green
             {
                 Debug.LogError("Need Canvas in canvas!");
             }
+            ProgressBar = GameObject.Find("ProgressBar").GetComponent<ProgressRadialBehaviour>();
+            if (ProgressBar == null)
+            {
+                Debug.LogError("Need Progress Active in Canvas");
+            }
+            ProgressBar.Value = 1;
+            ProgressBar.gameObject.SetActive(false);
         }
+
+        public float ProgressDragSpeed = 1f;
+
         public void OnDrag(Ray ray)
-        {
+        {        
+            //_curSelectedPlanet = 
+            if (DragProgressBar)
+            {
+                if (!_lastDragPosition.HasValue && !_curDragPosition.HasValue)
+                {
+                    return;
+                }
+                _lastDragPosition = _curDragPosition;
+                float enter;
+                xzPlane.Raycast(ray, out enter);
+                _curDragPosition = ray.GetPoint(enter) - CameraTransform.position;
+                
+                float addProgress = (_curDragPosition.Value.y - _lastDragPosition.Value.y) * ProgressDragSpeed;
+                ProgressBar.Value += addProgress;
+                return;
+            }
             if (!_dragStart) return;
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
@@ -59,38 +86,85 @@ namespace  Green
         bool _destinationSelected = false;
         public void OnDragEnd(Ray ray)
         {
+            if (DragProgressBar)
+            {
+                return;
+            }
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 var planet = hit.collider.GetComponent<Planet>();
                 if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
-                _destinationPlanet = planet;
-                _arrowRenderer.Draw(_curSelectedPlanet.transform.position,
-                    planet.transform.position);
-                _destinationSelected = true;
+                if (planet != _curSelectedPlanet)
+                {
+                    _destinationPlanet = planet;
+                    _arrowRenderer.Draw(_curSelectedPlanet.transform.position,
+                        planet.transform.position);
+                    _destinationSelected = true;
+                    OnShowProgressBar();
+                }
             }
             else
             {
                 _destinationSelected = false;
                 ClearDragArrow();
+                OnCloseProgressBar();
             }
             _dragStart = false;
+            _curDragPosition = null;
+            _lastDragPosition = null;
+        }
+
+        public ProgressRadialBehaviour ProgressBar;
+
+        public bool DragProgressBar = false;
+
+        void OnShowProgressBar()
+        {
+            DragProgressBar = true;
+            ProgressBar.gameObject.SetActive(true);
+            var screenPos = GameSceneCamera.WorldToScreenPoint(_destinationPlanet.transform.position);
+            var tran = ProgressBar.GetComponent<RectTransform>();
+          //  RectTransformUtility.WorldToScreenPoint()
+            //RectTransformUtility.WorldToScreenPoint(canvas.)
+            tran.transform.position = new Vector3(screenPos.x, screenPos.y, screenPos.z);    
+        }
+
+        public void OnCloseProgressBar()
+        {
+            ProgressBar.gameObject.SetActive(false);
+            DragProgressBar = false;
+            _destinationSelected = false;
         }
 
         void ClearDragArrow()
         {
             _arrowRenderer.Clear();
         }
+
+        Vector2? _lastDragPosition;
+        Vector2? _curDragPosition;
         public void OnDragStart(Ray ray)
         {
+            if (DragProgressBar)
+            {
+                float enter;
+                xzPlane.Raycast(ray, out enter);
+                _curDragPosition = ray.GetPoint(enter) - CameraTransform.position;
+                MobileRTSCam.instance.camPanningUse = false;
+                return;
+            }
             RaycastHit hit;
+      
             if (Physics.Raycast(ray, out hit))
             {
+                MobileRTSCam.instance.camPanningUse = false;
                 var planet = hit.collider.GetComponent<Planet>();
                 if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
                 _curSelectedPlanet = planet;
                 _dragStart = true;
             }
+            
         }
 
         public void OnLongPress(Ray ray)
@@ -110,7 +184,8 @@ namespace  Green
 
        
         public void OnTouchDown(Ray ray)
-        {        
+        {
+            if (DragProgressBar) return;
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
@@ -136,7 +211,7 @@ namespace  Green
             {
                 // UnselectPlanet();
                 UnshowPanel();
-                // _curSelectedPlanet = null;
+                 _curSelectedPlanet = null;
                 //_destinationPlanet = null;
                 // _planetClickState = PlanetClickState.Nothing;
                 // _preparedToSendSoldier = false;
@@ -153,6 +228,13 @@ namespace  Green
         {
             var render = p.GetComponent<SpriteRenderer>();
             render.color = _selectedColor;
+        }
+
+        void CancelAllAction()
+        {
+            UnshowPanel();
+            OnCloseProgressBar();
+            _destinationSelected = false;
         }
 
         public Button _okButton;
@@ -262,7 +344,7 @@ namespace  Green
             var screenPos = GameSceneCamera.WorldToScreenPoint(pos);
             var tran = PropertyPanel.GetComponent<RectTransform>();
             //RectTransformUtility.WorldToScreenPoint(canvas.)
-            tran.position = new Vector3(screenPos.x + PanelOffsetX, screenPos.y + PanelOffsetY, screenPos.z);
+            PropertyPanel.transform.position = new Vector3(screenPos.x + PanelOffsetX, screenPos.y + PanelOffsetY, screenPos.z);
             PropertyPanel.Show(star);
         }
 
@@ -270,7 +352,16 @@ namespace  Green
         {
             PropertyPanel.gameObject.SetActive(false);
         }
+
+        public void OnTouchZoom(float value)
+        {
+            if (_curSelectedPlanet)
+            {
+                var screenPos = GameSceneCamera.WorldToScreenPoint(_curSelectedPlanet.transform.position);
+                var ray = GameSceneCamera.ScreenPointToRay(screenPos);
+                MobileRTSCam.instance.SetOrthographicTouchZoom(ray, value);
+            }
+        }
     }
 
 }
-
