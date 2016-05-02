@@ -99,8 +99,8 @@ namespace Green
             //setup the spatial subdivision class
             //_cellSpace = new CellSpacePartition<MovingEntity>(leftButtom, _cxClient, _cyClient, SteeringParams.Instance.NumCellsX, SteeringParams.Instance.NumCellsY, SteeringParams.Instance.NumAgents);
             */
-            _progressBar = GameObject.FindObjectOfType<my_progress_bar>();
-            if (_progressBar == null)
+            _scoreBar = GameObject.FindObjectOfType<ScoreBar>();
+            if (_scoreBar == null)
             {
                 Debug.LogError("Need Progress Bar");
             }
@@ -127,7 +127,7 @@ namespace Green
             }
         }
 
-        my_progress_bar _progressBar;
+        ScoreBar _scoreBar;
         void UpdateGameProgress()
         {
             int playerCapture = 0;
@@ -138,11 +138,13 @@ namespace Green
                 {
                     ++playerCapture;
                 }
-                else if (p.State == Star.e_State.Player)
+                else if (p.State == Star.e_State.AI)
                 {
                     ++enemyCapture;
                 }
             }
+            _scoreBar.SetLeftBarValue(playerCapture);
+            _scoreBar.SetRightBarValue(enemyCapture);
             if (playerCapture == _planets.Count)
             {
                 Victory();
@@ -151,7 +153,7 @@ namespace Green
             {
                 GameOver();
             }
-            _progressBar.Update_fill(playerCapture);
+            
         }
 
         game_uGUI _game_UGui;
@@ -272,6 +274,7 @@ namespace Green
             {
                 _planets.Add(p);
             }
+            _scoreBar.MaxValue = _planets.Count;
         }
         #region Test Send Soldier
         public void OnSendSoldier()

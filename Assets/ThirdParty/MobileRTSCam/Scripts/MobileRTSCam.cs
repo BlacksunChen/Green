@@ -256,7 +256,7 @@ namespace BE {
 					bInTouch = false;
 					gr.enabled = true;
 
-					if(Listner != null) Listner.OnTouchUp(ray);
+					
 
 					// if in drag state
 				    if (Dragged)
@@ -272,8 +272,9 @@ namespace BE {
 				    }
 				    else
 				    {
-				        if (Listner != null) Listner.OnTouch(ray);
-				    }
+				       // if (Listner != null) Listner.OnTouch(ray);
+                        if (Listner != null) Listner.OnTouchUp(ray);
+                    }
 				}
 			}
 			

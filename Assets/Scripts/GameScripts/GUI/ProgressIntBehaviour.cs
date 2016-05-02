@@ -8,7 +8,7 @@ namespace Green
     /// This Script is directed at radially progressing designs.
     /// </summary>
     [RequireComponent(typeof(Image))]
-    public class ProgressRadialBehaviour : MonoBehaviour, IIncrementable, IDecrementable
+    public class ProgressIntBehaviour : MonoBehaviour, IIncrementable, IDecrementable
     {
         /// <summary>
         /// This script's Filler is its own Image component
@@ -18,7 +18,7 @@ namespace Green
         /// <summary>
         /// Current value as a fraction of Filling.
         /// </summary>
-        private float m_Value = 1f;
+        private float m_Value;
         /// <summary>
         /// Return and Set the current value as percentage
         /// </summary>
@@ -77,8 +77,8 @@ namespace Green
         void Start()
         {
             m_Fill = GetComponent<Image>();
-            SetFillerSize(100);
-            m_Value = 1;
+            m_Value = 0;
+            SetFillerSize(0);
         }
 
         void Update()
@@ -179,12 +179,6 @@ namespace Green
             m_Value -= dec / 100;
 
             if (m_Value < 0) m_Value = 0;
-        }
-
-        public void Reset()
-        {
-            m_Value = 1;
-            SetFillerSizeAsPercentage(100f);
         }
     }
 }

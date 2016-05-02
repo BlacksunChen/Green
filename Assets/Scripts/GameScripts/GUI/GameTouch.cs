@@ -45,17 +45,27 @@ namespace  Green
             //_curSelectedPlanet = 
             if (DragProgressBar)
             {
-                if (!_lastDragPosition.HasValue && !_curDragPosition.HasValue)
+                if (!_lastDragPosition.HasValue || !_curDragPosition.HasValue)
                 {
+                    _lastDragPosition = _curDragPosition;
                     return;
-                }
-                _lastDragPosition = _curDragPosition;
+                }            
                 float enter;
                 xzPlane.Raycast(ray, out enter);
                 _curDragPosition = ray.GetPoint(enter) - CameraTransform.position;
                 
                 float addProgress = (_curDragPosition.Value.y - _lastDragPosition.Value.y) * ProgressDragSpeed;
-                ProgressBar.Value += addProgress;
+                if (addProgress > 0)
+                {
+                    OnProgressBarChanged(addProgress, ProgressBarChange.Increase);
+                }
+                else
+                {
+                    //var ceilProgress = Mathf.Ceil(ProgressBar.Value + addProgress);
+                    OnProgressBarChanged(addProgress, ProgressBarChange.Decrease);
+                }
+                
+                _lastDragPosition = _curDragPosition;
                 return;
             }
             if (!_dragStart) return;
@@ -125,20 +135,21 @@ namespace  Green
             ProgressBar.gameObject.SetActive(true);
             var screenPos = GameSceneCamera.WorldToScreenPoint(_destinationPlanet.transform.position);
             var tran = ProgressBar.GetComponent<RectTransform>();
-          //  RectTransformUtility.WorldToScreenPoint()
-            //RectTransformUtility.WorldToScreenPoint(canvas.)
             tran.transform.position = new Vector3(screenPos.x, screenPos.y, screenPos.z);    
         }
 
         public void OnCloseProgressBar()
         {
             ProgressBar.gameObject.SetActive(false);
+            ProgressBar.Reset();
             DragProgressBar = false;
-            _destinationSelected = false;
+            
+            ClearDragArrow();
         }
 
         void ClearDragArrow()
         {
+            _destinationSelected = false;
             _arrowRenderer.Clear();
         }
 
@@ -151,6 +162,7 @@ namespace  Green
                 float enter;
                 xzPlane.Raycast(ray, out enter);
                 _curDragPosition = ray.GetPoint(enter) - CameraTransform.position;
+                _lastDragPosition = null;
                 MobileRTSCam.instance.camPanningUse = false;
                 return;
             }
@@ -185,40 +197,7 @@ namespace  Green
        
         public void OnTouchDown(Ray ray)
         {
-            if (DragProgressBar) return;
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                // if raycasted object was founded, keep it to thr trPreClicked
-                var planet = hit.collider.GetComponent<Planet>();
-                if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
 
-                ShowPanel(planet);
-                /*
-                if (_destinationSelected)
-                {
-                    _destinationSelected = false;                    
-                }
-                if (_planetClickState == PlanetClickState.Nothing)
-                {
-                    _curSelectedPlanet = planet;
-                    _planetClickState = PlanetClickState.ShowProperty;
-                    SelectPlanet(planet);
-                }
-                */
-            }
-            else
-            {
-                // UnselectPlanet();
-                UnshowPanel();
-                 _curSelectedPlanet = null;
-                //_destinationPlanet = null;
-                // _planetClickState = PlanetClickState.Nothing;
-                // _preparedToSendSoldier = false;
-            }
-
-            _destinationSelected = false;
-            ClearDragArrow();
         }
 
         Color _selectedColor = new Color(173f/255f, 173f/255f, 173f/255f, 1f);
@@ -234,7 +213,9 @@ namespace  Green
         {
             UnshowPanel();
             OnCloseProgressBar();
+            _arrowRenderer.Clear();
             _destinationSelected = false;
+            _curSelectedPlanet = null;
         }
 
         public Button _okButton;
@@ -252,10 +233,10 @@ namespace  Green
         {
             if (_destinationSelected)
             {
-                int count = (int) (_soldierSelectBar.value*_curSelectedPlanet.PlayerSoldiers.Count);
+                int count = int.Parse(_soldierCount.text);
                 GameWorld.Instance.SendSoldier(_curSelectedPlanet, _destinationPlanet, count, SoldierType.Player);
                 _destinationSelected = false;
-                ClearDragArrow();
+                OnCloseProgressBar();
             }
         }
 
@@ -279,13 +260,34 @@ namespace  Green
         }
         public void OnTouchUp(Ray ray)
         {
-            
+            if (DragProgressBar)
+            {
+                OnClickOK();
+                return;
+            }
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                // if raycasted object was founded, keep it to thr trPreClicked
+                var planet = hit.collider.GetComponent<Planet>();
+                if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
+                ShowPanel(planet);
+            }
+            else
+            {
+                UnshowPanel();
+                _curSelectedPlanet = null;
+                CancelAllAction();
+            }
+
+            _destinationSelected = false;
+            ClearDragArrow();
         }
 
         // Use this for initialization
         void Start()
         {
-            _soldierSelectBar.onValueChanged.AddListener(OnSelectSoliderBarScrollChanged);
+           
         }
 
         Planet _curSelectedPlanet = null;
@@ -312,22 +314,53 @@ namespace  Green
             }
             if (_destinationSelected)
             {
-                var count = (int) (_curSelectedPlanet.PlayerSoldiers.Count * _soldierSelectBar.value);
+                var count = (int) (ProgressBar.Value * _curSelectedPlanet.PlayerSoldiers.Count / 100);
                 _soldierCount.text = count.ToString();
+                OnShowProgressBar();
             }
             else
             {
-                _soldierCount.text = "";
+                _soldierCount.text = "0";
             }
         }
 
-        void OnSelectSoliderBarScrollChanged(float dt)
+        enum ProgressBarChange
         {
-            if (_destinationSelected)
-                _soldierCount.text = (dt*_curSelectedPlanet.PlayerSoldiers.Count).ToString();
+            Increase,
+            Decrease
+        }
+
+        void OnProgressBarChanged(float dt, ProgressBarChange increaseOrDecrease)
+        {
+            if (DragProgressBar)
+            {
+                float progress = (ProgressBar.Value + dt) / 100f;
+                float floatSoldierToSend = progress * _curSelectedPlanet.PlayerSoldiers.Count;
+
+                int intCount = 0;
+                switch (increaseOrDecrease)
+                {
+                    case ProgressBarChange.Decrease:
+                        intCount = Mathf.FloorToInt(floatSoldierToSend);
+                        break;
+                    case ProgressBarChange.Increase:
+                        intCount = Mathf.CeilToInt(floatSoldierToSend);
+                        break;
+                }
+                
+                if (_curSelectedPlanet.PlayerSoldiers.Count == 0)
+                {
+                    ProgressBar.Value = 100;
+                }
+                else
+                {
+                    ProgressBar.Value = (int)(((float)intCount / (float)_curSelectedPlanet.PlayerSoldiers.Count) * 100f);
+                }
+                _soldierCount.text = intCount.ToString();
+            }    
             else
             {
-                _soldierCount.text = "";
+                _soldierCount.text = "0";
             }
         }
 
