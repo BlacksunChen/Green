@@ -1,0 +1,36 @@
+[reg_textbox name=Main type=main]
+[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+[actor_new name=E]
+
+[cm]
+[enteractor name=A pos=left fade=true]
+#A
+我们好像陷入敌人的圈套了，前方出现大量敌人。[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true]
+#B
+没关系，我们这边也有强大的援军。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+他们真的可靠吗？毕竟原本是E星人…[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+不可以怀疑友军，这样和阴谋论的E星人有何区别。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+恩，我错了。[p]
+[fadeout name=A]
+
+[fadein name=E]
+#E星人
+哈哈哈哈，这可是我军的主力部队，和你们之前的敌人完全不是一个级别，感受一下帝国的愤怒吧！[p]
+[fadeout name=E]

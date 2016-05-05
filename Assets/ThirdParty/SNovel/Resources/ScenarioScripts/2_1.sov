@@ -1,0 +1,20 @@
+[reg_textbox name=Main type=main]
+[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+
+[cm]
+[enteractor name=A pos=left fade=true]
+#A
+有了益星人得帮助，我们实力强大了好多。[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true]
+#B
+恩恩，他们不仅善良，而且善战，为我们的绿化事业提供了不少的好点子呢。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+前方不远处有一个敌人的重要据点，我们联手将其拿下！这样我们就彻底掌控了这片区域。[p]
+[fadeout name=A]

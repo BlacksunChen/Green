@@ -1,0 +1,35 @@
+[reg_textbox name=Main type=main]
+[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+
+[cm]
+[enteractor name=A pos=left fade=true]
+#A
+我们获胜了！这可真是奇迹啊，我们打败了E星人的部队，打破了他们不败的神话！[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true]
+#B
+是啊，这真是历史性的一刻，但我们不要高兴得太早，那只是敌人的小部队而已。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+但是以前没有种族战胜过这个规模的E星人！我们要怎样迎接接下来更强大的敌人呢？[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+E星人不是不可战胜的，我们在这个区域已经占有了局部的优势，在E星人的大部队到来之前，我们得快速收复附近E星人的据点，使他们成为我们的据点。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+这意味着我们要主动进攻么？[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+没办法这是战争，不主动进攻就是坐以待毙。我们会先安置好那些星球上没有战意的平民的。将星球绿化后，再把他们接回来。[p]
+[fadeout name=B]
