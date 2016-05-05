@@ -9,8 +9,14 @@ namespace Utilities
     public abstract class FSMState
     {
         Animator _animator;
+        protected Sprite _image = null;
 
-        protected enum AnimatorState
+        public virtual Sprite Image
+        {
+            get { return _image; }
+        }
+
+        public  enum AnimatorState
         {
             中立,
             中立_玩家,
@@ -57,6 +63,7 @@ namespace Utilities
             _fsm = star.FiniteStateMachine;
             _star = star;
             EnumState = state;
+            //_image = sprite;
         }
 
         public FSMState NextState()

@@ -12,6 +12,7 @@ namespace Green
 
     public enum GameState
     {
+        Preview,
         Playing,
         Pause,
         GameOver
@@ -63,13 +64,21 @@ namespace Green
                 case GameState.GameOver:
                     OnChangeStateGameOver();
                     break;
+                case GameState.Preview:
+                    OnChangePreview();
+                    break;
                 default:
                     break;
             }
         }
 
+        public void OnChangePreview()
+        {
+            World.PauseTimer();
+        }
         public void OnChangeStatePlay()
         {
+            World.StartTimer();
             Time.timeScale = 1;
         }
 

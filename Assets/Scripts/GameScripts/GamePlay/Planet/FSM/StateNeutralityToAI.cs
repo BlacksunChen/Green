@@ -31,9 +31,22 @@ namespace Green
             _transitions.Add(new FSMTransition(Star.e_State.NeutralityPeace, neutral));
         }
 
+        public override Sprite Image
+        {
+            get
+            {
+                if (_image == null)
+                {
+                    _image = Resources.Load<Sprite>("Planets/中立星球");
+                }
+                return _image;
+            }
+        }
+
         public override void OnEnter()
         {
-            animator.SetTrigger(AnimatorState.中立_敌人.ToString());
+            //animator.SetTrigger(AnimatorState.中立_敌人.ToString());
+            //animator.CrossFade(AnimatorState.中立_敌人.ToString(), 2f);
             _star.StartCapture();
             return;
         }
