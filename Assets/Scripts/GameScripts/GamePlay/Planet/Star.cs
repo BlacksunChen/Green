@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
+using UnityEditor.Animations;
 using UnityEngine;
 using Utilities.Tuples;
 using Utilities;
@@ -329,5 +331,20 @@ namespace Green
             GameWorld.Instance.SendSoldier(this.Planet_, to.Planet_, soldierNum, SoldierType.Enemy);
         }
         #endregion
+
+        public void CrossFadeStarImage(Sprite nextImage)
+        {
+            var image = GetComponent<SpriteRenderer>();
+            var sequence = DOTween.Sequence();
+
+            sequence.Append(image.DOFade(0f, 0.5f))
+                .AppendCallback(() =>
+                {
+                    Debug.LogFormat("{0} change from {1} to {2}", name, image.sprite.name, nextImage.name);
+                    image.sprite = nextImage;
+                })
+                //.AppendInterval(0.1f)
+                .Append(image.DOFade(1f, 0.5f));
+        }
     }
 }

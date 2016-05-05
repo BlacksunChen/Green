@@ -119,12 +119,24 @@ namespace Green
 
         void Update()
         {
-            if(GameManager.Instance.State == GameState.Playing)
+            //if(GameManager.Instance.State == GameState.Playing)
             {          
                 UpdateAI();
                 UpdateSituationInEachPlanet();
                 UpdateGameProgress();
             }
+        }
+
+        public void StartTimer()
+        {
+            _aiUpdateTimer.Resume();
+            _situationUpdateTimer.Resume();
+        }
+
+        public void PauseTimer()
+        {
+            _aiUpdateTimer.Pause();
+            _situationUpdateTimer.Pause();
         }
 
         ScoreBar _scoreBar;
@@ -170,7 +182,7 @@ namespace Green
         }
         void UpdateAI()
         {
-            _aiUpdateTimer.Resume();
+           // _aiUpdateTimer.Resume();
             _aiUpdateTimer.Update();
             if (_aiUpdateTimer.CurrentState == TimerState.FINISHED)
             {
@@ -181,7 +193,7 @@ namespace Green
 
         void UpdateSituationInEachPlanet()
         {
-            _situationUpdateTimer.Resume();
+           // _situationUpdateTimer.Resume();
             _situationUpdateTimer.Update();
             if (_situationUpdateTimer.CurrentState == TimerState.FINISHED)
             {
