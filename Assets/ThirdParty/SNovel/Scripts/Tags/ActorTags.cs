@@ -440,16 +440,18 @@ namespace Sov.AVGPart
 
             ao.OnAnimationFinish = OnFinishAnimation;
             ao.IsEnterScene = false;
-            if (time - 0f > float.Epsilon)
-            {
-                Engine.Status.EnableNextCommand = false;
+            //if (time - 0f > float.Epsilon)
+            //{
+            Engine.Status.EnableNextCommand = false;
 
-                ao.FadeIn(time);
-            }
-            else
-            {
-                ao.FadeIn(0f);
-            }
+            ao.FadeIn(time);
+            // }
+            // else
+            // {
+            //     Engine.Status.EnableNextCommand = false;
+
+            //    ao.FadeIn(0f);
+            //  }
         }
 
 
@@ -465,7 +467,7 @@ namespace Sov.AVGPart
 
         public override void After()
         {
-            base.After();
+           // base.After();
         }
     }
 
@@ -522,16 +524,16 @@ namespace Sov.AVGPart
 
             ao.OnAnimationFinish = OnFinishAnimation;
             ao.IsEnterScene = false;
-            if (time - 0f > float.Epsilon)
-            {
-                Engine.Status.EnableNextCommand = false;
+            // if (time - 0f > float.Epsilon)
+            // {
+            Engine.Status.EnableNextCommand = false;
 
-                ao.FadeOut(time);
-            }
-            else
-            {
-                ao.FadeOut(0);
-            }
+            ao.FadeOut(time);
+            // }
+            //  else
+            //  {
+            //      ao.FadeOut(0);
+            // }
         }
 
 
@@ -547,7 +549,7 @@ namespace Sov.AVGPart
 
         public override void After()
         {
-            base.After();
+            //base.After();
         }
     }
     /// 

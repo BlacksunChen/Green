@@ -76,6 +76,7 @@ namespace Sov.AVGPart
 
         public override void FadeIn(float fadetime)
         {
+            /*
             if (fadetime == 0)
             {
                 Go.SetActive(true);
@@ -84,15 +85,17 @@ namespace Sov.AVGPart
             else
             {
                 Go.SetActive(true);
-                _image.color = new Color(255, 255, 255, 0);
-                Tween t = _image.DOFade(1, fadetime);
-                if (OnAnimationFinish != null)
-                    t.OnComplete(new TweenCallback(OnAnimationFinish));
-            }
+                */
+            //_image.color = new Color(255, 255, 255, 0);
+            Tween t = _image.DOFade(1, fadetime);
+            if (OnAnimationFinish != null)
+                t.OnComplete(new TweenCallback(OnAnimationFinish));
+            //}
         }
 
         public override void FadeOut(float fadetime)
         {
+/*
             if (fadetime == 0)
             {
                 Go.SetActive(false);
@@ -101,11 +104,12 @@ namespace Sov.AVGPart
             else
             {
                 Go.SetActive(false);
-                _image.color = new Color(255, 255, 255, 255);
-                Tween t = _image.DOFade(0, fadetime);
-                if (OnAnimationFinish != null)
-                    t.OnComplete(new TweenCallback(OnAnimationFinish));
-            }
+                */
+           // _image.color = new Color(255, 255, 255, 255);
+            Tween t = _image.DOFade(0, fadetime);
+            if (OnAnimationFinish != null)
+                t.OnComplete(new TweenCallback(OnAnimationFinish));
+            //}
         }
 
         public override void SetPosition2D(Vector2 p)

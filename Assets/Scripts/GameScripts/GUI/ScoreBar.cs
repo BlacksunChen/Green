@@ -8,8 +8,8 @@ namespace Green
     {
         public Slider _centerImage;
 
-        public Slider _leftSilder;
-        public Slider _rightSilder;
+        public Image _leftSilder;
+        public Image _rightSilder;
 
        
         void Awake()
@@ -19,10 +19,10 @@ namespace Green
                 switch (t.name)
                 {
                     case "left_bar":
-                        _leftSilder = t.GetComponent<Slider>();
+                        _leftSilder = t.GetComponent<Image>();
                         break;
                     case "right_bar":
-                        _rightSilder = t.GetComponent<Slider>();
+                        _rightSilder = t.GetComponent<Image>();
                         break;
                     case "center_image":
                         _centerImage = t.GetComponent<Slider>();
@@ -33,49 +33,42 @@ namespace Green
             {
                 Debug.LogError("Component in ScoreBar missing!");
             }
-            _leftSilder.wholeNumbers = true;
-            _rightSilder.wholeNumbers = true;
-            _leftSilder.minValue = 0;
-            _rightSilder.minValue = 0;
             _centerImage.gameObject.SetActive(false);
         }
 
-        public int MaxValue
+        void Start()
         {
-            get
-            {
-                Debug.Assert((int)_leftSilder.maxValue == (int)_rightSilder.maxValue);
-                return (int)_leftSilder.maxValue;               
-            }
-            set
-            {
-                _leftSilder.maxValue = value;
-                _rightSilder.maxValue = value;
-                _centerImage.maxValue = value;
-            }
+           // MaxValue = GameWorld.Instance.Planets.Count;
         }
+        public int MaxValue { get; set; }
 
         void CheckIfStarShow()
         {
-            if ((int) _leftSilder.value + (int) _rightSilder.value == MaxValue)
+            if ((int)(_leftSilder.fillAmount + _rightSilder.fillAmount) == 1)
             {
                 _centerImage.gameObject.SetActive(true);
-                _centerImage.value = _leftSilder.value;
+                _centerImage.value = _leftSilder.fillAmount * MaxValue;
             }
             else
             {
                 _centerImage.gameObject.SetActive(false);
             }
         }
+
         public void SetLeftBarValue(int value)
         {
-            _leftSilder.value = value;
+            SetBarValue(_leftSilder, value);
             CheckIfStarShow();
+        }
+
+        void SetBarValue(Image i, int value)
+        {
+            i.fillAmount = (float)value / MaxValue;
         }
 
         public void SetRightBarValue(int value)
         {
-            _rightSilder.value = value;
+            SetBarValue(_rightSilder, value);
             CheckIfStarShow();
         }
     }
