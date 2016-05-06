@@ -430,7 +430,7 @@ namespace Green
 
         GameObject getCenterScaleItem(LevelSelectItem item)
         {
-            return item.LevelImage;
+            return null;
         }
 
         /// <summary>
@@ -483,7 +483,7 @@ namespace Green
 
         void ShowLevelName()
         {
-            itemsList[_currentItemIndex].LevelName.gameObject.SetActive(true);
+            //itemsList[_currentItemIndex].LevelName.gameObject.SetActive(true);
         }
 
         /// <summary>
