@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace Green
 {
     //[ExecuteInEditMode]
-    public class LevelSelectMenu:MonoBehaviour
+    public class LevelSelectMenu : MonoBehaviour
     {
         /// <summary>
         /// Current Displayed Item Index
@@ -177,6 +177,7 @@ namespace Green
                     
             }
         }
+
         //left-right level_1->10
         void SortMenu()
         {
@@ -205,7 +206,7 @@ namespace Green
              //   createMenu();
         }
 
-        public const float AnimationInterval = 0.3f;        /// <summary>
+        public const float AnimationInterval = 0.5f;        /// <summary>
         /// Recreates the LevelMenu2D from scratch.
         /// </summary>
         public void recreateMenu()
@@ -239,7 +240,7 @@ namespace Green
                     item.GetComponent<RectTransform>().anchoredPosition = ItemPosition[item.PositionInItems];
                 }
             }
-            doScaleTheCenterItem(true);
+            //doScaleTheCenterItem(true);
         }
 
         /// <summary>
@@ -269,25 +270,40 @@ namespace Green
                 doScaleTheCenterItem(true);
                 return;
             }
-
+            if (_isMoving) return;
             doScaleTheCenterItem(false);
             var offset = itemNum - _currentItemIndex;
             _isMoving = true;
             foreach (var item in itemsList)
             {
-                item.PositionInItems -= offset;
-                MoveItemToTargetPosition(item);
+                MoveItemToTargetPosition(item, offset);
             }
             _currentItemIndex = itemNum;
+            SortOrderOfItems();
         }
 
-        void MoveItemToTargetPosition(LevelSelectItem item)
+        void MoveItemToNextPosition(LevelSelectItem item)
         {
             var tr = item.GetComponent<RectTransform>();
             tr.DOAnchorPos(ItemPosition[item.PositionInItems], animationTime, false)
-                .OnComplete(moveComplete).SetEase(Ease.InCirc);
+                .OnComplete(moveComplete).SetEase(Ease.Linear);
         }
 
+        void MoveItemToTargetPosition(LevelSelectItem item, int offset)
+        {
+            var seq = DOTween.Sequence();
+            float timeDetla = animationTime / (float)Mathf.Abs(offset);
+            for (int i = 0; i < Mathf.Abs(offset); ++i)
+            {
+                if (offset > 0)
+                    item.PositionInItems--;
+                else
+                    item.PositionInItems++;
+                var tr = item.GetComponent<RectTransform>();
+                seq.Append(tr.DOAnchorPos(ItemPosition[item.PositionInItems], timeDetla, true));
+            }
+            seq.OnComplete(moveComplete);
+        }
         LevelSelectItem GetCenterItem()
         {
             foreach (var i in itemsList)
@@ -313,9 +329,8 @@ namespace Green
             {
                 center.DoScaleOrigin();
             }
-
-
         }
+
         /// <summary>
         /// Returns index of the GameObject of item passed in parameter
         /// </summary>
@@ -338,14 +353,10 @@ namespace Green
             foreach (var item in  itemsList)
             {
                 item.PositionInItems--;
-                var tr = item.GetComponent<RectTransform>();
-                tr.DOAnchorPos(ItemPosition[item.PositionInItems], animationTime, false)
-                    .OnComplete(moveComplete).SetEase(Ease.Linear);
-
-
+                MoveItemToNextPosition(item);
             }
             _currentItemIndex++;
-            doScaleTheCenterItem(true);
+          //  doScaleTheCenterItem(true);
           //  ShowLevelName();
         }
 
@@ -364,9 +375,7 @@ namespace Green
             foreach (var item in itemsList)
             {
                 item.PositionInItems++;
-                var tr = item.GetComponent<RectTransform>();
-                tr.DOAnchorPos(ItemPosition[item.PositionInItems], animationTime, false)
-                    .OnComplete(moveComplete).SetEase(Ease.InCirc);
+                MoveItemToNextPosition(item);
             }
             _currentItemIndex--;
             //doScaleTheCenterItem(true);
@@ -386,10 +395,46 @@ namespace Green
         void moveComplete()
         {
             _isMoving = false;
-            itemsList[CurrentItem].GetImage().sortingOrder = itemsList.Count - 1;
-
+            //itemsList[CurrentItem].GetImage().sortingOrder = itemsList.Count - 1;
             doScaleTheCenterItem(true);
+        }
 
+        public void SortOrderOfItems()
+        {
+            /*
+            for (int i = CurrentItem - 1; i >= 0; i--)
+            {
+                itemsList[i].GetComponent<RectTransform>().SetSiblingIndex(i - CurrentItem);
+                //itemsList[i].GetComponent<ClickTouchScript>().enabled = true;
+            }
+            for (int i = itemsList.Count - 1; i > CurrentItem; i--)
+            {
+                itemsList[i].GetComponent<RectTransform>().SetSiblingIndex(CurrentItem - i);
+                //itemsList[i].GetComponent<ClickTouchScript>().enabled = true;
+            }
+            itemsList[CurrentItem].GetComponent<RectTransform>().SetSiblingIndex(0);
+            //itemsList[CurrentItem].GetComponent<ClickTouchScript>().enabled = false;
+            */
+            itemsList[CurrentItem].GetComponent<RectTransform>().SetAsFirstSibling();
+            for (int i = CurrentItem - 1; i >= 0; i--)
+            {
+                itemsList[i].GetComponent<RectTransform>().SetAsLastSibling();
+            }
+            for (int i = itemsList.Count - 1; i > CurrentItem; i--)
+            {
+                itemsList[i].GetComponent<RectTransform>().SetAsLastSibling();
+            }
+            
+        }
+
+        LevelSelectChapter _chapter;
+
+        void SetChapterInfoToItem()
+        {
+            foreach (var item in itemsList)
+            {
+                item.ChapterNum = _chapter.ChapterNumber;
+            }
         }
     }
 }

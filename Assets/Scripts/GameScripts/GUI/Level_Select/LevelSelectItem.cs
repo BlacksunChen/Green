@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
-using System.Security.Policy;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 namespace Green
 {
     //[ExecuteInEditMode]
@@ -16,28 +16,51 @@ namespace Green
         public string LevelName;
         public LevelSelectMenu Menu;
         public int PositionInItems = 0;
+        public int ChapterNum = 0;
+
+        manage_menu_uGUI gui = null;
 
         void Start()
         {
             LevelNameText = GameObject.Find("LevelName").GetComponent<Text>();
             LevelNumberText = GameObject.Find("LevelNumber").GetComponent<Text>();
-            LevelImage = GetComponent<Image>();
+            LevelImage = GetComponentInChildren<Image>();
+            LevelImage.raycastTarget = false;
             LevelNameText.text = LevelName;
-            LevelNumberText.text = LevelNumber;
+            CreateButton();
 
             OriginScale = LevelImage.GetComponent<RectTransform>().localScale.x;
-            var button = gameObject.AddComponent<Button>();
-            button.targetGraphic = LevelImage;
-            button.onClick.AddListener(OnClickItem);
 
+            gui = GameObject.FindObjectOfType<manage_menu_uGUI>();
         }
 
+        void GenerateLevelNumber()
+        {
+            LevelNumberText.text = "第" + LevelNumber + "节";
+        }
         // Update is called once per frame
         void Update()
         {
-
+            
         }
 
+        void CreateButton()
+        {
+            var btnGo = Resources.Load<GameObject>("Prefabs/GUI/Button");
+            btnGo = GameObject.Instantiate(btnGo);
+            var btn = btnGo.GetComponent<Button>();
+            if (btn == null)
+            {
+                Debug.LogError("Need Button Prefab in Level_Sclect_Item");
+            }
+            btn.targetGraphic = LevelImage;
+            btn.onClick.AddListener(OnClickItem);
+            var t = btn.GetComponent<RectTransform>();
+            t.SetParent(transform);
+            t.sizeDelta = new Vector2(180f, 180f);
+            t.anchoredPosition3D = new Vector3(0f, 0f, 0f);
+            t.localScale = new Vector3(1f,1f,1f);
+        }
         public SpriteRenderer GetImage()
         {
             return LevelImage.GetComponentInChildren<SpriteRenderer>();
@@ -58,7 +81,19 @@ namespace Green
 
         public void OnClickItem()
         {
-            Menu.gotoItem(this);
+            if (Menu.itemsList[Menu.CurrentItem] == this)
+            {
+                gui.loading_screen.gameObject.SetActive(true);
+                var sceneName = ChapterNum.ToString() + LevelNumber.ToString();
+                SceneManager.LoadScene(sceneName);
+            }
+            else
+            {
+                LevelNameText.text = LevelName;
+                GenerateLevelNumber();
+                Menu.gotoItem(this);
+            }
+            
         }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class LevelSelectChapter : MonoBehaviour
 {
     public string ChapterName;
+    public int ChapterNumber;
     public Text ChapterNameText;
     // Use this for initialization
     void Start()
@@ -14,9 +15,13 @@ public class LevelSelectChapter : MonoBehaviour
         {
             Debug.LogError("Missing UI: ChapterName");
         }
-        ChapterNameText.text = ChapterName;
+        //ChapterNameText.text = ChapterName;
     }
 
+    string GetChapterName()
+    {
+        return "第" + ChapterNumber.ToString() + "章  " + ChapterName;
+    }
     // Update is called once per frame
     void Update()
     {
