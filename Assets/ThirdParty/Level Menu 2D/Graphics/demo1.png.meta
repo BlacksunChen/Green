@@ -1,7 +1,8 @@
 fileFormatVersion: 2
 guid: 28e29113c66606c4d92401bba1bbc62e
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: demo1_0
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -58,7 +59,12 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
+      outline:
+      - - {x: -271.5, y: 171.5}
+        - {x: -271.5, y: -171.5}
+        - {x: 271.5, y: -171.5}
+        - {x: 271.5, y: 170.5}
+        - {x: 270.5, y: 171.5}
     outline: []
   spritePackingTag: 
   userData: 
