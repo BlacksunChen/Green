@@ -1,16 +1,16 @@
 [reg_textbox name=Main type=main]
-[reg_textbox name=Name type=name]
+//[reg_textbox name=Name type=name]
 [actor_new name=A]
 [actor_new name=B]
 [actor_new name=E]
 
 [cm]
-[enteractor name=A pos=left fade=true]
+[enteractor name=A pos=left fade=true scale=0.5]
 #A
 我们好像陷入敌人的圈套了，前方出现大量敌人。[p]
 [fadeout name=A]
 
-[enteractor name=B pos=right fade=true]
+[enteractor name=B pos=right fade=true scale=0.5]
 #B
 没关系，我们这边也有强大的援军。[p]
 [fadeout name=B]
@@ -30,7 +30,7 @@
 恩，我错了。[p]
 [fadeout name=A]
 
-[fadein name=E]
+[enteractor name=E pos=right fade=true scale=0.5]
 #E星人
 哈哈哈哈，这可是我军的主力部队，和你们之前的敌人完全不是一个级别，感受一下帝国的愤怒吧！[p]
 [fadeout name=E]

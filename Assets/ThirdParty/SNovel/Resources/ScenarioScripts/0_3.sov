@@ -1,15 +1,15 @@
 [reg_textbox name=Main type=main]
-[reg_textbox name=Name type=name]
+//[reg_textbox name=Name type=name]
 [actor_new name=A]
 [actor_new name=B]
 
 [cm]
-[enteractor name=A pos=left fade=true]
+[enteractor name=A pos=left fade=true scale=0.5]
 #A
 前线传来了胜利的消息，让我们感谢大自然给与我们的无限力量吧。[p]
 [fadeout name=A]
 
-[enteractor name=B pos=right fade=true]
+[enteractor name=B pos=right fade=true scale=0.5]
 #B
 但是我们不能大意，敌人的繁殖能力也很强大。[p]
 [fadeout name=B]

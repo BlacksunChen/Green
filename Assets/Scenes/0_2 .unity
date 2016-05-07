@@ -1529,6 +1529,10 @@ Prefab:
       propertyPath: _vigour
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11433176, guid: ac000a8cdfc644acc911739f6cb9457f, type: 2}
+      propertyPath: _playerTroops
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac000a8cdfc644acc911739f6cb9457f, type: 2}
   m_IsPrefabParent: 0
@@ -3118,6 +3122,10 @@ Prefab:
     - target: {fileID: 419894, guid: 7027ced6415234596aeea7818d1c0190, type: 2}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11468118, guid: 7027ced6415234596aeea7818d1c0190, type: 2}
+      propertyPath: _enemyTroops
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7027ced6415234596aeea7818d1c0190, type: 2}
@@ -5179,7 +5187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5193,7 +5201,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 86
-    m_Alignment: 0
+    m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 0
     m_HorizontalOverflow: 0

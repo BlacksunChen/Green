@@ -1,15 +1,15 @@
 [reg_textbox name=Main type=main]
-[reg_textbox name=Name type=name]
+//[reg_textbox name=Name type=name]
 [actor_new name=A]
 [actor_new name=B]
 
 [cm]
-[enteractor name=A pos=left fade=true]
+[enteractor name=A pos=left fade=true scale=0.5]
 #A
 我们获胜了！这可真是奇迹啊，我们打败了E星人的部队，打破了他们不败的神话！[p]
 [fadeout name=A]
 
-[enteractor name=B pos=right fade=true]
+[enteractor name=B pos=right fade=true scale=0.5]
 #B
 是啊，这真是历史性的一刻，但我们不要高兴得太早，那只是敌人的小部队而已。[p]
 [fadeout name=B]

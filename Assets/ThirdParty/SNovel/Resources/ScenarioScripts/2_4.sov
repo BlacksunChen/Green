@@ -1,0 +1,16 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+
+[cm]
+[enteractor name=A pos=left fade=true scale=0.5]
+#A
+不好了！我们的大批部队占领了敌人的一颗星球但是被敌人的星球包围了。[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true scale=0.5]
+#B
+我们要转移阵地，集中火力，突出重围！[p]
+[fadeout name=B]
+

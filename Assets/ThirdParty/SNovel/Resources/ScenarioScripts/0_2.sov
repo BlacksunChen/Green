@@ -1,15 +1,15 @@
 [reg_textbox name=Main type=main]
-[reg_textbox name=Name type=name]
+//[reg_textbox name=Name type=name]
 [actor_new name=A]
 [actor_new name=B]
 
 [cm]
-[enteractor name=A pos=left fade=true]
+[enteractor name=A pos=left fade=true scale=0.5]
 #A
 我们遇到了E星人！他们比我们强大得多！[p]
 [fadeout name=A]
 
-[enteractor name=B pos=right fade=true]
+[enteractor name=B pos=right fade=true scale=0.5]
 #B
 没事，这是他们已经榨取完毕废弃掉的一个星球，上面并没有太多士兵。[p]
 [fadeout name=B]

@@ -1,18 +1,18 @@
 [reg_textbox name=Main type=main]
-[reg_textbox name=Name type=name]
+//[reg_textbox name=Name type=name]
 [actor_new name=A]
 [actor_new name=B]
 
 [cm]
 #
-咕噜星人悄悄对周边星球进行绿化的事情很快被E星人发现了，E星人认为咕噜星是在扩张自己的领地，挑战自己在宇宙的霸权。于是计划对咕噜星人发起进攻。[r]
+咕噜星人悄悄对周边星球进行绿化的事情很快被E星人发现了，E星人认为咕噜星是在扩张自己的领地，挑战自己在宇宙的霸权。于是计划对咕噜星人发起进攻。[p]
 
-[enteractor name=A pos=left fade=true]
+[enteractor name=A pos=left fade=true scale=0.5]
 #A
 E星人注意到我们的行动了！可是我们的行动对他们也有利不是吗？为什么大家不能和平共处呢？[p]
 [fadeout name=A]
 
-[enteractor name=B pos=right fade=true]
+[enteractor name=B pos=right fade=true scale=0.5]
 #B
 E星人是著名的阴谋论种族，他们认为我们是在挑战他们的霸权，要反过来奴役他们，前几天的谈判也没有用。我们只能为了自己，为了宇宙，和他们战斗了！这是我们的使命。[p]
 [fadeout name=B]

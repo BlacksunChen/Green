@@ -1,17 +1,17 @@
 [reg_textbox name=Main type=main]
-[reg_textbox name=Name type=name]
+//[reg_textbox name=Name type=name]
 [actor_new name=A]
 [actor_new name=B]
 [actor_new name=E]
 [actor_new name=EE]
 
 [cm]
-[enteractor name=B pos=right fade=true]
+[enteractor name=B pos=right fade=true scale=0.5]
 #B
 我们已经在这一区域站稳了脚跟，很多E星人似乎也被我们感动，前来帮助我们一起绿化星球。[p]
 [fadeout name=B]
 
-[enteractor name=A pos=left fade=true]
+[enteractor name=A pos=left fade=true scale=0.5]
 #A
 看来E星人也不全是坏人。[p]
 [fadeout name=A]
@@ -48,12 +48,12 @@
 我们要去和他们会合，他们能为我们提供很多E星的情报和科技，他们现在的据点在益星，被很多邪恶的E星人包围着。[p]
 [fadeout name=B]
 
-[enteractor name=EE pos=right fade=true]
+[enteractor name=EE pos=right fade=true scale=0.5]
 #益星人
 我们要去和咕噜星人会合，共同拯救这个被污染的宇宙！[p]
 [fadeout name=EE]
 
-[enteractor name=E pos=left fade=true]
+[enteractor name=E pos=left fade=true scale=0.5]
 #E星人
 你们这群叛徒，咕噜星人究竟给了你们什么好处？[p]
 [fadeout name=E]
