@@ -186,6 +186,35 @@ namespace Sov.AVGPart
         } 
     }
 
+    ///
+    /// tag = close_textbox
+    ///
+    /// <desc>
+    /// 绑定textbox
+    ///    
+    ///
+    /// <sample>
+    ///[close_textbox]
+    ///
+    ///
+    public class Close_textboxTag : AbstractTag
+    {
+        public Close_textboxTag()
+        {
+            _defaultParamSet = new Dictionary<string, string>() {
+            };
+            _vitalParams = new List<string>() {
+            };
+        }
+
+        public override void Excute()
+        {
+            Debug.Log("[Close TextBox]");
+            base.Excute();
+            TextBoxesManager.Instance.CloseAllTextbox();
+        }
+    }
+
     /* ********************* Message Tag ******************* */
     /*
      * tag = l

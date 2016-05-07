@@ -30,9 +30,11 @@ namespace Green
             }
             set 
             {
-                SetFillerSizeAsPercentage(value);
+                SetFillerSizeAsPercentage(value * MaxValue);
             }
         }
+
+        public float MaxValue = 0.8f;
         /// <summary>
         /// This is the core of the Filler animation. If there is a difference between m_Value and TransitoryValue,
         /// the latter will play catch up in the Update Method.

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Utilities;
 using System.Collections.Generic;
+using BE;
 
 namespace Green
 {
@@ -36,7 +37,7 @@ namespace Green
         }
 
         [SerializeField, SetProperty("State")]
-        private GameState _state = GameState.Playing;
+        private GameState _state = GameState.Preview;
 
         public GameState State
         {
@@ -98,6 +99,16 @@ namespace Green
             base.Awake();
             var obj = GameObject.Find(GameplayManager.World);
             _world = obj.GetComponent<GameWorld>();
+        }
+
+        public void LockCamera()
+        {
+            MobileRTSCam.instance.CanTouchMoving = false;
+        }
+
+        public void UnlockCamera()
+        {
+            MobileRTSCam.instance.CanTouchMoving = true;
         }
 
         

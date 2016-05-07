@@ -38,3 +38,5 @@
 #A
 哦，我懂了。那我们开始行动吧！[p]
 [fadeout name=A]
+[startgame]
+[close_textbox]

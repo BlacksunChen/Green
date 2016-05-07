@@ -22,9 +22,14 @@ namespace Green
             BodyLineRenderer = lines[0];
             HeadLineRenderer = lines[1];
         }
-
+        
+        public Color LineColor = new Color(244, 217, 28);
         public void Draw(Vector2 startPos, Vector2 endPos)
         {
+            Color c = new Color();
+            BodyLineRenderer.SetColors(LineColor, LineColor);
+            HeadLineRenderer.SetColors(LineColor, LineColor);
+
             zDepth = transform.position.z;
 
             var StartPos = new Vector3(startPos.x, startPos.y, zDepth);

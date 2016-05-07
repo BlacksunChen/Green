@@ -105,6 +105,7 @@ namespace  Green
             {
                 var planet = hit.collider.GetComponent<Planet>();
                 if (planet == null) Debug.LogError("OnTouchDown() Planet == null");
+                if (_curSelectedPlanet == null) return;
                 if (planet != _curSelectedPlanet)
                 {
                     _destinationPlanet = planet;
@@ -287,7 +288,8 @@ namespace  Green
         // Use this for initialization
         void Start()
         {
-           
+            PanelOffsetY = 61.6f;
+            //_soldierCount = GameObject.Find("Canvas/ProgressBar/TextPanel/Bg/Label").GetComponent<Text>();
         }
 
         Planet _curSelectedPlanet = null;
@@ -354,7 +356,7 @@ namespace  Green
                 }
                 else
                 {
-                    ProgressBar.Value = (int)(((float)intCount / (float)_curSelectedPlanet.PlayerSoldiers.Count) * 100f);
+                    ProgressBar.Value = (((float)intCount / (float)_curSelectedPlanet.PlayerSoldiers.Count) * 100f);
                 }
                 _soldierCount.text = intCount.ToString();
             }    
@@ -377,7 +379,7 @@ namespace  Green
             var screenPos = GameSceneCamera.WorldToScreenPoint(pos);
             var tran = PropertyPanel.GetComponent<RectTransform>();
             //RectTransformUtility.WorldToScreenPoint(canvas.)
-            PropertyPanel.transform.position = new Vector3(screenPos.x + PanelOffsetX, screenPos.y + PanelOffsetY, screenPos.z);
+            PropertyPanel.transform.position = new Vector3(screenPos.x, screenPos.y + PanelOffsetY, screenPos.z);
             PropertyPanel.Show(star);
         }
 

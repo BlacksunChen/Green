@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Utilities;
 
@@ -119,12 +120,19 @@ namespace Green
 
         void Update()
         {
-            //if(GameManager.Instance.State == GameState.Playing)
-            {          
+            UpdateSoldiersInPlanets();
+            if (GameManager.Instance.State == GameState.Playing)
+            {            
                 UpdateAI();
                 UpdateSituationInEachPlanet();
                 UpdateGameProgress();
             }
+            else if (GameManager.Instance.State == GameState.Preview)
+            {
+                
+            }
+           
+            UpdateGameProgress();
         }
 
         public void StartTimer()
@@ -157,11 +165,11 @@ namespace Green
             }
             _scoreBar.SetLeftBarValue(playerCapture);
             _scoreBar.SetRightBarValue(enemyCapture);
-            if (playerCapture == _planets.Count)
+            if (playerCapture == _planets.Count && _enemyPopulation <= 1f)
             {
                 Victory();
             }
-            else if(enemyCapture == _planets.Count)
+            else if(enemyCapture == _planets.Count && _playerPopulation <= 1f)
             {
                 GameOver();
             }
@@ -182,7 +190,7 @@ namespace Green
         }
         void UpdateAI()
         {
-            _aiUpdateTimer.Resume();
+            //_aiUpdateTimer.Resume();
             _aiUpdateTimer.Update();
             if (_aiUpdateTimer.CurrentState == TimerState.FINISHED)
             {
@@ -193,12 +201,12 @@ namespace Green
 
         void UpdateSituationInEachPlanet()
         {
-            _situationUpdateTimer.Resume();
+            //_situationUpdateTimer.Resume();
             _situationUpdateTimer.Update();
             if (_situationUpdateTimer.CurrentState == TimerState.FINISHED)
             {
                 DebugInConsole.LogFormat("*******************第{0}秒*******************", _updateCountIndex++);
-                UpdateSoldiersInPlanets();
+               // UpdateSoldiersInPlanets();
                 UpdatePopulation();
                 foreach (var p in _planets)
                 {

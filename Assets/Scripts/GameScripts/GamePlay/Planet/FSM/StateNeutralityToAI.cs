@@ -47,6 +47,7 @@ namespace Green
         {
             //animator.SetTrigger(AnimatorState.中立_敌人.ToString());
             //animator.CrossFade(AnimatorState.中立_敌人.ToString(), 2f);
+            _star.CrossFadeStarImage(Image);
             _star.StartCapture();
             return;
         }

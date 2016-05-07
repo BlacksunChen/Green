@@ -18,3 +18,5 @@
 #A
 前方不远处有一个敌人的重要据点，我们联手将其拿下！这样我们就彻底掌控了这片区域。[p]
 [fadeout name=A]
+[startgame]
+[close_textbox]

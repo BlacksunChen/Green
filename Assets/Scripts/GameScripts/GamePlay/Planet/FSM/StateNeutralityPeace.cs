@@ -46,7 +46,8 @@ namespace Green
         {
             //改变星球动画
             //animator.SetTrigger(AnimatorState.中立.ToString());
-            animator.CrossFade(AnimatorState.中立.ToString(), 2f);
+            //animator.CrossFade(AnimatorState.中立.ToString(), 2f);
+            _star.CrossFadeStarImage(Image);
             return;
         }
 

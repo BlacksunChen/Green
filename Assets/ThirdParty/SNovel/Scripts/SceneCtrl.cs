@@ -12,8 +12,7 @@ public class SceneCtrl : MonoBehaviour
        // ScriptEngine.Instance.LoadScript(ScriptFileName);
         s = new Scene(ScriptFileName);
         s.LoadScript();
-      //  ScriptEngine.Instance.Run(s);
-      //  ScriptEngine.Instance.RunScript();
+        ScriptEngine.Instance.Run(s);
 	}
 	
 	// Update is called once per frame
@@ -21,10 +20,12 @@ public class SceneCtrl : MonoBehaviour
 	
 	}
 
+    /*
     public void OnGameStart()
     {
         Debug.Log("GameStart!");
         ScriptEngine.Instance.Run(s);
         //gameObject.SetActive(false);
     }
+    */
 }

@@ -19,4 +19,5 @@
 #B
 在此之前，先守住我们的阵地吧！[p]
 [fadeout name=B]
-
+[startgame]
+[close_textbox]

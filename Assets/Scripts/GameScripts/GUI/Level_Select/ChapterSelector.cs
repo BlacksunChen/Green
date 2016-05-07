@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+
 public class ChapterSelector : MonoBehaviour
 {
     public int CurrentChapterNumber;
     public Dictionary<int, LevelSelectChapter> Chapters = new Dictionary<int, LevelSelectChapter>();
     public Sprite IndicatorLargeImage;
     public Sprite IndicatorSmallImage;
-    public Dictionary<int, Image> Indicators;
+    public Dictionary<int, Image> Indicators = new Dictionary<int, Image>();
+
+   
     void Awake()
     {
         
     }
+    
     // Use this for initialization
     void Start()
     {
@@ -47,9 +52,12 @@ public class ChapterSelector : MonoBehaviour
         {
             if (c.Value != cur)
             {
-                c.Value.GetComponent<RectTransform>().Rotate(0f, 0f, -180f);
+                //c.Value.GetComponent<RectTransform>().localEulerAngles = new Vector3(0f, 0f, -180f);
+                c.Value.SetRotateToUp();
             }
         }
+        //cur.GetComponent<RectTransform>().localEulerAngles = new Vector3(0f, 0f, 0f);
+        cur.SetRotateToDown();
         SetIndicator(number);
 
     }
@@ -119,11 +127,11 @@ public class ChapterSelector : MonoBehaviour
                     }
 
 
-                    if (_curTouchPos.Value.x < _lastTouchPos.Value.x && _curTouchPos.Value.y < _lastTouchPos.Value.y)
+                    if (_curTouchPos.Value.x < _lastTouchPos.Value.x)
                     {
                         _touchType = TouchType.Left;
                     }
-                    else if (_curTouchPos.Value.x > _lastTouchPos.Value.x && _curTouchPos.Value.y > _lastTouchPos.Value.y)
+                    else if (_curTouchPos.Value.x > _lastTouchPos.Value.x)
                     {
                         _touchType = TouchType.Right;
                     }
@@ -138,59 +146,122 @@ public class ChapterSelector : MonoBehaviour
         }
         else
         {
-            _dragged = false;
-            OnDragEnd();
+            if (_dragged)
+            {
+                _dragged = false;
+                OnDragEnd();
+            }
         }
     }
 
     void OnDragStart()
     {
-        
+        _touchType = TouchType.None;
     }
 
-    RectTransform GetNextChapter()
+    LevelSelectChapter GetNextChapter()
     {
-        if (CurrentChapterNumber == Chapters.Count-1) return null;
-        return Chapters[CurrentChapterNumber + 1].GetComponent<RectTransform>();
+        if (CurrentChapterNumber >= Chapters.Count-1)
+            return null;
+        return Chapters[CurrentChapterNumber + 1];
     }
 
-    RectTransform GetLastChapter()
+    LevelSelectChapter GetLastChapter()
     {
-        if (CurrentChapterNumber == 0) return null;
-        return Chapters[CurrentChapterNumber - 1].GetComponent<RectTransform>();
+        if (CurrentChapterNumber <= 0)
+            return null;
+        return Chapters[CurrentChapterNumber - 1];
     }
     void OnDrag()
     {
+        if (_rotateAnim) return;
         if (_touchType == TouchType.Left)
         {
             var speed = TouchSlideSpeed * Vector3.Distance(_curTouchPos.Value, _lastTouchPos.Value);
-            var angleCur = Mathf.Clamp(speed, 0, -180f);
+            
             var next = GetNextChapter();
             if (next != null)
             {
-                var cur = Chapters[CurrentChapterNumber].transform;
-                cur.Rotate(0f, 0, cur.localEulerAngles.z + angleCur);
-                var nex = next.transform;
-                nex.Rotate(0f, 0, cur.localEulerAngles.z + angleCur);
+                var cur = Chapters[CurrentChapterNumber];
+                var angleCur = Mathf.Lerp(0f, -180f, speed / 180f);
+                cur.AddRotateZ(angleCur);
+                next.AddRotateZ(angleCur);
             }
         }
         else if(_touchType == TouchType.Right)
         {
             var speed = TouchSlideSpeed * Vector3.Distance(_curTouchPos.Value, _lastTouchPos.Value);
-            var angleCur = Mathf.Clamp(speed, 0, 180f);
+            
             var last = GetLastChapter();
             if (last != null)
             {
-                var cur = Chapters[CurrentChapterNumber].transform;
-                cur.Rotate(0f, 0, cur.localEulerAngles.z + angleCur);
-                var nex = last.transform;
-                nex.Rotate(0f, 0, cur.localEulerAngles.z + angleCur);
+                var cur = Chapters[CurrentChapterNumber];
+                var angleCur = Mathf.Lerp(0, 180f, speed / 180f);
+                cur.AddRotateZ(angleCur);
+                last.AddRotateZ(angleCur);
             }
         }
     }
 
+    bool _rotateAnim = false;
+
     void OnDragEnd()
     {
-       // if(Chapters[CurrentChapterNumber].transform.localEulerAngles.z > )
+        if (_rotateAnim) return;
+        if (Mathf.Abs(Chapters[CurrentChapterNumber].transform.localEulerAngles.z % 180f) > 60f)
+        {
+            var curT = Chapters[CurrentChapterNumber];
+            
+            if (_touchType == TouchType.Left)
+            {
+                _rotateAnim = true;
+                if (CurrentChapterNumber >= Chapters.Count - 1) return;
+                var nextT = Chapters[CurrentChapterNumber + 1];
+                curT.DoRotateClockWise(2f, OnRotateAnimComplete);
+                nextT.DoRotateClockWise(2f, OnRotateAnimComplete);
+                CurrentChapterNumber++;
+                //curT.DORotate(new Vector3(0, 0, 180f), 2f, RotateMode.LocalAxisAdd);
+                //nextT.DORotate(new Vector3(0f, 0f, -360f), 2f, RotateMode.LocalAxisAdd).OnComplete(OnRotateAnimComplete);
+            }
+            else if (_touchType == TouchType.Right)
+            {
+                _rotateAnim = true;
+                if (CurrentChapterNumber < 0) return;
+                var nextT = Chapters[CurrentChapterNumber - 1];
+                curT.DoRotateCounterClockWise(2f, OnRotateAnimComplete);
+                nextT.DoRotateCounterClockWise(2f, OnRotateAnimComplete);
+                CurrentChapterNumber--;
+            }
+        }
+        else
+        {
+            var curT = Chapters[CurrentChapterNumber];
+
+            if (_touchType == TouchType.Left)
+            {
+                _rotateAnim = true;
+                if (CurrentChapterNumber >= Chapters.Count - 1) return;
+                var nextT = Chapters[CurrentChapterNumber + 1];
+                //curT.DoRotateOrigin(2f, OnRotateAnimComplete);
+               // nextT.DoRotateOrigin(2f, OnRotateAnimComplete);
+                //curT.DORotate(new Vector3(0, 0, 180f), 2f, RotateMode.LocalAxisAdd);
+                //nextT.DORotate(new Vector3(0f, 0f, -360f), 2f, RotateMode.LocalAxisAdd).OnComplete(OnRotateAnimComplete);
+            }
+            else if (_touchType == TouchType.Right)
+            {
+                _rotateAnim = true;
+                if (CurrentChapterNumber < 0) return;
+                var nextT = Chapters[CurrentChapterNumber - 1];
+               // curT.DoRotateOrigin(2f, OnRotateAnimComplete);
+               // nextT.DoRotateOrigin(2f, OnRotateAnimComplete);
+            }
+        }
+    }
+
+    void OnRotateAnimComplete()
+    {
+        _rotateAnim = false;
+        SetIndicator(CurrentChapterNumber);
+        //SetCurrentChapterWithoutAnim(CurrentChapterNumber);
     }
 }

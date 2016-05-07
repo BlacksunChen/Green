@@ -208,7 +208,8 @@ namespace Utilities
         public void Reset()
         {
             currentTime = startingTime;
-            isPaused = startsPaused; //isPaused = false;
+            //isPaused = startsPaused; 
+            isPaused = false;
         }
 
         /// <summary>

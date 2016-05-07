@@ -33,7 +33,6 @@ namespace Sov.AVGPart
         //public TextBox GetCurrentMainTextBox() { return _currentMainTextBox; }
         public TextBoxesManager()
         {
-
             _textBoxes = new Dictionary<string, TextBox>();
             TextBoxesInScene = new List<TextBox>();
          //   CurrentMainTextBox = TextBoxesInScene[0];
@@ -76,6 +75,7 @@ namespace Sov.AVGPart
             }
             else
             {
+                TextBoxesInScene.Add(go.GetComponent<TextBox>());
                 return go.GetComponent<TextBox>();
             }
         }
@@ -218,6 +218,13 @@ namespace Sov.AVGPart
             }
         }
 
+        public void CloseAllTextbox()
+        {
+            foreach (var t in TextBoxesInScene)
+            {
+                t.gameObject.SetActive(false);
+            }
+        }
  
         
     };

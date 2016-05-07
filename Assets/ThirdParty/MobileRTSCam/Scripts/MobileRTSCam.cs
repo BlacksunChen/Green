@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System;
 using System.Collections;
+using System.Text;
 
 
 ///-----------------------------------------------------------------------------------------
@@ -46,6 +47,8 @@ namespace BE {
 		public 	Transform 	trCameraRoot=null;	// transform for move(panning)
 		[HideInInspector]
 		public	bool 		camPanningUse = true;
+
+	    public  bool        CanTouchMoving = false;
 		public	bool 		BorderUse = true;
 		public 	float		XMin = -30.0f;		// Camera panning x limit
 		public 	float		XMax =  30.0f;		// Camera panning x limit
@@ -102,7 +105,9 @@ namespace BE {
 
 		// disable ui while camera is in dragging
 		private GraphicRaycaster	gr;
-		
+
+	    public bool LockCamera = false;
+
 		void Awake () {
 			instance=this;
 			gr = GameObject.Find ("Canvas").GetComponent<GraphicRaycaster>();
@@ -128,6 +133,7 @@ namespace BE {
 
 		void Update ()
 		{
+		    if (LockCamera) return;
 		    if (EventSystem.current.currentSelectedGameObject != null) return;
 		    
 			//inertia camera panning
@@ -209,42 +215,54 @@ namespace BE {
 
 						    if(Listner != null) Listner.OnDrag(ray);
 
-                            
-							if(camPanningUse) {
-								Vector3 vPickNew = ray.GetPoint(enter)-trCameraRoot.position;
-								if(InertiaUse) {
-									InertiaSpeed = 0.3f * InertiaSpeed + 0.7f * (vPickNew-vPickOld);
-								}
-								vCameraPanDir = vPickNew - vPickStart;
-								//Debug.Log ("vCameraPanDir:"+vCameraPanDir);
-								SetCameraPosition(vCamRootPosOld - vCameraPanDir);
-								vPickOld = vPickNew;
-							}
+						    if (CanTouchMoving)
+						    {
+						        if (camPanningUse)
+						        {
+						            Vector3 vPickNew = ray.GetPoint(enter) - trCameraRoot.position;
+						            if (InertiaUse)
+						            {
+						                InertiaSpeed = 0.3f * InertiaSpeed + 0.7f * (vPickNew - vPickOld);
+						            }
+						            vCameraPanDir = vPickNew - vPickStart;
+						            //Debug.Log ("vCameraPanDir:"+vCameraPanDir);
+						            SetCameraPosition(vCamRootPosOld - vCameraPanDir);
+						            vPickOld = vPickNew;
+						        }
+						    }
 						}
 						// Not Move
 						else {
 
-							if(Dragged) {
-                                    if (Listner != null) Listner.OnDrag(ray);						
+						    if (Dragged)
+						    {
+						        if (Listner != null) Listner.OnDrag(ray);
+						        if (CanTouchMoving)
+						        {
+						            if (camPanningUse)
+						            {
+						                Vector3 vPickNew = ray.GetPoint(enter) - trCameraRoot.position;
+						                if (InertiaUse)
+						                {
+						                    InertiaSpeed = 0.3f * InertiaSpeed + 0.7f * (vPickNew - vPickOld);
+						                }
+						                vPickOld = vPickNew;
+						            }
+						        }
+						    }
+						    else
+						    {
+						        if (!Dragged)
+						        {
+						            ClickAfter += Time.deltaTime;
 
-								if(camPanningUse) {
-									Vector3 vPickNew = ray.GetPoint(enter)-trCameraRoot.position;
-									if(InertiaUse) {
-										InertiaSpeed = 0.3f * InertiaSpeed + 0.7f * (vPickNew-vPickOld);
-									}
-									vPickOld = vPickNew;
-								}
-							}
-							else {
-								if(!Dragged) {
-									ClickAfter += Time.deltaTime;
-
-									if(LongTabCheck && (ClickAfter > LongTabPeriod)) {
-										LongTabCheck = false;
-										if(Listner != null) Listner.OnLongPress(ray);
-									}
-								}
-							}
+						            if (LongTabCheck && (ClickAfter > LongTabPeriod))
+						            {
+						                LongTabCheck = false;
+						                if (Listner != null) Listner.OnLongPress(ray);
+						            }
+						        }
+						    }
 						}
 					}
 				}

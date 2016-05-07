@@ -339,6 +339,8 @@ namespace Green
 
         public void ClearBehavior()
         {
+            if (Behaviors == null) return;
+            if (Behaviors.Behaviors == null) return;
             foreach(var b in Behaviors.Behaviors)
             {
                 b.Behavior.ActiveOff();

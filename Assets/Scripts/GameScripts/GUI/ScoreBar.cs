@@ -33,18 +33,26 @@ namespace Green
             {
                 Debug.LogError("Component in ScoreBar missing!");
             }
-            _centerImage.gameObject.SetActive(false);
+            
         }
 
         void Start()
         {
-           // MaxValue = GameWorld.Instance.Planets.Count;
+            _centerImage.gameObject.SetActive(false);
+            CheckIfStarShow();
+            // MaxValue = GameWorld.Instance.Planets.Count;
         }
-        public int MaxValue { get; set; }
+
+        public int MaxValue
+        {
+            get { return (int) _centerImage.maxValue; }
+            set { _centerImage.maxValue = value; }
+        }
 
         void CheckIfStarShow()
         {
-            if ((int)(_leftSilder.fillAmount + _rightSilder.fillAmount) == 1)
+            float value = _leftSilder.fillAmount + _rightSilder.fillAmount - 1f - 0.01f;
+            if (  value <= float.Epsilon)
             {
                 _centerImage.gameObject.SetActive(true);
                 _centerImage.value = _leftSilder.fillAmount * MaxValue;
