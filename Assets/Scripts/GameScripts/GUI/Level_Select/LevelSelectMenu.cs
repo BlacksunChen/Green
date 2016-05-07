@@ -163,6 +163,8 @@ namespace Green
             createMenu();
            // gotoItem(initialItemNumber);
             isMenuCreating = false;
+            _chapter = GetComponent<LevelSelectChapter>();
+            SetChapterInfoToItem();
         }
 
         void collectPosition()

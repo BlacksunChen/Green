@@ -24,3 +24,5 @@
 #E星人
 帝国之盾岂是你们能攻破的？[p]
 [fadeout name=E]
+[startgame]
+[close_textbox]

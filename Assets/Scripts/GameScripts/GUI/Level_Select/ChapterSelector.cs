@@ -19,7 +19,11 @@ public class ChapterSelector : MonoBehaviour
     {
         
     }
-    
+
+    public Button NextBtn;
+    public Button BackBtn;
+
+    public bool TouchSlide = false;
     // Use this for initialization
     void Start()
     {
@@ -37,8 +41,15 @@ public class ChapterSelector : MonoBehaviour
         {
             Indicators.Add(int.Parse(i.name), i);
         }
-
-        SetCurrentChapterWithoutAnim(0);
+        foreach (var c in Chapters)
+        {
+            c.Value.SetActive(false);
+        }
+        //SetCurrentChapterWithoutAnim(0);
+        Chapters[0].SetActive(true);
+        SetIndicator(0);
+        UpdateChapterInfo();
+        SetLevelInfo();
     }
 
     void SetCurrentChapterWithoutAnim(int number)
@@ -106,6 +117,8 @@ public class ChapterSelector : MonoBehaviour
         {
             return;
         }
+
+        if (!TouchSlide) return; 
         if (Input.GetMouseButton(0))
         {
             var mousePosition = Input.mousePosition;
@@ -264,4 +277,41 @@ public class ChapterSelector : MonoBehaviour
         SetIndicator(CurrentChapterNumber);
         //SetCurrentChapterWithoutAnim(CurrentChapterNumber);
     }
+
+    public void OnBtnNext()
+    {
+        if (CurrentChapterNumber >= Chapters.Count - 1)
+        {
+            return;
+        }
+        Chapters[CurrentChapterNumber++].SetActive(false);
+        Chapters[CurrentChapterNumber].SetActive(true);
+        SetIndicator(CurrentChapterNumber);
+        UpdateChapterInfo();
+        SetLevelInfo();
+    }
+
+    public void OnBtnBack()
+    {
+        if (CurrentChapterNumber <= 0)
+        {
+            return;
+        }
+        Chapters[CurrentChapterNumber--].SetActive(false);
+        Chapters[CurrentChapterNumber].SetActive(true);
+        SetIndicator(CurrentChapterNumber);
+        UpdateChapterInfo();
+        SetLevelInfo();
+    }
+
+    void UpdateChapterInfo()
+    {
+        Chapters[CurrentChapterNumber].SetChapterName();
+    }
+
+    void SetLevelInfo()
+    {
+        Chapters[CurrentChapterNumber].UpdateLevelInfo();
+    }
+    
 }

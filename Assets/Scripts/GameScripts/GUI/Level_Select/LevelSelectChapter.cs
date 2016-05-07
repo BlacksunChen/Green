@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using Green;
 using UnityEngine.UI;
 
 public class LevelSelectChapter : MonoBehaviour
@@ -16,20 +17,27 @@ public class LevelSelectChapter : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        ChapterNameText = GameObject.Find("ChapterName").GetComponent<Text>();
+        var texts = GetComponentsInChildren<Text>();
+        foreach (var t in texts)
+        {
+            if (t.name == "ChapterName")
+            {
+                ChapterNameText = t;
+            }
+        }
+        //ChapterNameText = GameObject.Find("ChapterName").GetComponent<Text>();
         if (!ChapterNameText)
         {
             Debug.LogError("Missing UI: ChapterName");
         }
         BgToRotate = GameObject.Find("Level_Select_Canvas/ChaptersBG/" + ChapterNumber.ToString());
         ChapterToRotate = this.gameObject;
-
         //ChapterNameText.text = ChapterName;
     }
 
-    string GetChapterName()
+    public void SetChapterName()
     {
-        return "第" + ChapterNumber.ToString() + "章  " + ChapterName;
+        ChapterNameText.text = "第" + ChapterNumber.ToString() + "章  " + ChapterName;
     }
     // Update is called once per frame
     void Update()
@@ -108,5 +116,16 @@ public class LevelSelectChapter : MonoBehaviour
     {
         BgToRotate.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
         ChapterToRotate.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+    }
+
+    public void SetActive(bool active)
+    {
+        BgToRotate.gameObject.SetActive(active);
+        ChapterToRotate.gameObject.SetActive(active);
+    }
+
+    public void UpdateLevelInfo()
+    {
+        GetComponent<LevelSelectMenu>().itemsList[0].GenerateLevelNumber();
     }
 }

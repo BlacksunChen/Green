@@ -22,8 +22,21 @@ namespace Green
 
         void Start()
         {
-            LevelNameText = GameObject.Find("LevelName").GetComponent<Text>();
-            LevelNumberText = GameObject.Find("LevelNumber").GetComponent<Text>();
+            Menu = transform.parent.parent.GetComponent<LevelSelectMenu>();
+            var texts = Menu.GetComponentsInChildren<Text>();
+            foreach (var t in texts)
+            {
+                if (t.name == "LevelName")
+                {
+                    LevelNameText = t;
+                }
+                else if (t.name == "LevelNumber")
+                {
+                    LevelNumberText = t;
+                }
+            }
+           // LevelNameText = GameObject.Find("LevelName").GetComponent<Text>();
+           // LevelNumberText = GameObject.Find("LevelNumber").GetComponent<Text>();
             LevelImage = GetComponentInChildren<Image>();
             LevelImage.raycastTarget = false;
             LevelNameText.text = LevelName;
@@ -34,9 +47,10 @@ namespace Green
             gui = GameObject.FindObjectOfType<manage_menu_uGUI>();
         }
 
-        void GenerateLevelNumber()
+        public  void GenerateLevelNumber()
         {
             LevelNumberText.text = "第" + LevelNumber + "节";
+            LevelNameText.text = LevelName;
         }
         // Update is called once per frame
         void Update()
@@ -84,7 +98,7 @@ namespace Green
             if (Menu.itemsList[Menu.CurrentItem] == this)
             {
                 gui.loading_screen.gameObject.SetActive(true);
-                var sceneName = ChapterNum.ToString() + LevelNumber.ToString();
+                var sceneName = ChapterNum.ToString() + "_" + LevelNumber.ToString();
                 SceneManager.LoadScene(sceneName);
             }
             else
