@@ -182,7 +182,7 @@ namespace Green
         }
         void UpdateAI()
         {
-           // _aiUpdateTimer.Resume();
+            _aiUpdateTimer.Resume();
             _aiUpdateTimer.Update();
             if (_aiUpdateTimer.CurrentState == TimerState.FINISHED)
             {
@@ -193,7 +193,7 @@ namespace Green
 
         void UpdateSituationInEachPlanet()
         {
-           // _situationUpdateTimer.Resume();
+            _situationUpdateTimer.Resume();
             _situationUpdateTimer.Update();
             if (_situationUpdateTimer.CurrentState == TimerState.FINISHED)
             {
