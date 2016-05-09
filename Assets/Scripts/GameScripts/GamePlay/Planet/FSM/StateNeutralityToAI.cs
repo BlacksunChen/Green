@@ -48,6 +48,7 @@ namespace Green
             //animator.SetTrigger(AnimatorState.中立_敌人.ToString());
             //animator.CrossFade(AnimatorState.中立_敌人.ToString(), 2f);
             _star.CrossFadeStarImage(Image);
+
             _star.StartCapture();
             return;
         }
@@ -55,12 +56,15 @@ namespace Green
         public override void OnExit()
         {
             _star.StopCapture();
+            _star.SetProgress(0f);
             return;
         }
 
         public override void OnUpdate()
         {
-            _star.Schedule += Formula.CalculateCaptureProgress(_star.EnemyTroops);
+            float dtProgress = Formula.CalculateCaptureProgress(_star.EnemyTroops);
+            _star.Schedule += dtProgress;
+            _star.SetProgress(_star.Schedule);
         }
     }
 }

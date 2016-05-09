@@ -45,7 +45,9 @@ namespace  Green
         //Vector3 _lastTouchScreenPos;
         //Vector3 _curTouchScreenPos;
         public void OnDrag(Ray ray)
-        {        
+        {
+            if (GameManager.Instance.State != GameState.Playing) return;
+                
             //_curSelectedPlanet = 
             if (DragProgressBar)
             {
@@ -149,6 +151,7 @@ namespace  Green
         bool _destinationSelected = false;
         public void OnDragEnd(Ray ray)
         {
+            if (GameManager.Instance.State != GameState.Playing) return;
             if (DragProgressBar)
             {
                 DragProgressBar = false;

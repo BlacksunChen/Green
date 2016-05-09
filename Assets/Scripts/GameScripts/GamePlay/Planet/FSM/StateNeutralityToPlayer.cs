@@ -56,12 +56,15 @@ namespace Green
         public override void OnExit()
         {
             _star.StopCapture();
+            _star.SetProgress(0f);
             return;
         }
 
         public override void OnUpdate()
         {
-            _star.Schedule += Formula.CalculateCaptureProgress(_star.PlayerTroops);
+            var dt = Formula.CalculateCaptureProgress(_star.PlayerTroops);
+            _star.Schedule += dt;
+            _star.SetProgress(_star.Schedule);
         }
     }
 }

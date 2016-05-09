@@ -3,7 +3,7 @@
 [actor_new name=A]
 [actor_new name=B]
 
-[startgame]
+
 [cm]
 
 [enteractor name=A pos=left fade=true scale=0.5]
@@ -31,15 +31,19 @@
 先从简单的做起吧，周边就有一个污染程度不高的中立星球，我们先使他充满生机吧。[p]
 
 [playanimation name=手指平移]
-#A
+#
 （请拖动手指，使你的军队从母星到旁边的中立星球）[p]
+
+[playanimation name=调节兵力]
+#
+(上下滑动手指，调节派遣兵力的数量)[p]
 
 [playanimation name=单击]
 #
 (在屏幕上点击任意一个位置即可确认派出军队)[p]
 
 #A
-（只要上面只有您的种族，中立星球就会慢慢地被绿化，你派过去的军队越多，占领速度越快哦）[p]
+（只要上面只有您的种族，中立星球就会慢慢地被绿化，你派过去的军队越多，占领速度越快哦, 赶紧试试吧）[p]
 [fadeout name=A]
-
+[startgame]
 [close_textbox]

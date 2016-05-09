@@ -260,10 +260,22 @@ namespace Green
             _playerPopulation = 0;
             _playerMaxPopulation = 0;
             _enemyMaxPopulation = 0;
+            foreach (var s in Soldiers)
+            {
+                if (s.Bloc == SoldierType.Enemy)
+                {
+                    _enemyPopulation ++;
+
+                }
+                else
+                {
+                    _playerPopulation++;
+                }
+            }
             foreach(var p in _planets)
             {
-                _enemyPopulation += p.EnemyTroops;
-                _playerPopulation += p.PlayerTroops;
+             //   _enemyPopulation += p.EnemyTroops;
+               // _playerPopulation += p.PlayerTroops;
 
                 if (p.State == Star.e_State.AI)
                 {                  

@@ -32,9 +32,10 @@ namespace Sov.AVGPart
             {
                 Debug.LogErrorFormat("Can not play animation:{0}", name);
             }
-            var anim = Anim.GetComponent<Animation>();
+            var anim = Anim.GetComponent<Animator>();
             Engine.Status.EnableNextCommand = false;
-            anim.Play();          
+            
+            anim.SetTrigger("play");         
         }
 
         public override void After()

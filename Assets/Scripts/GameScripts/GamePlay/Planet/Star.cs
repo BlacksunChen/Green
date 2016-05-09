@@ -341,5 +341,13 @@ namespace Green
                 //.AppendInterval(0.1f)
                 .Append(image.DOFade(1f, 0.5f));
         }
+
+        public SpriteRenderer MaskMaterial;
+
+        public void SetProgress(float dt)
+        {
+            dt = Mathf.Clamp01(dt);
+            MaskMaterial.material.SetFloat("_Progress", dt);
+        }
     }
 }
