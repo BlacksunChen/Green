@@ -3310,6 +3310,10 @@ Prefab:
       propertyPath: m_Name
       value: planet_1
       objectReference: {fileID: 0}
+    - target: {fileID: 11433176, guid: ac000a8cdfc644acc911739f6cb9457f, type: 2}
+      propertyPath: _vigour
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac000a8cdfc644acc911739f6cb9457f, type: 2}
   m_IsPrefabParent: 0
