@@ -3409,7 +3409,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11421018, guid: d1ef3ca223ce8f748855e895b12c8da6, type: 2}
       propertyPath: _vigour
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11421018, guid: d1ef3ca223ce8f748855e895b12c8da6, type: 2}
       propertyPath: _capacity
@@ -3628,6 +3628,10 @@ Prefab:
     - target: {fileID: 155634, guid: ac000a8cdfc644acc911739f6cb9457f, type: 2}
       propertyPath: m_Name
       value: planet_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11433176, guid: ac000a8cdfc644acc911739f6cb9457f, type: 2}
+      propertyPath: _playerTroops
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac000a8cdfc644acc911739f6cb9457f, type: 2}
