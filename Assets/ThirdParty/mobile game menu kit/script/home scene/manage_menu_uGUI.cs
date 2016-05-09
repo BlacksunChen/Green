@@ -870,7 +870,7 @@ public class manage_menu_uGUI : MonoBehaviour
     public void Go_to_credit_screen()
     {
         my_game_master.Gui_sfx(my_game_master.tap_sfx);
-        home_screen.gameObject.SetActive(false);
+       //home_screen.gameObject.SetActive(false);
         Mark_current_screen(credit_screen);
         Mark_this_button(credit_screen_target_button);
     }

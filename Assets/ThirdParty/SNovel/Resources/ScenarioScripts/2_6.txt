@@ -1,0 +1,15 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=EE]
+
+[cm]
+#
+（在遥远的另一战区）[r]
+
+[enteractor name=EE pos=left fade=true scale=0.5]
+#益星人
+？？！这个区域的E星人在急速增长着，这是一大隐患，一定要快速消灭！[p]
+[fadeout name=EE]
+
+[startgame]
+[close_textbox]

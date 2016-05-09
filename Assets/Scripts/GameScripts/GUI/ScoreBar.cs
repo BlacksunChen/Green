@@ -51,8 +51,8 @@ namespace Green
 
         void CheckIfStarShow()
         {
-            float value = _leftSilder.fillAmount + _rightSilder.fillAmount - 1f - 0.01f;
-            if (  value <= float.Epsilon)
+            float value = _leftSilder.fillAmount + _rightSilder.fillAmount - 1f - 0.001f;
+            if (Mathf.Abs(value) <= float.Epsilon)
             {
                 _centerImage.gameObject.SetActive(true);
                 _centerImage.value = _leftSilder.fillAmount * MaxValue;

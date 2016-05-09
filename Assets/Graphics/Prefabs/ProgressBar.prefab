@@ -224,7 +224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxValue: 0.8
   m_AttachedText: {fileID: 11425260}
-  ProgressSpeed: 5.49
+  ProgressSpeed: 13.46
   TriggerOnComplete: 0
   OnCompleteMethods:
     m_PersistentCalls:

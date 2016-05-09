@@ -1,0 +1,28 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+[actor_new name=E]
+
+[cm]
+[enteractor name=A pos=right fade=true scale=0.5]
+#A
+我们居然战胜了E星人的主力部队！这样我们就完全有资本和E星人对抗了。[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true scale=0.5]
+#B
+我们不能太大意！E星人几乎坐拥整个宇宙，比如附近的几颗星球，就是著名的防御据点，几乎无孔不入，我们要转守为攻，逼E星人投降，必须得攻下这几个据点。[p]
+[fadeout name=B]
+
+[fadein name=B]
+#B
+这几个据点一旦攻下，我们进可攻，退可守！[p]
+[fadeout name=B]
+
+[enteractor name=E pos=right fade=true scale=0.5]
+#E星人
+帝国之盾岂是你们能攻破的？[p]
+[fadeout name=E]
+[startgame]
+[close_textbox]

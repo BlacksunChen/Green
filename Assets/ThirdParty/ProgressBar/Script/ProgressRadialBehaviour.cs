@@ -28,9 +28,9 @@ namespace Green
             {
                 return Mathf.Round(m_Value * 100);
             }
-            set 
+            set
             {
-                SetFillerSizeAsPercentage(value * MaxValue);
+                SetFillerSizeAsPercentage(value);// * MaxValue);
             }
         }
 

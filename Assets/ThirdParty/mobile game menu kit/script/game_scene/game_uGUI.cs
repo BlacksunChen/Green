@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class game_uGUI : MonoBehaviour {
 
@@ -435,11 +436,12 @@ public class game_uGUI : MonoBehaviour {
 			Reset_me();
 			}
 		else
-			Application.LoadLevel (Application.loadedLevel); 
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
 	}
 
 	public void Next()
 	{
+        /*
 		if (my_game_master)
 			{
 			my_game_master.Gui_sfx(my_game_master.tap_sfx);
@@ -479,7 +481,49 @@ public class game_uGUI : MonoBehaviour {
 			{
 			if (show_debug_warnings)
 				Debug.LogWarning("You must start the game from Home scene in order to use this button");
-			}
+			}2
+            */
+	    var sceneName = SceneManager.GetActiveScene().name;
+	    int chapter = int.Parse(sceneName.Substring(0, 1));
+	    int level = int.Parse(sceneName.Substring(2, 1));
+	    switch (chapter)
+	    {
+            case 0:
+	            if (level == 3)
+	            {
+	                chapter++;
+	                level = 1;
+	            }
+	            else
+	            {
+	                level++;
+	            }
+	            break;
+            case 1:
+	            if (level == 3)
+	            {
+	                chapter++;
+	                level = 1;
+	            }
+                else
+                {
+                    level++;
+                }
+                break;
+            case 2:
+	            if (level == 6)
+	            {
+	                chapter++;
+	                level = 1;
+	            }
+                else
+                {
+                    level++;
+                }
+                break;
+	    }
+        Debug.LogFormat("Next Level:{0}_{1}", chapter, level);
+        SceneManager.LoadScene(chapter.ToString() + "_" + level.ToString());
 	}
 
 	public void Go_to_stage_screen()

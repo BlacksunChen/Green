@@ -40,31 +40,84 @@ namespace  Green
 
         public float ProgressDragSpeed = 1f;
 
+        public float TotalDragLength = Screen.height;
+        float _addTouchLength = 0f;
+        //Vector3 _lastTouchScreenPos;
+        //Vector3 _curTouchScreenPos;
         public void OnDrag(Ray ray)
         {        
             //_curSelectedPlanet = 
             if (DragProgressBar)
             {
-                if (!_lastDragPosition.HasValue || !_curDragPosition.HasValue)
+                if (!_lastDragPosition.HasValue)
                 {
-                    _lastDragPosition = _curDragPosition;
+                    _lastDragPosition = Input.mousePosition;
                     return;
                 }            
-                float enter;
-                xzPlane.Raycast(ray, out enter);
-                _curDragPosition = ray.GetPoint(enter) - CameraTransform.position;
-                
-                float addProgress = (_curDragPosition.Value.y - _lastDragPosition.Value.y) * ProgressDragSpeed;
-                if (addProgress > 0)
+                //float enter;
+               // xzPlane.Raycast(ray, out enter);
+                _curDragPosition = Input.mousePosition;
+
+                //float addProgress = (_curDragPosition.Value.y - _lastDragPosition.Value.y) * ProgressDragSpeed;
+                //本次增加/减少的值
+                float touchLength = (_curDragPosition.Value.y - _lastDragPosition.Value.y)* ProgressDragSpeed;
+
+                //未到整数的累加的值
+                _addTouchLength += touchLength / TotalDragLength;
+
+                //累计后增加的兵力
+                var 累计后增加的兵力 = _addTouchLength * _curSelectedPlanet.PlayerSoldiers.Count;
+
+                if (累计后增加的兵力 <= -1f)
                 {
+                    //取下限
+                    累计后增加的兵力 = Mathf.FloorToInt(累计后增加的兵力);
+                }
+                else if (累计后增加的兵力 >= 1f)
+                {
+                    累计后增加的兵力 = Mathf.CeilToInt(累计后增加的兵力);
+                }
+                else
+                {
+                    //不超过1不显示
+                    return;
+                }
+
+                //float 增加的百分比 = (int)累计后增加的兵力 / _curSelectedPlanet.PlayerSoldiers.Count;
+                int 总兵力 = _curSelectedPlanet.PlayerSoldiers.Count;
+                int 原来的兵力 = (int)(ProgressBar.Value / 100f * (float)总兵力);
+
+                int 增加后的兵力 = 原来的兵力 + (int)累计后增加的兵力;
+
+                增加后的兵力 = Mathf.Clamp(增加后的兵力, 0, 总兵力);
+                //在进度条上显示
+                if (_curSelectedPlanet.PlayerSoldiers.Count == 0)
+                {
+                    ProgressBar.Value = 100;
+                }
+                else
+                {
+                    ProgressBar.Value = (float)增加后的兵力 / (float)总兵力 * 100f;
+                }
+
+                _soldierCount.text = 增加后的兵力.ToString();
+
+                /*
+                if (touchLength > 0)
+                {
+                    var addProgress = touchLength / TotalDragLength;
+
+
                     OnProgressBarChanged(addProgress, ProgressBarChange.Increase);
                 }
                 else
                 {
+                    var addProgress = touchLength / TotalDragLength;
                     //var ceilProgress = Mathf.Ceil(ProgressBar.Value + addProgress);
                     OnProgressBarChanged(addProgress, ProgressBarChange.Decrease);
                 }
-                
+                */
+                _addTouchLength = 0;
                 _lastDragPosition = _curDragPosition;
                 return;
             }
@@ -98,6 +151,9 @@ namespace  Green
         {
             if (DragProgressBar)
             {
+                DragProgressBar = false;
+                _curDragPosition = null;
+                _lastDragPosition = null;
                 return;
             }
             RaycastHit hit;
@@ -118,6 +174,7 @@ namespace  Green
             else
             {
                 _destinationSelected = false;
+                _curSelectedPlanet = null;
                 ClearDragArrow();
                 OnCloseProgressBar();
             }
@@ -154,16 +211,16 @@ namespace  Green
             _arrowRenderer.Clear();
         }
 
-        Vector2? _lastDragPosition;
-        Vector2? _curDragPosition;
+        Vector3? _lastDragPosition;
+        Vector3? _curDragPosition;
         public void OnDragStart(Ray ray)
         {
             if (DragProgressBar)
             {
                 float enter;
-                xzPlane.Raycast(ray, out enter);
-                _curDragPosition = ray.GetPoint(enter) - CameraTransform.position;
-                _lastDragPosition = null;
+                // xzPlane.Raycast(ray, out enter);
+                //_curDragPosition = Input.mousePosition;
+                //_lastDragPosition = null;
                 MobileRTSCam.instance.camPanningUse = false;
                 return;
             }
@@ -298,7 +355,7 @@ namespace  Green
         {
             //什么都没点
             Nothing,
-            
+           
             ShowProperty
             
         }

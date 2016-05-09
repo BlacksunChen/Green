@@ -2915,15 +2915,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22479070, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22479070, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22479070, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
@@ -3106,7 +3106,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 88eab93052e11fd459e02b68954cf54d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f8ad0ae36602a9a4e926810c49dfb5b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 0
@@ -3287,6 +3287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraTransform: {fileID: 461249074}
   ProgressDragSpeed: 0.27
+  TotalDragLength: 293
   ProgressBar: {fileID: 1578245}
   DragProgressBar: 0
   _okButton: {fileID: 26985394}
@@ -3516,78 +3517,6 @@ Prefab:
     - target: {fileID: 440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
       propertyPath: m_RootOrder
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_CullingMask.m_Bits
-      value: 512
-      objectReference: {fileID: 0}
-    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_Depth
-      value: -0.27
-      objectReference: {fileID: 0}
-    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_ClearFlags
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: zoomSpeed
-      value: 0.95
-      objectReference: {fileID: 0}
-    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: XMin
-      value: 1.41
-      objectReference: {fileID: 0}
-    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: XMax
-      value: 1.41
-      objectReference: {fileID: 0}
-    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: YMax
-      value: 5.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: YMin
-      value: 5.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 9240286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 12440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8140286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 440288, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -39.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 440288, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -17.45
-      objectReference: {fileID: 0}
-    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 1920
-      objectReference: {fileID: 0}
-    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 2040286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: far clip plane
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 11440286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: zoomCurrent
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 440288, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -7.27
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}

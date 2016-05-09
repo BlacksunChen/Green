@@ -38,7 +38,7 @@ namespace Sov.AVGPart
                 return _sharedSettings;
             }
         }
-        public string SCENARIO_SCRIPT_PATH   = "/AVGPart/Resources/ScenarioScripts/";
+        public string SCENARIO_SCRIPT_PATH   = "/ThirdParty/Resources/ScenarioScripts/";
         public string PREFAB_PATH            = "Prefab/";
         public string UI_IMAGE_PATH          = "UImage/";
         public string BG_IMAGE_PATH          = "BG/";

@@ -1,0 +1,42 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+
+[cm]
+[enteractor name=A pos=left fade=true scale=0.5]
+#A
+前线传来了胜利的消息，让我们感谢大自然给与我们的无限力量吧。[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true scale=0.5]
+#B
+但是我们不能大意，敌人的繁殖能力也很强大。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+对啊，不过他们的繁殖是建立在其他物种的灭亡上的。看！前方有颗星球上E星人正以惊人的速度繁殖，过不了那颗星球多久就会因不堪重负而毁灭吧。[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+对，然后他们的下个目标一定就是我们，我们不能坐以待毙，一定要在他们没站稳脚跟时打击他们。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+但是，他们的实力比我们强，而且增长速度也快于我们。[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+仔细留意一下周围吧，要知道1+1>2哦[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+哦，我懂了。那我们开始行动吧！[p]
+[fadeout name=A]
+[startgame]
+[close_textbox]

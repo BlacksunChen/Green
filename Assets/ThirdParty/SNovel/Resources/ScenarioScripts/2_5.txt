@@ -1,0 +1,23 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+
+[cm]
+[enteractor name=A pos=left fade=true scale=0.5]
+#A
+?![p]
+
+#A
+怎么回事，敌方已被我方重重包围，但突然敌方人数剧增！这完全有悖常理啊！[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true scale=0.5]
+#B
+这到底怎么回事？？！我们一定要弄清原因！[r]
+
+#B
+在此之前，先守住我们的阵地吧！[p]
+[fadeout name=B]
+[startgame]
+[close_textbox]

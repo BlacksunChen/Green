@@ -121,11 +121,12 @@ namespace Green
         void Update()
         {
             UpdateSoldiersInPlanets();
+            UpdatePopulation();
             if (GameManager.Instance.State == GameState.Playing)
             {            
                 UpdateAI();
                 UpdateSituationInEachPlanet();
-                UpdateGameProgress();
+               // UpdateGameProgress();
             }
             else if (GameManager.Instance.State == GameState.Preview)
             {
@@ -194,6 +195,7 @@ namespace Green
             _aiUpdateTimer.Update();
             if (_aiUpdateTimer.CurrentState == TimerState.FINISHED)
             {
+                
                 AI.GetInstance().runAI();
             }
         }
@@ -206,8 +208,8 @@ namespace Green
             if (_situationUpdateTimer.CurrentState == TimerState.FINISHED)
             {
                 DebugInConsole.LogFormat("*******************第{0}秒*******************", _updateCountIndex++);
-               // UpdateSoldiersInPlanets();
-                UpdatePopulation();
+                // UpdateSoldiersInPlanets();
+                //UpdatePopulation();
                 foreach (var p in _planets)
                 {
                     DebugInConsole.LogFormat("*****星球: {0}*****", p.name);

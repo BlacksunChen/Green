@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Utilities;
 
 /*
  * ChangeLog
@@ -62,22 +63,8 @@ namespace Sov.AVGPart
             }
         }
     }
-    class ImageManager
+    class ImageManager: Singleton<ImageManager>
     {
-        public static ImageManager Instance
-        {
-            get
-            {
-                if (_sharedImageManager == null)
-                {
-                    _sharedImageManager = new ImageManager();
-                }
-                return _sharedImageManager;
-            }
-        }
-
-        static ImageManager _sharedImageManager = null;
-
         /*
         public void ChangeImageWithFade(ImageObject io, string imageFileName, float fadeTime)
         {

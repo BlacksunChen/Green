@@ -55,7 +55,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140288}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.22, y: -17.24, z: -58.2}
+  m_LocalPosition: {x: -7.27, y: -17.45, z: -39.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 440286}
@@ -68,23 +68,23 @@ Camera:
   m_GameObject: {fileID: 140288}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 3
   m_BackGroundColor: {r: 0.7019608, g: 0.7019608, b: 0.7019608, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1
-    height: 1
+    width: 1920
+    height: 1080
   near clip plane: 0.01
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 30
   orthographic: 1
   orthographic size: 11
-  m_Depth: -1
+  m_Depth: -0.27
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 512
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -100,7 +100,7 @@ AudioListener:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140288}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!92 &9240286
 Behaviour:
   m_ObjectHideFlags: 1
@@ -122,21 +122,23 @@ MonoBehaviour:
   trCamera: {fileID: 440288}
   trCameraRoot: {fileID: 440286}
   camPanningUse: 1
+  CanTouchMoving: 0
   BorderUse: 1
-  XMin: -27.21
-  XMax: 29.6
-  YMax: 16
-  YMin: -30.4
+  XMin: 1.41
+  XMax: 1.41
+  YMax: 5.8
+  YMin: 5.8
   ZMin: -30
   ZMax: 30
   zoomMax: 11
   zoomMin: 2.34
-  zoomCurrent: 0
-  zoomSpeed: 2
+  zoomCurrent: 4
+  zoomSpeed: 0.95
   InXYPlane: 1
   Rotate: 0
   InertiaUse: 1
   LongTabPeriod: 0.5
+  LockCamera: 0
 --- !u!124 &12440286
 Behaviour:
   m_ObjectHideFlags: 1

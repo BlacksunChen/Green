@@ -1,0 +1,45 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+
+[startgame]
+[cm]
+
+[enteractor name=A pos=left fade=true scale=0.5]
+#A
+全宇宙只剩下我们少数几个星球还没有被E星人支配。[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true scale=0.5]
+#B
+是啊，E星人不知道，其实他们这是在自取灭亡，等到全宇宙的资源都耗尽了，他们也会灭亡。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+哎，可惜他们自认为智力发达，这么简单的事居然都想不到，还要破坏别的星球。[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+我们不能就这样放任他们毁灭整个宇宙的生命！我们咕噜星要让世界重新充满绿色和生机！[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+先从简单的做起吧，周边就有一个污染程度不高的中立星球，我们先使他充满生机吧。[p]
+
+[playanimation name=手指平移]
+#A
+（请拖动手指，使你的军队从母星到旁边的中立星球）[p]
+
+[playanimation name=单击]
+#
+(在屏幕上点击任意一个位置即可确认派出军队)[p]
+
+#A
+（只要上面只有您的种族，中立星球就会慢慢地被绿化，你派过去的军队越多，占领速度越快哦）[p]
+[fadeout name=A]
+
+[close_textbox]

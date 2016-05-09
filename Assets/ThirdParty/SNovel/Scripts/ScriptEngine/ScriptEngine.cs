@@ -130,6 +130,7 @@ namespace Sov.AVGPart
                     }
                     _sharedScriptedEngine =  go.AddComponent<ScriptEngine>();
                     _sharedScriptedEngine.Init();
+                   // _sharedScriptedEngine.gameObject.
                 }
                 return _sharedScriptedEngine;
             }

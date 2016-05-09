@@ -110,12 +110,16 @@ namespace Utilities
                 {
                     //We could first check inside the scene for an existing instance
                     //but because how this script is constructed, asking if it `Exists` should be enough.
-                    instance = (T) FindObjectOfType(typeof(T)); 
-                    
+
+                    instance = (T) FindObjectOfType(typeof(T));
+                    if (instance == null)
+                    {
+                        GameObject obj = new GameObject("Singleton_" + typeof(T));
+                        instance = obj.AddComponent(typeof(T)) as T;
+                    }
                     //Debug.Log("An instance of " + typeof(T).ToString() + " is needed in the scene, but there was none found.\nOne was generated automatically for you.");
 
-                    //GameObject obj = new GameObject("Singleton_" + typeof(T));
-                    //instance = obj.AddComponent(typeof(T)) as T;
+                    
                 }
 
                 return instance;

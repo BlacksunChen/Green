@@ -93,12 +93,18 @@ namespace Green
             LevelImage.GetComponent<RectTransform>().DOScale(OriginScale, 0.3f);
         }
 
+        public bool Lock = false;
         public void OnClickItem()
         {
+            if (Lock) return;
             if (Menu.itemsList[Menu.CurrentItem] == this)
             {
                 gui.loading_screen.gameObject.SetActive(true);
                 var sceneName = ChapterNum.ToString() + "_" + LevelNumber.ToString();
+                if (ChapterNum == 3 && int.Parse(LevelNumber) == 1)
+                {
+                    
+                }
                 SceneManager.LoadScene(sceneName);
             }
             else

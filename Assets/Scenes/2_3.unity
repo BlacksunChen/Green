@@ -383,7 +383,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22407054, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_RootOrder
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 22407054, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -2258,9 +2258,9 @@ RectTransform:
   - {fileID: 2133198782}
   - {fileID: 489994966}
   - {fileID: 2130655606}
+  - {fileID: 113113620}
   - {fileID: 1089733050}
   - {fileID: 610408711}
-  - {fileID: 113113620}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_AnchorMin: {x: 0, y: 0}
@@ -3004,7 +3004,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 88eab93052e11fd459e02b68954cf54d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f8ad0ae36602a9a4e926810c49dfb5b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 0
@@ -3128,7 +3128,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22477638, guid: 8ed06a297a21c184fa8ee59cb7c48df4, type: 2}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 22477638, guid: 8ed06a297a21c184fa8ee59cb7c48df4, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -3268,6 +3268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraTransform: {fileID: 461249074}
   ProgressDragSpeed: 0.27
+  TotalDragLength: 293
   ProgressBar: {fileID: 610408713}
   DragProgressBar: 0
   _okButton: {fileID: 26985394}
@@ -3544,7 +3545,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 8140286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 440288, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
       propertyPath: m_LocalPosition.z
@@ -3618,7 +3619,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22405990, guid: 0a1613945de517b4185832b1ac57b561, type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 22405990, guid: 0a1613945de517b4185832b1ac57b561, type: 2}
       propertyPath: m_AnchoredPosition.x

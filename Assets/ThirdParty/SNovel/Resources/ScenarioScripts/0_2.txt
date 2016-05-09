@@ -1,0 +1,56 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+
+[cm]
+[enteractor name=A pos=left fade=true scale=0.5]
+#A
+我们遇到了E星人！他们比我们强大得多！[p]
+[fadeout name=A]
+
+[enteractor name=B pos=right fade=true scale=0.5]
+#B
+没事，这是他们已经榨取完毕废弃掉的一个星球，上面并没有太多士兵。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+我们可以尝试和他们和平共处吗？[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+没用的，E星人不会容忍任何生物和他们共享资源的！[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+那我们只能战斗了。但我们的力量毕竟很弱小啊。[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+没事的，大自然是顽强的，有一定的自我修复能力。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+（等待片刻，大自然的自我恢复能力会让你大吃一惊）[p]
+
+#A
+（每颗星球都有三个属性，星球防御力会让你在防守时更具优势）[r]
+
+#A
+(星球活力决定了星球自我恢复或繁殖的速度)[p]
+
+#A
+(星球容量决定了种族的人口上限)[r]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+（战斗是自动进行的，你随时可以进行增援和撤兵，你的军队越多，战斗损失会越小哦）[p]
+[fadeout name=B]
+[startgame]
+[close_textbox]

@@ -140,6 +140,7 @@ namespace Sov.AVGPart
             CurrentLine = 0;
             Status.Reset();
         }
+
         public void LoadScript()
         {
             string path = Settings.Instance.SCENARIO_SCRIPT_PATH + ScriptFilePath;
@@ -155,9 +156,27 @@ namespace Sov.AVGPart
             sr.Close();
 #endif
 */
-//#if UNITY_ANDROID
-           // TextAsset t = Resources.Load<TextAsset>(path);
-            path = Application.dataPath + path;
+            ScriptFilePath = ScriptFilePath.Substring(0, 3);
+            //#if UNITY_ANDROID
+            
+                var textAsset = Resources.Load<TextAsset>("ScenarioScripts/" + ScriptFilePath);
+            ScriptContent = textAsset.text;
+            // path = Application.dataPath + path;
+            //string url = Application.dataPath  + path;
+            /*
+            #if UNITY_EDITOR
+                        ScriptContent = File.ReadAllText(url);
+            #elif UNITY_ANDROID
+                        path = "jar:file://" + Application.dataPath + "!/assets" + path;
+
+                        WWW www = new WWW(path);
+                        while (!www.isDone) { }
+
+                        ScriptContent = www.text;
+                        Debug.Log("Load Script: "+ ScriptContent);
+            #endif
+            */
+            /*
             if (!File.Exists(path))
             {
                 Debug.LogFormat("cannot find script file: {0}!", path);
@@ -168,8 +187,10 @@ namespace Sov.AVGPart
             StreamReader sr = File.OpenText(path);
             ScriptContent = sr.ReadToEnd();
             sr.Close();
-//#endif
-            //_phraser.SetScript(str);
+
+            //#endif
+            // ScriptContent= 
+            //_phraser.SetScript(str);*/
             _engine.Phrase(this);
         }
 

@@ -1,0 +1,77 @@
+[reg_textbox name=Main type=main]
+//[reg_textbox name=Name type=name]
+[actor_new name=A]
+[actor_new name=B]
+[actor_new name=E]
+[actor_new name=EE]
+
+[cm]
+[enteractor name=B pos=right fade=true scale=0.5]
+#B
+我们已经在这一区域站稳了脚跟，很多E星人似乎也被我们感动，前来帮助我们一起绿化星球。[p]
+[fadeout name=B]
+
+[enteractor name=A pos=left fade=true scale=0.5]
+#A
+看来E星人也不全是坏人。[p]
+[fadeout name=A]
+
+#
+...[r]
+
+#
+......[r]
+
+#
+...[p]
+
+[fadein name=A]
+#A
+![p]
+
+#A
+看这是什么，我收到了E星人发来的信号。[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+看来有一部分E星人被我们的行为所感动，希望加入我们的行列。他们也在着手绿化自己以及周边的星球了。[p]
+[fadeout name=B]
+
+[fadein name=A]
+#A
+哇，他们对星球的绿化也很不错啊。[p]
+[fadeout name=A]
+
+[fadein name=B]
+#B
+我们要去和他们会合，他们能为我们提供很多E星的情报和科技，他们现在的据点在益星，被很多邪恶的E星人包围着。[p]
+[fadeout name=B]
+
+[enteractor name=EE pos=right fade=true scale=0.5]
+#益星人
+我们要去和咕噜星人会合，共同拯救这个被污染的宇宙！[p]
+[fadeout name=EE]
+
+[enteractor name=E pos=left fade=true scale=0.5]
+#E星人
+你们这群叛徒，咕噜星人究竟给了你们什么好处？[p]
+[fadeout name=E]
+
+[fadein name=EE]
+#益星人
+你们才是呢，究竟要破坏整个宇宙到什么时候。大家就不能和平共处吗？所有生命都是有生存的权利的！[p]
+[fadeout name=EE]
+
+[fadein name=E]
+#E星人
+你们被那群咕噜星人洗脑了，文明的发展本来就是要依靠资源的消耗的，而资源是有限的，他咕噜星有，我们就没有，你们那样做根本是在使文明退化！退化成只有植物和低等动物的世界！[p]
+[fadeout name=E]
+
+[fadein name=EE]
+#益星人
+你们这是在自取灭亡，大自然终将会给你们应有的惩罚！从今天起，我们摆脱E星人的称谓，改名益星人！[p]
+[fadeout name=EE]
+
+[startgame]
+[close_textbox]

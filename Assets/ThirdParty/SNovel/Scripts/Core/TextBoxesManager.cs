@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sov.MessageNotificationCenter;
+using Utilities;
 
 namespace Sov.AVGPart
 {
@@ -15,20 +16,8 @@ namespace Sov.AVGPart
      * TextBoxesManager
      * 挂在GameObject上以管理TextBox
      */
-    class TextBoxesManager// : MonoBehaviour
+    class TextBoxesManager : Singleton<TextBoxesManager>
     {
-        public static TextBoxesManager Instance
-        {
-            get
-            {
-                if (_sharedTextBoxesManager == null)
-                {
-                    _sharedTextBoxesManager = new TextBoxesManager();
-             
-                }
-                return _sharedTextBoxesManager;
-            }
-        }
 
         //public TextBox GetCurrentMainTextBox() { return _currentMainTextBox; }
         public TextBoxesManager()
@@ -37,10 +26,7 @@ namespace Sov.AVGPart
             TextBoxesInScene = new List<TextBox>();
          //   CurrentMainTextBox = TextBoxesInScene[0];
         //    RegisterTextBoxesInScene();
-        }
-        //Instance
-        static TextBoxesManager _sharedTextBoxesManager = null;
-        
+        } 
         public List<TextBox> TextBoxesInScene;
 
         //registered textBox above

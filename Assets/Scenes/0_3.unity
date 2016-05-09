@@ -1299,6 +1299,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 471407406}
+  - 114: {fileID: 471407407}
   m_Layer: 5
   m_Name: TextBox
   m_TagString: Untagged
@@ -1326,6 +1327,19 @@ RectTransform:
   m_AnchoredPosition: {x: -18244.05, y: 164.00012}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: -194.5, y: 0.5}
+--- !u!114 &471407407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 471407405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e8ca0c9332e8a4d922363be33d7a6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsPersistent: 0
+  TextBoxesInScene: []
 --- !u!1 &489994965
 GameObject:
   m_ObjectHideFlags: 0
@@ -2834,7 +2848,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 88eab93052e11fd459e02b68954cf54d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f8ad0ae36602a9a4e926810c49dfb5b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 0
@@ -3102,6 +3116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraTransform: {fileID: 461249074}
   ProgressDragSpeed: 0.27
+  TotalDragLength: 293
   ProgressBar: {fileID: 28408952}
   DragProgressBar: 0
   _okButton: {fileID: 26985394}
@@ -3404,7 +3419,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 8140286, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 440288, guid: d7d4260cadcf4465f9959bb985b26d0a, type: 2}
       propertyPath: m_LocalPosition.z
@@ -3958,15 +3973,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22479070, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22479070, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22479070, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 254d6a19c700dee41a2ba46ef90bc8eb, type: 2}
