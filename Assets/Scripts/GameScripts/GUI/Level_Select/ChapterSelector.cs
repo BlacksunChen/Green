@@ -14,7 +14,8 @@ public class ChapterSelector : MonoBehaviour
     public Sprite IndicatorSmallImage;
     public Dictionary<int, Image> Indicators = new Dictionary<int, Image>();
 
-   
+    public static Quaternion QuaternionOrigin; //正方向的旋转
+    public static Quaternion QuaternionUp;     //上方的旋转
     void Awake()
     {
         
@@ -43,13 +44,16 @@ public class ChapterSelector : MonoBehaviour
         }
         foreach (var c in Chapters)
         {
-            c.Value.SetActive(false);
+            c.Value.SetActive(true);
         }
         //SetCurrentChapterWithoutAnim(0);
         Chapters[0].SetActive(true);
         SetIndicator(0);
         UpdateChapterInfo();
         SetLevelInfo();
+
+        QuaternionOrigin = Chapters[0].transform.rotation;
+        QuaternionUp = Chapters[1].transform.rotation;
     }
 
     void SetCurrentChapterWithoutAnim(int number)
@@ -149,11 +153,11 @@ public class ChapterSelector : MonoBehaviour
                         _touchType = TouchType.Right;
                     }
                     OnDrag();
-
+                    _lastTouchPos = _curTouchPos;
                 }
                 else
                 {
-                    if (_dragged) OnDrag();
+                    //if (_dragged) OnDrag();
                 }
             }
         }
@@ -188,9 +192,9 @@ public class ChapterSelector : MonoBehaviour
     void OnDrag()
     {
         if (_rotateAnim) return;
+        var speed = Mathf.Abs(TouchSlideSpeed * Vector3.Distance(_curTouchPos.Value, _lastTouchPos.Value));
         if (_touchType == TouchType.Left)
         {
-            var speed = TouchSlideSpeed * Vector3.Distance(_curTouchPos.Value, _lastTouchPos.Value);
             
             var next = GetNextChapter();
             if (next != null)
@@ -202,16 +206,14 @@ public class ChapterSelector : MonoBehaviour
             }
         }
         else if(_touchType == TouchType.Right)
-        {
-            var speed = TouchSlideSpeed * Vector3.Distance(_curTouchPos.Value, _lastTouchPos.Value);
-            
+        {   
             var last = GetLastChapter();
             if (last != null)
             {
                 var cur = Chapters[CurrentChapterNumber];
-                var angleCur = Mathf.Lerp(0, 180f, speed / 180f);
-                cur.AddRotateZ(angleCur);
-                last.AddRotateZ(angleCur);
+                var angleCur = Mathf.Lerp(0, -180f, speed / 180f);
+                cur.AddRotateZ(angleCur, LevelSelectChapter.RotateDirection.CounterClockWise);
+                last.AddRotateZ(angleCur, LevelSelectChapter.RotateDirection.CounterClockWise);
             }
         }
     }
@@ -221,8 +223,11 @@ public class ChapterSelector : MonoBehaviour
     void OnDragEnd()
     {
         if (_rotateAnim) return;
-        if (Mathf.Abs(Chapters[CurrentChapterNumber].transform.localEulerAngles.z % 180f) > 60f)
+
+        var curAngle = Chapters[CurrentChapterNumber].transform.localEulerAngles.z;
+        if (360f - curAngle > 60f)
         {
+            //转过去
             var curT = Chapters[CurrentChapterNumber];
             
             if (_touchType == TouchType.Left)
@@ -230,8 +235,11 @@ public class ChapterSelector : MonoBehaviour
                 _rotateAnim = true;
                 if (CurrentChapterNumber >= Chapters.Count - 1) return;
                 var nextT = Chapters[CurrentChapterNumber + 1];
-                curT.DoRotateClockWise(2f, OnRotateAnimComplete);
-                nextT.DoRotateClockWise(2f, OnRotateAnimComplete);
+
+                curT.Rotate(QuaternionUp, 1.5f, OnRotateAnimComplete);
+                nextT.Rotate(QuaternionOrigin, 1.5f, OnRotateAnimComplete);
+                //curT.DoRotateClockWise(2f, OnRotateAnimComplete);
+                //nextT.DoRotateClockWise(2f, OnRotateAnimComplete);
                 CurrentChapterNumber++;
                 //curT.DORotate(new Vector3(0, 0, 180f), 2f, RotateMode.LocalAxisAdd);
                 //nextT.DORotate(new Vector3(0f, 0f, -360f), 2f, RotateMode.LocalAxisAdd).OnComplete(OnRotateAnimComplete);
@@ -241,13 +249,17 @@ public class ChapterSelector : MonoBehaviour
                 _rotateAnim = true;
                 if (CurrentChapterNumber < 0) return;
                 var nextT = Chapters[CurrentChapterNumber - 1];
-                curT.DoRotateCounterClockWise(2f, OnRotateAnimComplete);
-                nextT.DoRotateCounterClockWise(2f, OnRotateAnimComplete);
+
+                curT.Rotate(QuaternionUp, 1.5f, OnRotateAnimComplete, LevelSelectChapter.RotateDirection.CounterClockWise);
+                nextT.Rotate(QuaternionOrigin, 1.5f, OnRotateAnimComplete, LevelSelectChapter.RotateDirection.CounterClockWise);
+                //  curT.DoRotateCounterClockWise(2f, OnRotateAnimComplete);
+                // nextT.DoRotateCounterClockWise(2f, OnRotateAnimComplete);
                 CurrentChapterNumber--;
             }
         }
         else
         {
+            //拉回来
             var curT = Chapters[CurrentChapterNumber];
 
             if (_touchType == TouchType.Left)
@@ -255,8 +267,11 @@ public class ChapterSelector : MonoBehaviour
                 _rotateAnim = true;
                 if (CurrentChapterNumber >= Chapters.Count - 1) return;
                 var nextT = Chapters[CurrentChapterNumber + 1];
+
+                curT.Rotate(QuaternionOrigin, 0.5f, OnRotateAnimComplete);
+                nextT.Rotate(QuaternionUp, 0.5f, OnRotateAnimComplete);
                 //curT.DoRotateOrigin(2f, OnRotateAnimComplete);
-               // nextT.DoRotateOrigin(2f, OnRotateAnimComplete);
+                // nextT.DoRotateOrigin(2f, OnRotateAnimComplete);
                 //curT.DORotate(new Vector3(0, 0, 180f), 2f, RotateMode.LocalAxisAdd);
                 //nextT.DORotate(new Vector3(0f, 0f, -360f), 2f, RotateMode.LocalAxisAdd).OnComplete(OnRotateAnimComplete);
             }
@@ -265,8 +280,11 @@ public class ChapterSelector : MonoBehaviour
                 _rotateAnim = true;
                 if (CurrentChapterNumber < 0) return;
                 var nextT = Chapters[CurrentChapterNumber - 1];
-               // curT.DoRotateOrigin(2f, OnRotateAnimComplete);
-               // nextT.DoRotateOrigin(2f, OnRotateAnimComplete);
+
+                curT.Rotate(QuaternionOrigin, 0.5f, OnRotateAnimComplete, LevelSelectChapter.RotateDirection.CounterClockWise);
+                nextT.Rotate(QuaternionUp, 0.5f, OnRotateAnimComplete, LevelSelectChapter.RotateDirection.CounterClockWise);
+                // curT.DoRotateOrigin(2f, OnRotateAnimComplete);
+                // nextT.DoRotateOrigin(2f, OnRotateAnimComplete);
             }
         }
     }
@@ -275,6 +293,8 @@ public class ChapterSelector : MonoBehaviour
     {
         _rotateAnim = false;
         SetIndicator(CurrentChapterNumber);
+        UpdateChapterInfo();
+        SetLevelInfo();
         //SetCurrentChapterWithoutAnim(CurrentChapterNumber);
     }
 
