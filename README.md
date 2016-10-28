@@ -1,2 +1,2 @@
 # Green
-an simply RTS mobile game
+a simple RTS mobile game
